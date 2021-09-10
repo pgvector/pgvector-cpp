@@ -15,7 +15,7 @@ jobs:
         make
         sudo make install
     - run: |
-        git clone --branch v7.6.0 https://github.com/jtv/libpqxx.git
+        git clone --branch 7.6.0 https://github.com/jtv/libpqxx.git
         cd libpqxx
         ./configure --enable-shared
         make
