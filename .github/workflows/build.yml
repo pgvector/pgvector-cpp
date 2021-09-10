@@ -14,6 +14,11 @@ jobs:
         cd pgvector
         make
         sudo make install
-    - run: sudo apt-get install libpqxx-dev
+    - run: |
+        git clone --branch v7.6.0 https://github.com/jtv/libpqxx.git
+        cd libpqxx
+        ./configure --enable-shared
+        make
+        sudo make install
     - run: g++ -std=c++17 -lpqxx -lpq -o test/pqxx test/pqxx_test.cpp
     - run: test/pqxx
