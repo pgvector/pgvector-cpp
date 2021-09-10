@@ -15,5 +15,5 @@ jobs:
         make
         sudo make install
     - run: sudo apt-get install libpqxx-dev
-    - run: g++ -std=c++20 -lpqxx -lpq -o test/pqxx test/pqxx_test.cpp
+    - run: g++ -std=c++17 -lpqxx -lpq -o test/pqxx test/pqxx_test.cpp
     - run: test/pqxx
