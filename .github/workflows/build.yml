@@ -17,9 +17,8 @@ jobs:
     - run: |
         git clone --branch 7.6.0 https://github.com/jtv/libpqxx.git
         cd libpqxx
-        ./configure --enable-shared
+        ./configure
         make
         sudo make install
-        sudo ldconfig
     - run: g++ -std=c++17 -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
     - run: test/pqxx
