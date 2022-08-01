@@ -17,7 +17,7 @@ jobs:
     - run: |
         git clone --branch 7.7.4 https://github.com/jtv/libpqxx.git
         cd libpqxx
-        ./configure
+        CXXFLAGS=-std=c++17 ./configure
         make
         sudo make install
     - run: g++ -std=c++17 -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
