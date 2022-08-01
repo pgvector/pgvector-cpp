@@ -15,7 +15,7 @@ jobs:
         make
         sudo make install
     - run: |
-        git clone --branch 7.7.0 https://github.com/jtv/libpqxx.git
+        git clone --branch 7.7.4 https://github.com/jtv/libpqxx.git
         cd libpqxx
         ./configure
         make
