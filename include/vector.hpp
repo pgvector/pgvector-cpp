@@ -7,11 +7,15 @@ public:
   Vector(const std::vector<float> &value) {
     value_ = value;
   }
+  
+  Vector(std::vector<float>&& value) {
+    value_ = std::move(value);
+  }
 
   Vector(const float *value, size_t n) {
     value_ = std::vector<float>{value, value + n};
   }
-
+  
   operator const std::vector<float>() const {
     return value_;
   }
