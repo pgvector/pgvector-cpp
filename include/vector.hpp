@@ -15,7 +15,7 @@ public:
   Vector(const float *value, size_t n) {
     value_ = std::vector<float>{value, value + n};
   }
-  
+
   operator const std::vector<float>() const {
     return value_;
   }
