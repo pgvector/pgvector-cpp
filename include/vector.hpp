@@ -7,7 +7,7 @@ public:
   Vector(const std::vector<float> &value) {
     value_ = value;
   }
-  
+
   Vector(std::vector<float>&& value) {
     value_ = std::move(value);
   }
