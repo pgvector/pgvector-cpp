@@ -5,7 +5,7 @@ namespace pgvector {
 class Vector {
 public:
   Vector() = default;
-  
+
   Vector(const std::vector<float> &value) {
     value_ = value;
   }
