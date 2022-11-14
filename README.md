@@ -6,9 +6,9 @@ Supports [libpqxx](https://github.com/jtv/libpqxx)
 
 [![Build Status](https://github.com/pgvector/pgvector-cpp/workflows/build/badge.svg?branch=master)](https://github.com/pgvector/pgvector-cpp/actions)
 
-## Getting Started
+## Installation
 
-Run
+Run:
 
 ```sh
 git clone --branch v0.1.1 https://github.com/pgvector/pgvector-cpp.git
@@ -16,6 +16,12 @@ cd pgvector-cpp && mkdir build && cd build
 cmake ..
 make install # may need sudo
 ```
+
+And follow the instructions for your database library:
+
+- [libpqxx](#libpqxx)
+
+## libpqxx
 
 Include the header
 
