@@ -29,11 +29,23 @@ void test_works(pqxx::connection &conn) {
   txn.commit();
 }
 
+void test_stream(pqxx::connection &conn) {
+  pqxx::work txn{conn};
+  auto stream = pqxx::stream_from::query(txn, "SELECT id, factors FROM items WHERE factors IS NOT NULL");
+  std::tuple<int, pgvector::Vector> row;
+  while (stream >> row) {
+    assert(std::get<1>(row).dimensions() == 3);
+  }
+  stream.complete();
+  txn.commit();
+}
+
 int main() {
   pqxx::connection conn("dbname=pgvector_cpp_test");
   setup(conn);
 
   test_works(conn);
+  test_stream(conn);
 
   return 0;
 }
