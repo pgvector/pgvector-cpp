@@ -11,7 +11,7 @@ Supports [libpqxx](https://github.com/jtv/libpqxx)
 Run
 
 ```sh
-git clone https://github.com/pgvector/pgvector-cpp.git
+git clone --branch v0.1.1 https://github.com/pgvector/pgvector-cpp.git
 cd pgvector-cpp && mkdir build && cd build
 cmake ..
 make install # may need sudo
