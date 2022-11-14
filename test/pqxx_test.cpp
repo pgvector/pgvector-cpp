@@ -14,6 +14,7 @@ void setup(pqxx::connection &conn) {
 void test_works(pqxx::connection &conn) {
   pqxx::work txn{conn};
   auto factors = pgvector::Vector({1, 2, 3});
+  assert(factors.dimensions() == 3);
   float arr[] = {4, 5, 6};
   auto factors2 = pgvector::Vector(arr, 3);
   txn.exec_params("INSERT INTO items (factors) VALUES ($1), ($2), ($3)",

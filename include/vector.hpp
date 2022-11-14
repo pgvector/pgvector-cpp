@@ -16,6 +16,10 @@ public:
     value_ = std::vector<float>{value, value + n};
   }
 
+  size_t dimensions() const {
+    return value_.size();
+  }
+
   operator const std::vector<float>() const {
     return value_;
   }
