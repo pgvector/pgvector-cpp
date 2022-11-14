@@ -30,7 +30,7 @@ public:
 
   friend std::ostream &operator<<(std::ostream &os, const Vector &value) {
     os << "[";
-    for (auto i = 0; i < value.value_.size(); i++) {
+    for (size_t i = 0; i < value.value_.size(); i++) {
       if (i > 0) {
         os << ",";
       }

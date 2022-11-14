@@ -72,6 +72,6 @@ To get started with development:
 git clone https://github.com/pgvector/pgvector-cpp.git
 cd pgvector-cpp
 createdb pgvector_cpp_test
-g++ -std=c++17 -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
+g++ -std=c++17 -Wall -Wextra -Werror -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
 test/pqxx
 ```
