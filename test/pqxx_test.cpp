@@ -40,12 +40,23 @@ void test_stream(pqxx::connection &conn) {
   txn.commit();
 }
 
+void test_precision(pqxx::connection &conn) {
+  pqxx::work txn{conn};
+  auto factors = pgvector::Vector({1.23456789, 0, 0});
+  txn.exec_params("INSERT INTO items (factors) VALUES ($1)", factors);
+  txn.exec0("SET extra_float_digits = 3");
+  pqxx::result res{txn.exec_params("SELECT factors FROM items ORDER BY id DESC LIMIT 1")};
+  assert(res[0][0].as<pgvector::Vector>() == factors);
+  txn.commit();
+}
+
 int main() {
   pqxx::connection conn("dbname=pgvector_cpp_test");
   setup(conn);
 
   test_works(conn);
   test_stream(conn);
+  test_precision(conn);
 
   return 0;
 }
