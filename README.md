@@ -32,21 +32,21 @@ Include the header
 Insert a vector
 
 ```cpp
-auto factors = pgvector::Vector({1, 2, 3});
-W.exec_params("INSERT INTO items (factors) VALUES ($1)", factors);
+auto embedding = pgvector::Vector({1, 2, 3});
+W.exec_params("INSERT INTO items (embedding) VALUES ($1)", embedding);
 ```
 
 Get the nearest neighbors
 
 ```cpp
-pqxx::result R{W.exec_params("SELECT * FROM items ORDER BY factors <-> $1 LIMIT 5", factors)};
+pqxx::result R{W.exec_params("SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5", embedding)};
 ```
 
 Retrieve a vector
 
 ```cpp
-auto row = W.exec1("SELECT factors FROM items LIMIT 1");
-auto factors = row[0].as<pgvector::Vector>();
+auto row = W.exec1("SELECT embedding FROM items LIMIT 1");
+auto embedding = row[0].as<pgvector::Vector>();
 ```
 
 Use `std::optional<pgvector::Vector>` if the value could be `NULL`
@@ -56,7 +56,7 @@ Use `std::optional<pgvector::Vector>` if the value could be `NULL`
 Convert a vector to a `std::vector<float>`
 
 ```cpp
-auto float_vec = static_cast<std::vector<float>>(factors);
+auto float_vec = static_cast<std::vector<float>>(embedding);
 ```
 
 ## History
