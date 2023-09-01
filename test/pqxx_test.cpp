@@ -31,12 +31,9 @@ void test_works(pqxx::connection &conn) {
 
 void test_stream(pqxx::connection &conn) {
   pqxx::work txn{conn};
-  auto stream = pqxx::stream_from::query(txn, "SELECT id, embedding FROM items WHERE embedding IS NOT NULL");
-  std::tuple<int, pgvector::Vector> row;
-  while (stream >> row) {
-    assert(std::get<1>(row).dimensions() == 3);
+  for (auto [id, embedding] : txn.stream<int, pgvector::Vector>("SELECT id, embedding FROM items WHERE embedding IS NOT NULL")) {
+    assert(embedding.dimensions() == 3);
   }
-  stream.complete();
   txn.commit();
 }
 
