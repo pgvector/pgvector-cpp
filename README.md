@@ -32,32 +32,32 @@ Include the header
 Enable the extension
 
 ```cpp
-W.exec0("CREATE EXTENSION IF NOT EXISTS vector");
+tx.exec0("CREATE EXTENSION IF NOT EXISTS vector");
 ```
 
 Create a table
 
 ```cpp
-W.exec0("CREATE TABLE items (id bigserial PRIMARY KEY, embedding vector(3))");
+tx.exec0("CREATE TABLE items (id bigserial PRIMARY KEY, embedding vector(3))");
 ```
 
 Insert a vector
 
 ```cpp
 auto embedding = pgvector::Vector({1, 2, 3});
-W.exec_params("INSERT INTO items (embedding) VALUES ($1)", embedding);
+tx.exec_params("INSERT INTO items (embedding) VALUES ($1)", embedding);
 ```
 
 Get the nearest neighbors
 
 ```cpp
-pqxx::result R{W.exec_params("SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5", embedding)};
+pqxx::result R{tx.exec_params("SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5", embedding)};
 ```
 
 Retrieve a vector
 
 ```cpp
-auto row = W.exec1("SELECT embedding FROM items LIMIT 1");
+auto row = tx.exec1("SELECT embedding FROM items LIMIT 1");
 auto embedding = row[0].as<pgvector::Vector>();
 ```
 
