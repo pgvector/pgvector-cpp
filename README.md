@@ -29,6 +29,18 @@ Include the header
 #include <pgvector/pqxx.hpp>
 ```
 
+Enable the extension
+
+```cpp
+W.exec0("CREATE EXTENSION IF NOT EXISTS vector");
+```
+
+Create a table
+
+```cpp
+W.exec0("CREATE TABLE items (id bigserial PRIMARY KEY, embedding vector(3))");
+```
+
 Insert a vector
 
 ```cpp

@@ -7,7 +7,7 @@ void setup(pqxx::connection &conn) {
   pqxx::work txn{conn};
   txn.exec0("CREATE EXTENSION IF NOT EXISTS vector");
   txn.exec0("DROP TABLE IF EXISTS items");
-  txn.exec0("CREATE TABLE items (id serial primary key, embedding vector(3))");
+  txn.exec0("CREATE TABLE items (id serial PRIMARY KEY, embedding vector(3))");
   txn.commit();
 }
 
