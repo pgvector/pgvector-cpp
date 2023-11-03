@@ -1,3 +1,5 @@
+#pragma once
+
 #include "vector.hpp"
 #include <pqxx/pqxx>
 #include <sstream>
