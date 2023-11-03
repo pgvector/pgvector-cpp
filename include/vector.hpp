@@ -1,3 +1,9 @@
+/*!
+ * pgvector-cpp v0.1.0
+ * https://github.com/pgvector/pgvector-cpp
+ * MIT License
+ */
+
 #pragma once
 
 #include <ostream>
