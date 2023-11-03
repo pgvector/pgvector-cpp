@@ -1,5 +1,5 @@
 /*!
- * pgvector-cpp v0.1.0
+ * pgvector-cpp v0.1.1
  * https://github.com/pgvector/pgvector-cpp
  * MIT License
  */
