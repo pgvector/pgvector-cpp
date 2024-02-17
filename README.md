@@ -4,7 +4,7 @@
 
 Supports [libpqxx](https://github.com/jtv/libpqxx)
 
-[![Build Status](https://github.com/pgvector/pgvector-cpp/workflows/build/badge.svg?branch=master)](https://github.com/pgvector/pgvector-cpp/actions)
+[![Build Status](https://github.com/pgvector/pgvector-cpp/actions/workflows/build.yml/badge.svg)](https://github.com/pgvector/pgvector-cpp/actions)
 
 ## Installation
 
