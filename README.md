@@ -12,9 +12,10 @@ Run:
 
 ```sh
 git clone --branch v0.1.1 https://github.com/pgvector/pgvector-cpp.git
-cd pgvector-cpp && mkdir build && cd build
-cmake ..
-make install # may need sudo
+cd pgvector-cpp
+cmake -S . -B build
+cmake --build build
+cmake --install build # may need sudo
 ```
 
 And follow the instructions for your database library:
