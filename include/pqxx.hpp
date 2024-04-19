@@ -16,6 +16,10 @@ template <> std::string const type_name<pgvector::Vector>{"vector"};
 template <> struct nullness<pgvector::Vector> : pqxx::no_null<pgvector::Vector> {};
 
 template <> struct string_traits<pgvector::Vector> {
+  static constexpr bool converts_to_string{true};
+
+  static constexpr bool converts_from_string{true};
+
   static pgvector::Vector from_string(std::string_view text) {
     if (text.front() != '[' || text.back() != ']') {
       throw conversion_error("Malformed vector literal");

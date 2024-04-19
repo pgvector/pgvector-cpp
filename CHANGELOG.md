@@ -1,3 +1,7 @@
+## 0.2.0 (unreleased)
+
+- Fixed error with MSVC
+
 ## 0.1.1 (2022-11-13)
 
 - Added default constructor
