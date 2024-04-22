@@ -18,8 +18,9 @@ jobs:
       - run: |
           git clone --branch 7.9.0 https://github.com/jtv/libpqxx.git
           cd libpqxx
-          CXXFLAGS=-std=c++17 ./configure
-          make
-          sudo make install
-      - run: g++ -std=c++17 -Wall -Wextra -Werror -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
-      - run: test/pqxx
+          cmake -S . -B build -DSKIP_BUILD_TEST=ON
+          cmake --build build
+          sudo cmake --install build
+      - run: cmake -S . -B build
+      - run: cmake --build build
+      - run: build/PqxxTest
