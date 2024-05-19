@@ -37,12 +37,12 @@ template <> struct string_traits<pgvector::Vector> {
     return pgvector::Vector(result);
   }
 
-  static zview to_buf(char* begin, char* end, pgvector::Vector const& value) {
+  static zview to_buf(char* begin, char* end, const pgvector::Vector& value) {
     char *const next = into_buf(begin, end, value);
     return zview{begin, next - begin - 1};
   }
 
-  static char* into_buf(char* begin, char* end, pgvector::Vector const& value) {
+  static char* into_buf(char* begin, char* end, const pgvector::Vector& value) {
     auto ret = string_traits<std::vector<float>>::into_buf(
         begin, end, static_cast<std::vector<float>>(value));
     // replace array brackets
@@ -51,7 +51,7 @@ template <> struct string_traits<pgvector::Vector> {
     return ret;
   }
 
-  static size_t size_buffer(pgvector::Vector const& value) noexcept {
+  static size_t size_buffer(const pgvector::Vector& value) noexcept {
     return string_traits<std::vector<float>>::size_buffer(
         static_cast<std::vector<float>>(value));
   }
@@ -82,12 +82,12 @@ template <> struct string_traits<pgvector::HalfVector> {
     return pgvector::HalfVector(result);
   }
 
-  static zview to_buf(char* begin, char* end, pgvector::HalfVector const& value) {
+  static zview to_buf(char* begin, char* end, const pgvector::HalfVector& value) {
     char *const next = into_buf(begin, end, value);
     return zview{begin, next - begin - 1};
   }
 
-  static char *into_buf(char *begin, char *end, pgvector::HalfVector const& value) {
+  static char* into_buf(char *begin, char *end, const pgvector::HalfVector& value) {
     auto ret = string_traits<std::vector<float>>::into_buf(
         begin, end, static_cast<std::vector<float>>(value));
     // replace array brackets
@@ -96,7 +96,7 @@ template <> struct string_traits<pgvector::HalfVector> {
     return ret;
   }
 
-  static size_t size_buffer(pgvector::HalfVector const& value) noexcept {
+  static size_t size_buffer(const pgvector::HalfVector& value) noexcept {
     return string_traits<std::vector<float>>::size_buffer(
         static_cast<std::vector<float>>(value));
   }
