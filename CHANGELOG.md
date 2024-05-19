@@ -1,5 +1,6 @@
 ## 0.2.0 (unreleased)
 
+- Added support for `halfvec` type
 - Fixed error with MSVC
 
 ## 0.1.1 (2022-11-13)
