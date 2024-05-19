@@ -87,7 +87,7 @@ template <> struct string_traits<pgvector::HalfVector> {
     return zview{begin, next - begin - 1};
   }
 
-  static char* into_buf(char *begin, char *end, const pgvector::HalfVector& value) {
+  static char* into_buf(char* begin, char* end, const pgvector::HalfVector& value) {
     auto ret = string_traits<std::vector<float>>::into_buf(
         begin, end, static_cast<std::vector<float>>(value));
     // replace array brackets
