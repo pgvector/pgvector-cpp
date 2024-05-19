@@ -39,7 +39,7 @@ void test_halfvec(pqxx::connection &conn) {
                   embedding, embedding2, std::nullopt);
 
   pqxx::result res{tx.exec_params(
-      "SELECT embedding FROM items ORDER BY half_embedding <-> $1", embedding2)};
+      "SELECT half_embedding FROM items ORDER BY half_embedding <-> $1", embedding2)};
   assert(res.size() == 3);
   assert(res[0][0].as<pgvector::HalfVector>() == embedding2);
   assert(res[1][0].as<pgvector::HalfVector>() == embedding);
