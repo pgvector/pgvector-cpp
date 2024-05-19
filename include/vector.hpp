@@ -14,7 +14,7 @@ class Vector {
 public:
   Vector() = default;
 
-  Vector(const std::vector<float> &value) {
+  Vector(const std::vector<float>& value) {
     value_ = value;
   }
 
@@ -22,7 +22,7 @@ public:
     value_ = std::move(value);
   }
 
-  Vector(const float *value, size_t n) {
+  Vector(const float* value, size_t n) {
     value_ = std::vector<float>{value, value + n};
   }
 
@@ -34,11 +34,11 @@ public:
     return value_;
   }
 
-  friend bool operator==(const Vector &lhs, const Vector &rhs) {
+  friend bool operator==(const Vector& lhs, const Vector& rhs) {
     return lhs.value_ == rhs.value_;
   }
 
-  friend std::ostream &operator<<(std::ostream &os, const Vector &value) {
+  friend std::ostream& operator<<(std::ostream& os, const Vector& value) {
     os << "[";
     for (size_t i = 0; i < value.value_.size(); i++) {
       if (i > 0) {

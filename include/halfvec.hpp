@@ -14,7 +14,7 @@ class HalfVector {
 public:
   HalfVector() = default;
 
-  HalfVector(const std::vector<float> &value) {
+  HalfVector(const std::vector<float>& value) {
     value_ = value;
   }
 
@@ -22,7 +22,7 @@ public:
     value_ = std::move(value);
   }
 
-  HalfVector(const float *value, size_t n) {
+  HalfVector(const float* value, size_t n) {
     value_ = std::vector<float>{value, value + n};
   }
 
@@ -34,11 +34,11 @@ public:
     return value_;
   }
 
-  friend bool operator==(const HalfVector &lhs, const HalfVector &rhs) {
+  friend bool operator==(const HalfVector& lhs, const HalfVector& rhs) {
     return lhs.value_ == rhs.value_;
   }
 
-  friend std::ostream &operator<<(std::ostream &os, const HalfVector &value) {
+  friend std::ostream& operator<<(std::ostream& os, const HalfVector& value) {
     os << "[";
     for (size_t i = 0; i < value.value_.size(); i++) {
       if (i > 0) {
