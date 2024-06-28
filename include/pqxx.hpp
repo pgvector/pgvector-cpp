@@ -32,7 +32,7 @@ template <> struct string_traits<pgvector::Vector> {
     while (ss.good()) {
       std::string substr;
       getline(ss, substr, ',');
-      result.push_back(std::stod(substr));
+      result.push_back(std::stof(substr));
     }
     return pgvector::Vector(result);
   }
@@ -77,7 +77,7 @@ template <> struct string_traits<pgvector::HalfVector> {
     while (ss.good()) {
       std::string substr;
       getline(ss, substr, ',');
-      result.push_back(std::stod(substr));
+      result.push_back(std::stof(substr));
     }
     return pgvector::HalfVector(result);
   }
