@@ -78,16 +78,16 @@ void test_sparsevec(pqxx::connection &conn) {
   before_each(conn);
 
   pqxx::work tx{conn};
-  auto embedding = "{1:1,2:2,3:3}/3";
-  auto embedding2 = "{1:4,2:5,3:6}/3";
+  auto embedding = pgvector::SparseVector({1, 2, 3});
+  auto embedding2 = pgvector::SparseVector({4, 5, 6});
   tx.exec_params("INSERT INTO items (sparse_embedding) VALUES ($1), ($2), ($3)",
                   embedding, embedding2, std::nullopt);
 
   pqxx::result res{tx.exec_params(
       "SELECT sparse_embedding FROM items ORDER BY sparse_embedding <-> $1", embedding2)};
   assert(res.size() == 3);
-  assert(res[0][0].as<std::string>() == embedding2);
-  assert(res[1][0].as<std::string>() == embedding);
+  assert(res[0][0].as<std::string>() == "{1:4,2:5,3:6}/3");
+  assert(res[1][0].as<std::string>() == "{1:1,2:2,3:3}/3");
   assert(!res[2][0].as<std::optional<std::string>>().has_value());
   tx.commit();
 }
