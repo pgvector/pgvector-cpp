@@ -11,7 +11,15 @@ void setup(pqxx::connection &conn) {
   tx.commit();
 }
 
-void test_works(pqxx::connection &conn) {
+void before_each(pqxx::connection &conn) {
+  pqxx::work tx{conn};
+  tx.exec0("TRUNCATE items");
+  tx.commit();
+}
+
+void test_vector(pqxx::connection &conn) {
+  before_each(conn);
+
   pqxx::work tx{conn};
   auto embedding = pgvector::Vector({1, 2, 3});
   assert(embedding.dimensions() == 3);
@@ -30,6 +38,8 @@ void test_works(pqxx::connection &conn) {
 }
 
 void test_halfvec(pqxx::connection &conn) {
+  before_each(conn);
+
   pqxx::work tx{conn};
   auto embedding = pgvector::HalfVector({1, 2, 3});
   assert(embedding.dimensions() == 3);
@@ -48,17 +58,23 @@ void test_halfvec(pqxx::connection &conn) {
 }
 
 void test_stream(pqxx::connection &conn) {
+  before_each(conn);
+
   pqxx::work tx{conn};
+  auto embedding = pgvector::Vector({1, 2, 3});
+  tx.exec_params("INSERT INTO items (embedding) VALUES ($1)", embedding);
   int count = 0;
   for (auto [id, embedding] : tx.stream<int, pgvector::Vector>("SELECT id, embedding FROM items WHERE embedding IS NOT NULL")) {
     assert(embedding.dimensions() == 3);
     count++;
   }
-  assert(count == 2);
+  assert(count == 1);
   tx.commit();
 }
 
 void test_precision(pqxx::connection &conn) {
+  before_each(conn);
+
   pqxx::work tx{conn};
   auto embedding = pgvector::Vector({1.23456789, 0, 0});
   tx.exec_params("INSERT INTO items (embedding) VALUES ($1)", embedding);
@@ -72,7 +88,8 @@ int main() {
   pqxx::connection conn("dbname=pgvector_cpp_test");
   setup(conn);
 
-  test_works(conn);
+  test_vector(conn);
+  test_halfvec(conn);
   test_stream(conn);
   test_precision(conn);
 
