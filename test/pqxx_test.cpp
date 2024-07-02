@@ -7,7 +7,7 @@ void setup(pqxx::connection &conn) {
   pqxx::work tx{conn};
   tx.exec0("CREATE EXTENSION IF NOT EXISTS vector");
   tx.exec0("DROP TABLE IF EXISTS items");
-  tx.exec0("CREATE TABLE items (id serial PRIMARY KEY, embedding vector(3), half_embedding halfvec(3))");
+  tx.exec0("CREATE TABLE items (id serial PRIMARY KEY, embedding vector(3), half_embedding halfvec(3), binary_embedding bit(3))");
   tx.commit();
 }
 
@@ -57,6 +57,24 @@ void test_halfvec(pqxx::connection &conn) {
   tx.commit();
 }
 
+void test_bit(pqxx::connection &conn) {
+  before_each(conn);
+
+  pqxx::work tx{conn};
+  auto embedding = "101";
+  auto embedding2 = "111";
+  tx.exec_params("INSERT INTO items (binary_embedding) VALUES ($1), ($2), ($3)",
+                  embedding, embedding2, std::nullopt);
+
+  pqxx::result res{tx.exec_params(
+      "SELECT binary_embedding FROM items ORDER BY binary_embedding <~> $1", embedding2)};
+  assert(res.size() == 3);
+  assert(res[0][0].as<std::string>() == embedding2);
+  assert(res[1][0].as<std::string>() == embedding);
+  assert(!res[2][0].as<std::optional<pgvector::HalfVector>>().has_value());
+  tx.commit();
+}
+
 void test_stream(pqxx::connection &conn) {
   before_each(conn);
 
@@ -90,6 +108,7 @@ int main() {
 
   test_vector(conn);
   test_halfvec(conn);
+  test_bit(conn);
   test_stream(conn);
   test_precision(conn);
 
