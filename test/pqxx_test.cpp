@@ -7,7 +7,7 @@ void setup(pqxx::connection &conn) {
   pqxx::work tx{conn};
   tx.exec0("CREATE EXTENSION IF NOT EXISTS vector");
   tx.exec0("DROP TABLE IF EXISTS items");
-  tx.exec0("CREATE TABLE items (id serial PRIMARY KEY, embedding vector(3), half_embedding halfvec(3), binary_embedding bit(3))");
+  tx.exec0("CREATE TABLE items (id serial PRIMARY KEY, embedding vector(3), half_embedding halfvec(3), binary_embedding bit(3), sparse_embedding sparsevec(3))");
   tx.commit();
 }
 
@@ -72,6 +72,23 @@ void test_bit(pqxx::connection &conn) {
   assert(res[0][0].as<std::string>() == embedding2);
   assert(res[1][0].as<std::string>() == embedding);
   assert(!res[2][0].as<std::optional<pgvector::HalfVector>>().has_value());
+}
+
+void test_sparsevec(pqxx::connection &conn) {
+  before_each(conn);
+
+  pqxx::work tx{conn};
+  auto embedding = "{1:1,2:2,3:3}/3";
+  auto embedding2 = "{1:4,2:5,3:6}/3";
+  tx.exec_params("INSERT INTO items (sparse_embedding) VALUES ($1), ($2), ($3)",
+                  embedding, embedding2, std::nullopt);
+
+  pqxx::result res{tx.exec_params(
+      "SELECT sparse_embedding FROM items ORDER BY sparse_embedding <-> $1", embedding2)};
+  assert(res.size() == 3);
+  assert(res[0][0].as<std::string>() == embedding2);
+  assert(res[1][0].as<std::string>() == embedding);
+  assert(!res[2][0].as<std::optional<std::string>>().has_value());
   tx.commit();
 }
 
@@ -109,6 +126,7 @@ int main() {
   test_vector(conn);
   test_halfvec(conn);
   test_bit(conn);
+  test_sparsevec(conn);
   test_stream(conn);
   test_precision(conn);
 
