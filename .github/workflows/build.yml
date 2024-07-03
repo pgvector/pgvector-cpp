@@ -23,3 +23,8 @@ jobs:
           sudo make install
       - run: g++ -std=c++17 -Wall -Wextra -Werror -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
       - run: test/pqxx
+
+      # test install
+      - run: cmake -S . -B build
+      - run: cmake --build build
+      - run: sudo cmake --install build
