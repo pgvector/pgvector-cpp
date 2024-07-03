@@ -92,6 +92,21 @@ void test_sparsevec(pqxx::connection &conn) {
   tx.commit();
 }
 
+void test_sparsevec_nnz(pqxx::connection &conn) {
+  before_each(conn);
+
+  pqxx::work tx{conn};
+  std::vector<float> vec(16001, 1);
+  auto embedding = pgvector::SparseVector(vec);
+  try {
+    tx.exec_params("INSERT INTO items (sparse_embedding) VALUES ($1)", embedding);
+    assert(false);
+  } catch (const pqxx::conversion_overrun& e) {
+    assert(std::strcmp(e.what(), "sparsevec cannot have more than 16000 dimensions") == 0);
+  }
+  tx.commit();
+}
+
 void test_stream(pqxx::connection &conn) {
   before_each(conn);
 
@@ -127,6 +142,7 @@ int main() {
   test_halfvec(conn);
   test_bit(conn);
   test_sparsevec(conn);
+  test_sparsevec_nnz(conn);
   test_stream(conn);
   test_precision(conn);
 
