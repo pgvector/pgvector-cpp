@@ -11,12 +11,12 @@ jobs:
           dev-files: true
       - run: |
           cd /tmp
-          git clone --branch v0.7.0 https://github.com/pgvector/pgvector.git
+          git clone --branch v0.7.3 https://github.com/pgvector/pgvector.git
           cd pgvector
           make
           sudo make install
       - run: |
-          git clone --branch 7.9.0 https://github.com/jtv/libpqxx.git
+          git clone --branch 7.9.2 https://github.com/jtv/libpqxx.git
           cd libpqxx
           CXXFLAGS=-std=c++17 ./configure
           make
