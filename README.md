@@ -33,32 +33,32 @@ Include the header
 Enable the extension
 
 ```cpp
-tx.exec0("CREATE EXTENSION IF NOT EXISTS vector");
+tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
 ```
 
 Create a table
 
 ```cpp
-tx.exec0("CREATE TABLE items (id bigserial PRIMARY KEY, embedding vector(3))");
+tx.exec("CREATE TABLE items (id bigserial PRIMARY KEY, embedding vector(3))");
 ```
 
 Insert a vector
 
 ```cpp
 auto embedding = pgvector::Vector({1, 2, 3});
-tx.exec_params("INSERT INTO items (embedding) VALUES ($1)", embedding);
+tx.exec("INSERT INTO items (embedding) VALUES ($1)", {embedding});
 ```
 
 Get the nearest neighbors
 
 ```cpp
-pqxx::result R{tx.exec_params("SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5", embedding)};
+pqxx::result r = tx.exec("SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5", {embedding});
 ```
 
 Retrieve a vector
 
 ```cpp
-auto row = tx.exec1("SELECT embedding FROM items LIMIT 1");
+auto row = tx.exec("SELECT embedding FROM items LIMIT 1").one_row();
 auto embedding = row[0].as<pgvector::Vector>();
 ```
 
@@ -91,6 +91,6 @@ To get started with development:
 git clone https://github.com/pgvector/pgvector-cpp.git
 cd pgvector-cpp
 createdb pgvector_cpp_test
-g++ -std=c++17 -Wall -Wextra -Werror -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
+g++ -std=c++17 -Wall -Wextra -Wno-unknown-attributes -Werror -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
 test/pqxx
 ```
