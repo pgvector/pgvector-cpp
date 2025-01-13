@@ -1,4 +1,3 @@
-#include <cstdint>
 #include <iostream>
 
 #include <cpr/cpr.h>
@@ -59,7 +58,7 @@ int main() {
     }
     tx.commit();
 
-    int64_t document_id = 1;
+    int document_id = 1;
     pqxx::result result = tx.exec("SELECT content FROM documents WHERE id != $1 ORDER BY embedding <=> (SELECT embedding FROM documents WHERE id = $1) LIMIT 5", {document_id});
     for (auto const& row : result) {
         std::cout << row[0].c_str() << std::endl;
