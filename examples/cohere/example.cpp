@@ -62,15 +62,15 @@ int main() {
     auto embeddings = fetch_embeddings(input, "search_document", api_key);
 
     for (size_t i = 0; i < input.size(); i++) {
-        tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", {input[i], embeddings[i]});
+        tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], embeddings[i]});
     }
     tx.commit();
 
     std::string query = "forest";
     auto query_embedding = fetch_embeddings({query}, "search_query", api_key)[0];
     pqxx::result result = tx.exec("SELECT content FROM documents ORDER BY embedding <~> $1 LIMIT 5", pqxx::params{query_embedding});
-    for (auto const& row : result) {
-        std::cout << row[0].c_str() << std::endl;
+    for (const auto& row : result) {
+        std::cout << row[0].as<std::string>() << std::endl;
     }
 
     return 0;

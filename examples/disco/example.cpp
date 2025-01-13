@@ -79,26 +79,26 @@ int main() {
 
     for (auto& user_id : recommender.user_ids()) {
         auto factors = pgvector::Vector(*recommender.user_factors(user_id));
-        tx.exec("INSERT INTO users (id, factors) VALUES ($1, $2)", {user_id, factors});
+        tx.exec("INSERT INTO users (id, factors) VALUES ($1, $2)", pqxx::params{user_id, factors});
     }
 
     for (auto& item_id : recommender.item_ids()) {
         auto factors = pgvector::Vector(*recommender.item_factors(item_id));
-        tx.exec("INSERT INTO movies (name, factors) VALUES ($1, $2)", {item_id, factors});
+        tx.exec("INSERT INTO movies (name, factors) VALUES ($1, $2)", pqxx::params{item_id, factors});
     }
 
     std::string movie = "Star Wars (1977)";
     std::cout << "Item-based recommendations for " << movie << std::endl;
     pqxx::result result = tx.exec("SELECT name FROM movies WHERE name != $1 ORDER BY factors <=> (SELECT factors FROM movies WHERE name = $1) LIMIT 5", pqxx::params{movie});
     for (auto const& row : result) {
-        std::cout << "- " << row[0].c_str() << std::endl;
+        std::cout << "- " << row[0].as<std::string>() << std::endl;
     }
 
     int user_id = 123;
     std::cout << std::endl << "User-based recommendations for " << user_id << std::endl;
-    result = tx.exec("SELECT name FROM movies ORDER BY factors <#> (SELECT factors FROM users WHERE id = $1) LIMIT 5", {user_id});
-    for (auto const& row : result) {
-        std::cout << "- " << row[0].c_str() << std::endl;
+    result = tx.exec("SELECT name FROM movies ORDER BY factors <#> (SELECT factors FROM users WHERE id = $1) LIMIT 5", pqxx::params{user_id});
+    for (const auto& row : result) {
+        std::cout << "- " << row[0].as<std::string>() << std::endl;
     }
 
     return 0;
