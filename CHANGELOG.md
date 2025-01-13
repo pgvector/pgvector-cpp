@@ -1,6 +1,7 @@
 ## 0.2.1 (unreleased)
 
 - Added `std::span` constructor to `Vector`
+- Added experimental support for CMake and FetchContent
 
 ## 0.2.0 (2024-07-10)
 
