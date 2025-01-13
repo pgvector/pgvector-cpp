@@ -22,9 +22,10 @@ And follow the instructions for your database library:
 
 - [libpqxx](#libpqxx)
 
-Or check out an example:
+Or check out some examples:
 
 - [Embeddings](examples/openai/example.cpp) with OpenAI
+- [Recommendations](examples/disco/example.cpp) with Disco
 
 ## libpqxx
 
