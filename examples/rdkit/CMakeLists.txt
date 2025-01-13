@@ -18,4 +18,4 @@ FetchContent_MakeAvailable(libpqxx)
 
 add_executable(example example.cpp)
 target_include_directories(example PRIVATE ${CMAKE_SOURCE_DIR}/../../include)
-target_link_libraries(example PRIVATE pqxx RDKit::Fingerprints RDKit::SmilesParse)
+target_link_libraries(example PRIVATE libpqxx::pqxx RDKit::Fingerprints RDKit::SmilesParse)

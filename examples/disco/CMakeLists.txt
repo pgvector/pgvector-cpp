@@ -16,4 +16,4 @@ FetchContent_MakeAvailable(disco libpqxx)
 
 add_executable(example example.cpp)
 target_include_directories(example PRIVATE ${disco_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/../../include)
-target_link_libraries(example PRIVATE pqxx)
+target_link_libraries(example PRIVATE libpqxx::pqxx)
