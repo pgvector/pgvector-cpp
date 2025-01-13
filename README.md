@@ -22,6 +22,10 @@ And follow the instructions for your database library:
 
 - [libpqxx](#libpqxx)
 
+Or check out an example:
+
+- [Embeddings](examples/openai/example.cpp) with OpenAI
+
 ## libpqxx
 
 Include the header
@@ -93,4 +97,14 @@ cd pgvector-cpp
 createdb pgvector_cpp_test
 g++ -std=c++17 -Wall -Wextra -Wno-unknown-attributes -Werror -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
 test/pqxx
+```
+
+To run an example:
+
+```sh
+cd examples/openai
+createdb pgvector_example
+cmake -S . -B build
+cmake --build build
+build/example
 ```
