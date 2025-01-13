@@ -25,6 +25,7 @@ And follow the instructions for your database library:
 Or check out some examples:
 
 - [Embeddings](examples/openai/example.cpp) with OpenAI
+- [Binary embeddings](examples/cohere/example.cpp) with Cohere
 - [Recommendations](examples/disco/example.cpp) with Disco
 
 ## libpqxx
