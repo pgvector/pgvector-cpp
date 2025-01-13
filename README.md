@@ -18,6 +18,17 @@ cmake --build build
 cmake --install build # may need sudo
 ```
 
+There is also experimental support for FetchContent:
+
+```cmake
+include(FetchContent)
+
+FetchContent_Declare(pgvector GIT_REPOSITORY https://github.com/pgvector/pgvector-cpp.git GIT_TAG 9cc58de1aae171f26bf72b4196f17018d6488725)
+FetchContent_MakeAvailable(pgvector)
+
+target_link_libraries(app PRIVATE pgvector::pgvector)
+```
+
 And follow the instructions for your database library:
 
 - [libpqxx](#libpqxx)
