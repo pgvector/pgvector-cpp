@@ -1,3 +1,7 @@
+## 0.2.1 (unreleased)
+
+- Added `std::span` constructor to `Vector`
+
 ## 0.2.0 (2024-07-10)
 
 - Added support for `halfvec` and `sparsevec` types
