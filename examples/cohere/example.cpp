@@ -28,7 +28,7 @@ std::vector<std::string> fetch_embeddings(const std::vector<std::string>& texts,
     json response = json::parse(r.text);
 
     std::vector<std::string> embeddings;
-    for (auto& v: response["embeddings"]["ubinary"]) {
+    for (auto& v : response["embeddings"]["ubinary"]) {
         std::stringstream buf;
         for (uint8_t c : v) {
             std::bitset<8> b{c};
