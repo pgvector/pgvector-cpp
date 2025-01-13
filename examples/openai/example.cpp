@@ -3,8 +3,7 @@
 
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
-// TODO make <pgvector/pqxx.hpp>
-#include <pqxx.hpp>
+#include <pgvector/pqxx.hpp>
 #include <pqxx/pqxx>
 
 using json = nlohmann::json;

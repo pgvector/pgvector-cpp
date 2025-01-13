@@ -1,4 +1,4 @@
-#include "../include/pqxx.hpp"
+#include "../include/pgvector/pqxx.hpp"
 #include <cassert>
 #include <optional>
 #include <pqxx/pqxx>

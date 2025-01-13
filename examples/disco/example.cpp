@@ -7,8 +7,7 @@
 #include <unordered_map>
 
 #include <disco.hpp>
-// TODO make <pgvector/pqxx.hpp>
-#include <pqxx.hpp>
+#include <pgvector/pqxx.hpp>
 #include <pqxx/pqxx>
 
 using disco::Dataset;
