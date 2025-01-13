@@ -15,11 +15,8 @@ using disco::Recommender;
 
 std::string convert_to_utf8(const std::string& str) {
     std::stringstream buf;
-    for (auto &c : str) {
-        auto v = static_cast<unsigned char>(c);
-        // ISO-8859-1 to UTF-8
-        // first 128 are same
-        if (v < 128) {
+    for (auto &v : str) {
+        if (v >= 0) {
             buf << v;
         } else {
             buf << static_cast<char>(195) << static_cast<char>(v - 64);
