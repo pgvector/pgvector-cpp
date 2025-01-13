@@ -26,6 +26,7 @@ Or check out some examples:
 
 - [Embeddings](examples/openai/example.cpp) with OpenAI
 - [Binary embeddings](examples/cohere/example.cpp) with Cohere
+- [Morgan fingerprints](examples/rdkit/example.cpp) with RDKit
 - [Recommendations](examples/disco/example.cpp) with Disco
 
 ## libpqxx
