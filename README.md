@@ -37,6 +37,7 @@ Or check out some examples:
 
 - [Embeddings](examples/openai/example.cpp) with OpenAI
 - [Binary embeddings](examples/cohere/example.cpp) with Cohere
+- [Hybrid search](examples/hybrid/example.cpp) with llama.cpp (Reciprocal Rank Fusion)
 - [Sparse search](examples/sparse/example.cpp) with Text Embeddings Inference
 - [Morgan fingerprints](examples/rdkit/example.cpp) with RDKit
 - [Recommendations](examples/disco/example.cpp) with Disco
