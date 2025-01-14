@@ -14,6 +14,7 @@ FetchContent_Declare(disco GIT_REPOSITORY https://github.com/ankane/disco-cpp.gi
 FetchContent_Declare(libpqxx GIT_REPOSITORY https://github.com/jtv/libpqxx.git GIT_TAG 7.10.0)
 FetchContent_MakeAvailable(disco libpqxx)
 
+add_subdirectory("${PROJECT_SOURCE_DIR}/../.." pgvector)
+
 add_executable(example example.cpp)
-target_include_directories(example PRIVATE ${CMAKE_SOURCE_DIR}/../../include)
-target_link_libraries(example PRIVATE disco::disco libpqxx::pqxx)
+target_link_libraries(example PRIVATE disco::disco libpqxx::pqxx pgvector::pgvector)

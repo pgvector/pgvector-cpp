@@ -15,6 +15,7 @@ FetchContent_Declare(json GIT_REPOSITORY https://github.com/nlohmann/json.git GI
 FetchContent_Declare(libpqxx GIT_REPOSITORY https://github.com/jtv/libpqxx.git GIT_TAG 7.10.0)
 FetchContent_MakeAvailable(cpr json libpqxx)
 
+add_subdirectory("${PROJECT_SOURCE_DIR}/../.." pgvector)
+
 add_executable(example example.cpp)
-target_include_directories(example PRIVATE ${CMAKE_SOURCE_DIR}/../../include)
-target_link_libraries(example PRIVATE cpr::cpr libpqxx::pqxx nlohmann_json::nlohmann_json)
+target_link_libraries(example PRIVATE cpr::cpr libpqxx::pqxx nlohmann_json::nlohmann_json pgvector::pgvector)
