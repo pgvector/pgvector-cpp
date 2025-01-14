@@ -41,6 +41,7 @@ Or check out some examples:
 - [Sparse search](examples/sparse/example.cpp) with Text Embeddings Inference
 - [Morgan fingerprints](examples/rdkit/example.cpp) with RDKit
 - [Recommendations](examples/disco/example.cpp) with Disco
+- [Bulk loading](examples/loading/example.cpp) with `COPY`
 
 ## libpqxx
 
@@ -118,7 +119,7 @@ test/pqxx
 To run an example:
 
 ```sh
-cd examples/openai
+cd examples/loading
 createdb pgvector_example
 cmake -S . -B build
 cmake --build build
