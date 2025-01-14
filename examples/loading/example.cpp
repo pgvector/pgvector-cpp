@@ -23,7 +23,7 @@ int main() {
 
     // enable extension
     pqxx::connection conn("dbname=pgvector_example");
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
 
     // create table
@@ -56,7 +56,6 @@ int main() {
 
     // update planner statistics for good measure
     tx.exec("ANALYZE items");
-    tx.commit();
 
     return 0;
 }
