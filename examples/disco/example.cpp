@@ -89,7 +89,7 @@ int main() {
     std::string movie = "Star Wars (1977)";
     std::cout << "Item-based recommendations for " << movie << std::endl;
     pqxx::result result = tx.exec("SELECT name FROM movies WHERE name != $1 ORDER BY factors <=> (SELECT factors FROM movies WHERE name = $1) LIMIT 5", pqxx::params{movie});
-    for (auto const& row : result) {
+    for (const auto& row : result) {
         std::cout << "- " << row[0].as<std::string>() << std::endl;
     }
 
