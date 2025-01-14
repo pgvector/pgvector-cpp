@@ -26,6 +26,9 @@ std::vector<pgvector::SparseVector> fetch_embeddings(const std::vector<std::stri
         cpr::Body{data.dump()},
         cpr::Header{{"Content-Type", "application/json"}}
     );
+    if (r.status_code != 200) {
+        throw std::runtime_error("Bad status: " + std::to_string(r.status_code));
+    }
     json response = json::parse(r.text);
 
     std::vector<pgvector::SparseVector> embeddings;

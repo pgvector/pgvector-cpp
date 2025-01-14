@@ -22,6 +22,9 @@ std::vector<std::vector<float>> fetch_embeddings(const std::vector<std::string>&
         cpr::Bearer{api_key},
         cpr::Header{{"Content-Type", "application/json"}}
     );
+    if (r.status_code != 200) {
+        throw std::runtime_error("Bad status: " + std::to_string(r.status_code));
+    }
     json response = json::parse(r.text);
 
     std::vector<std::vector<float>> embeddings;
