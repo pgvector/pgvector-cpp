@@ -122,6 +122,20 @@ void test_stream(pqxx::connection &conn) {
     tx.commit();
 }
 
+void test_stream_to(pqxx::connection &conn) {
+    before_each(conn);
+
+    pqxx::work tx(conn);
+    auto stream = pqxx::stream_to::table(tx, {"items"}, {"embedding"});
+    stream << pgvector::Vector({1, 2, 3});
+    stream << pgvector::Vector({4, 5, 6});
+    stream.complete();
+    pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY id");
+    assert(res[0][0].as<std::string>() == "[1,2,3]");
+    assert(res[1][0].as<std::string>() == "[4,5,6]");
+    tx.commit();
+}
+
 void test_precision(pqxx::connection &conn) {
     before_each(conn);
 
@@ -144,6 +158,7 @@ int main() {
     test_sparsevec(conn);
     test_sparsevec_nnz(conn);
     test_stream(conn);
+    test_stream_to(conn);
     test_precision(conn);
 
     return 0;
