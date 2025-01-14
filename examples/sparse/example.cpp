@@ -44,11 +44,10 @@ std::vector<pgvector::SparseVector> fetch_embeddings(const std::vector<std::stri
 int main() {
     pqxx::connection conn("dbname=pgvector_example");
 
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS documents");
     tx.exec("CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding sparsevec(30522))");
-    tx.commit();
 
     std::vector<std::string> input = {
         "The dog is barking",
@@ -60,7 +59,6 @@ int main() {
     for (size_t i = 0; i < input.size(); i++) {
         tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], embeddings[i]});
     }
-    tx.commit();
 
     std::string query = "forest";
     auto query_embedding = fetch_embeddings({query})[0];

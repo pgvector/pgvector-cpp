@@ -34,12 +34,11 @@ std::vector<std::vector<float>> fetch_embeddings(const std::vector<std::string>&
 int main() {
     pqxx::connection conn("dbname=pgvector_example");
 
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS documents");
     tx.exec("CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding vector(768))");
     tx.exec("CREATE INDEX ON documents USING GIN (to_tsvector('english', content))");
-    tx.commit();
 
     std::vector<std::string> input = {
         "The dog is barking",
@@ -51,7 +50,6 @@ int main() {
     for (size_t i = 0; i < input.size(); i++) {
         tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], pgvector::Vector(embeddings[i])});
     }
-    tx.commit();
 
     std::string sql = R"(
     WITH semantic_search AS (

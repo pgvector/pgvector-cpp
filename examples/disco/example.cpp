@@ -66,13 +66,12 @@ int main() {
 
     pqxx::connection conn("dbname=pgvector_example");
 
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS users");
     tx.exec("DROP TABLE IF EXISTS movies");
     tx.exec("CREATE TABLE users (id integer PRIMARY KEY, factors vector(20))");
     tx.exec("CREATE TABLE movies (name text PRIMARY KEY, factors vector(20))");
-    tx.commit();
 
     auto data = load_movielens(movielens_path);
     auto recommender = Recommender<int, std::string>::fit_explicit(data, { .factors = 20 });

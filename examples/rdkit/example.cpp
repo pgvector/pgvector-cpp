@@ -17,18 +17,16 @@ std::string generate_fingerprint(const std::string& molecule) {
 int main() {
     pqxx::connection conn("dbname=pgvector_example");
 
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS molecules");
     tx.exec("CREATE TABLE molecules (id text PRIMARY KEY, fingerprint bit(2048))");
-    tx.commit();
 
     std::vector<std::string> molecules = {"Cc1ccccc1", "Cc1ncccc1", "c1ccccn1"};
     for (auto& molecule : molecules) {
         auto fingerprint = generate_fingerprint(molecule);
         tx.exec("INSERT INTO molecules (id, fingerprint) VALUES ($1, $2)", pqxx::params{molecule, fingerprint});
     }
-    tx.commit();
 
     std::string query_molecule = "c1ccco1";
     auto query_fingerprint = generate_fingerprint(query_molecule);
