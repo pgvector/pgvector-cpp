@@ -4,23 +4,21 @@
 #include <pqxx/pqxx>
 
 void setup(pqxx::connection &conn) {
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS items");
     tx.exec("CREATE TABLE items (id serial PRIMARY KEY, embedding vector(3), half_embedding halfvec(3), binary_embedding bit(3), sparse_embedding sparsevec(3))");
-    tx.commit();
 }
 
 void before_each(pqxx::connection &conn) {
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     tx.exec("TRUNCATE items");
-    tx.commit();
 }
 
 void test_vector(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     auto embedding = pgvector::Vector({1, 2, 3});
     assert(embedding.dimensions() == 3);
     float arr[] = {4, 5, 6};
@@ -34,13 +32,12 @@ void test_vector(pqxx::connection &conn) {
     assert(res[0][0].as<pgvector::Vector>() == embedding2);
     assert(res[1][0].as<pgvector::Vector>() == embedding);
     assert(!res[2][0].as<std::optional<pgvector::Vector>>().has_value());
-    tx.commit();
 }
 
 void test_halfvec(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     auto embedding = pgvector::HalfVector({1, 2, 3});
     assert(embedding.dimensions() == 3);
     float arr[] = {4, 5, 6};
@@ -54,13 +51,12 @@ void test_halfvec(pqxx::connection &conn) {
     assert(res[0][0].as<pgvector::HalfVector>() == embedding2);
     assert(res[1][0].as<pgvector::HalfVector>() == embedding);
     assert(!res[2][0].as<std::optional<pgvector::HalfVector>>().has_value());
-    tx.commit();
 }
 
 void test_bit(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     auto embedding = "101";
     auto embedding2 = "111";
     tx.exec("INSERT INTO items (binary_embedding) VALUES ($1), ($2), ($3)",
@@ -77,7 +73,7 @@ void test_bit(pqxx::connection &conn) {
 void test_sparsevec(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     auto embedding = pgvector::SparseVector({1, 2, 3});
     auto embedding2 = pgvector::SparseVector({4, 5, 6});
     tx.exec("INSERT INTO items (sparse_embedding) VALUES ($1), ($2), ($3)",
@@ -89,13 +85,12 @@ void test_sparsevec(pqxx::connection &conn) {
     assert(res[0][0].as<std::string>() == "{1:4,2:5,3:6}/3");
     assert(res[1][0].as<std::string>() == "{1:1,2:2,3:3}/3");
     assert(!res[2][0].as<std::optional<std::string>>().has_value());
-    tx.commit();
 }
 
 void test_sparsevec_nnz(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     std::vector<float> vec(16001, 1);
     auto embedding = pgvector::SparseVector(vec);
     try {
@@ -104,13 +99,12 @@ void test_sparsevec_nnz(pqxx::connection &conn) {
     } catch (const pqxx::conversion_overrun& e) {
         assert(std::strcmp(e.what(), "sparsevec cannot have more than 16000 dimensions") == 0);
     }
-    tx.commit();
 }
 
 void test_stream(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     auto embedding = pgvector::Vector({1, 2, 3});
     tx.exec("INSERT INTO items (embedding) VALUES ($1)", {embedding});
     int count = 0;
@@ -119,13 +113,12 @@ void test_stream(pqxx::connection &conn) {
         count++;
     }
     assert(count == 1);
-    tx.commit();
 }
 
 void test_stream_to(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     auto stream = pqxx::stream_to::table(tx, {"items"}, {"embedding"});
     stream << pgvector::Vector({1, 2, 3});
     stream << pgvector::Vector({4, 5, 6});
@@ -133,19 +126,17 @@ void test_stream_to(pqxx::connection &conn) {
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY id");
     assert(res[0][0].as<std::string>() == "[1,2,3]");
     assert(res[1][0].as<std::string>() == "[4,5,6]");
-    tx.commit();
 }
 
 void test_precision(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::work tx(conn);
+    pqxx::nontransaction tx(conn);
     auto embedding = pgvector::Vector({1.23456789, 0, 0});
     tx.exec("INSERT INTO items (embedding) VALUES ($1)", {embedding});
     tx.exec("SET extra_float_digits = 3");
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY id DESC LIMIT 1");
     assert(res[0][0].as<pgvector::Vector>() == embedding);
-    tx.commit();
 }
 
 int main() {
