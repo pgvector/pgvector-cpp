@@ -23,11 +23,9 @@ void test_vector(pqxx::connection &conn) {
     assert(embedding.dimensions() == 3);
     float arr[] = {4, 5, 6};
     auto embedding2 = pgvector::Vector(arr, 3);
-    tx.exec("INSERT INTO items (embedding) VALUES ($1), ($2), ($3)",
-                    {embedding, embedding2, std::nullopt});
+    tx.exec("INSERT INTO items (embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
-    pqxx::result res = tx.exec(
-        "SELECT embedding FROM items ORDER BY embedding <-> $1", {embedding2});
+    pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY embedding <-> $1", {embedding2});
     assert(res.size() == 3);
     assert(res[0][0].as<pgvector::Vector>() == embedding2);
     assert(res[1][0].as<pgvector::Vector>() == embedding);
@@ -42,11 +40,9 @@ void test_halfvec(pqxx::connection &conn) {
     assert(embedding.dimensions() == 3);
     float arr[] = {4, 5, 6};
     auto embedding2 = pgvector::HalfVector(arr, 3);
-    tx.exec("INSERT INTO items (half_embedding) VALUES ($1), ($2), ($3)",
-                    {embedding, embedding2, std::nullopt});
+    tx.exec("INSERT INTO items (half_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
-    pqxx::result res = tx.exec(
-        "SELECT half_embedding FROM items ORDER BY half_embedding <-> $1", {embedding2});
+    pqxx::result res = tx.exec("SELECT half_embedding FROM items ORDER BY half_embedding <-> $1", {embedding2});
     assert(res.size() == 3);
     assert(res[0][0].as<pgvector::HalfVector>() == embedding2);
     assert(res[1][0].as<pgvector::HalfVector>() == embedding);
@@ -59,11 +55,9 @@ void test_bit(pqxx::connection &conn) {
     pqxx::nontransaction tx(conn);
     auto embedding = "101";
     auto embedding2 = "111";
-    tx.exec("INSERT INTO items (binary_embedding) VALUES ($1), ($2), ($3)",
-                    {embedding, embedding2, std::nullopt});
+    tx.exec("INSERT INTO items (binary_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
-    pqxx::result res = tx.exec(
-        "SELECT binary_embedding FROM items ORDER BY binary_embedding <~> $1", pqxx::params{embedding2});
+    pqxx::result res = tx.exec("SELECT binary_embedding FROM items ORDER BY binary_embedding <~> $1", pqxx::params{embedding2});
     assert(res.size() == 3);
     assert(res[0][0].as<std::string>() == embedding2);
     assert(res[1][0].as<std::string>() == embedding);
@@ -76,11 +70,9 @@ void test_sparsevec(pqxx::connection &conn) {
     pqxx::nontransaction tx(conn);
     auto embedding = pgvector::SparseVector({1, 2, 3});
     auto embedding2 = pgvector::SparseVector({4, 5, 6});
-    tx.exec("INSERT INTO items (sparse_embedding) VALUES ($1), ($2), ($3)",
-                    {embedding, embedding2, std::nullopt});
+    tx.exec("INSERT INTO items (sparse_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
-    pqxx::result res = tx.exec(
-        "SELECT sparse_embedding FROM items ORDER BY sparse_embedding <-> $1", {embedding2});
+    pqxx::result res = tx.exec("SELECT sparse_embedding FROM items ORDER BY sparse_embedding <-> $1", {embedding2});
     assert(res.size() == 3);
     assert(res[0][0].as<std::string>() == "{1:4,2:5,3:6}/3");
     assert(res[1][0].as<std::string>() == "{1:1,2:2,3:3}/3");
