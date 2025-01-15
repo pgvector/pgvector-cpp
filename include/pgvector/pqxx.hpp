@@ -29,7 +29,7 @@ template <> struct string_traits<pgvector::Vector> {
 
         // TODO don't copy string
         std::vector<float> result;
-        std::stringstream ss(std::string(text.substr(1, -2)));
+        std::stringstream ss(std::string(text.substr(1, text.size() - 2)));
         while (ss.good()) {
             std::string substr;
             getline(ss, substr, ',');
@@ -74,7 +74,7 @@ template <> struct string_traits<pgvector::HalfVector> {
 
         // TODO don't copy string
         std::vector<float> result;
-        std::stringstream ss(std::string(text.substr(1, -2)));
+        std::stringstream ss(std::string(text.substr(1, text.size() - 2)));
         while (ss.good()) {
             std::string substr;
             getline(ss, substr, ',');
