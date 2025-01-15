@@ -1,4 +1,4 @@
-## 0.2.1 (unreleased)
+## 0.2.1 (2025-01-15)
 
 - Added `std::span` constructor to `Vector`
 - Added support for CMake and FetchContent
