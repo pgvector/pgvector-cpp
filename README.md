@@ -8,17 +8,9 @@ Supports [libpqxx](https://github.com/jtv/libpqxx)
 
 ## Installation
 
-Run:
+Add [the headers](https://raw.githubusercontent.com/pgvector/pgvector-cpp/v0.2.0/include) to your project (supports C++17 and greater).
 
-```sh
-git clone --branch v0.2.0 https://github.com/pgvector/pgvector-cpp.git
-cd pgvector-cpp
-cmake -S . -B build
-cmake --build build
-cmake --install build # may need sudo
-```
-
-There is also experimental support for FetchContent:
+There is also experimental support for CMake and FetchContent:
 
 ```cmake
 include(FetchContent)
