@@ -21,8 +21,9 @@ jobs:
           CXXFLAGS=-std=c++17 ./configure
           make
           sudo make install
-      - run: g++ -std=c++17 -Wall -Wextra -Werror -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
-      - run: test/pqxx
+      - run: cmake -S test -B test/build
+      - run: cmake --build test/build
+      - run: test/build/pqxx_test
 
       # test install
       - run: cmake -S . -B build

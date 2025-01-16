@@ -1,6 +1,6 @@
-#include "../include/pgvector/pqxx.hpp"
 #include <cassert>
 #include <optional>
+#include <pgvector/pqxx.hpp>
 #include <pqxx/pqxx>
 
 void setup(pqxx::connection &conn) {
