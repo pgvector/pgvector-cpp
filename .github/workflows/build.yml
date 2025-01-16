@@ -23,7 +23,6 @@ jobs:
           sudo make install
       - run: cmake -S test -B test/build
       - run: cmake --build test/build
-      - run: test/build/pqxx_test
 
       # test install
       - run: cmake -S . -B build

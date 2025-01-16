@@ -16,3 +16,4 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/.." pgvector)
 
 add_executable(pqxx_test pqxx_test.cpp)
 target_link_libraries(pqxx_test PRIVATE libpqxx::pqxx pgvector::pgvector)
+add_custom_command(TARGET pqxx_test POST_BUILD COMMAND "${CMAKE_CURRENT_BINARY_DIR}/pqxx_test")

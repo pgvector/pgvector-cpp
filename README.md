@@ -108,7 +108,6 @@ cd pgvector-cpp
 createdb pgvector_cpp_test
 cmake -S test -B test/build
 cmake --build test/build
-test/build/pqxx_test
 ```
 
 To run an example:
