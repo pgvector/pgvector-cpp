@@ -10,6 +10,7 @@
 #include <vector>
 
 namespace pgvector {
+/// A half vector.
 class HalfVector {
 public:
     HalfVector() = default;
@@ -26,10 +27,12 @@ public:
         value_ = std::vector<float>{value, value + n};
     }
 
+    /// Returns the number of dimensions.
     size_t dimensions() const {
         return value_.size();
     }
 
+    /// Returns the half vector as a `std::vector<float>`.
     operator const std::vector<float>() const {
         return value_;
     }

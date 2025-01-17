@@ -10,6 +10,7 @@
 #include <vector>
 
 namespace pgvector {
+/// A sparse vector.
 class SparseVector {
 public:
     SparseVector() = default;
@@ -23,6 +24,7 @@ public:
         values_ = values;
     }
 
+    /// Creates a sparse vector from a dense vector.
     SparseVector(const std::vector<float>& value) {
         dimensions_ = value.size();
         for (size_t i = 0; i < value.size(); i++) {
@@ -34,14 +36,17 @@ public:
         }
     }
 
+    /// Returns the number of dimensions.
     int dimensions() const {
         return dimensions_;
     }
 
+    /// Returns the non-zero indices.
     const std::vector<int>& indices() const {
         return indices_;
     }
 
+    /// Returns the non-zero values.
     const std::vector<float>& values() const {
         return values_;
     }

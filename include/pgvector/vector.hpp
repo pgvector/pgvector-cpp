@@ -14,6 +14,7 @@
 #endif
 
 namespace pgvector {
+/// A vector.
 class Vector {
 public:
     Vector() = default;
@@ -36,10 +37,12 @@ public:
     }
 #endif
 
+    /// Returns the number of dimensions.
     size_t dimensions() const {
         return value_.size();
     }
 
+    /// Returns the vector as a `std::vector<float>`.
     operator const std::vector<float>() const {
         return value_;
     }
