@@ -29,13 +29,13 @@ Follow the instructions for your database library:
 
 Or check out some examples:
 
-- [Embeddings](examples/openai/example.cpp) with OpenAI
-- [Binary embeddings](examples/cohere/example.cpp) with Cohere
-- [Hybrid search](examples/hybrid/example.cpp) with llama.cpp (Reciprocal Rank Fusion)
-- [Sparse search](examples/sparse/example.cpp) with Text Embeddings Inference
-- [Morgan fingerprints](examples/rdkit/example.cpp) with RDKit
-- [Recommendations](examples/disco/example.cpp) with Disco
-- [Bulk loading](examples/loading/example.cpp) with `COPY`
+- [Embeddings](https://github.com/pgvector/pgvector-cpp/blob/master/examples/openai/example.cpp) with OpenAI
+- [Binary embeddings](https://github.com/pgvector/pgvector-cpp/blob/master/examples/cohere/example.cpp) with Cohere
+- [Hybrid search](https://github.com/pgvector/pgvector-cpp/blob/master/examples/hybrid/example.cpp) with llama.cpp (Reciprocal Rank Fusion)
+- [Sparse search](https://github.com/pgvector/pgvector-cpp/blob/master/examples/sparse/example.cpp) with Text Embeddings Inference
+- [Morgan fingerprints](https://github.com/pgvector/pgvector-cpp/blob/master/examples/rdkit/example.cpp) with RDKit
+- [Recommendations](https://github.com/pgvector/pgvector-cpp/blob/master/examples/disco/example.cpp) with Disco
+- [Bulk loading](https://github.com/pgvector/pgvector-cpp/blob/master/examples/loading/example.cpp) with `COPY`
 
 ## libpqxx
 
