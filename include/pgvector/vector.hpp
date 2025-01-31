@@ -17,6 +17,7 @@ namespace pgvector {
 /// A vector.
 class Vector {
 public:
+    // TODO remove in 0.3.0
     Vector() = default;
 
     Vector(const std::vector<float>& value) {

@@ -13,6 +13,7 @@ namespace pgvector {
 /// A half vector.
 class HalfVector {
 public:
+    // TODO remove in 0.3.0
     HalfVector() = default;
 
     HalfVector(const std::vector<float>& value) {
