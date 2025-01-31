@@ -12,6 +12,8 @@
 #include <pqxx/pqxx>
 #include <sstream>
 
+/// @cond
+
 namespace pqxx {
 template <> std::string const type_name<pgvector::Vector>{"vector"};
 
@@ -171,3 +173,5 @@ template <> struct string_traits<pgvector::SparseVector> {
     }
 };
 } // namespace pqxx
+
+/// @endcond
