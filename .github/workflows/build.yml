@@ -24,6 +24,15 @@ jobs:
       - run: g++ -std=c++17 -Wall -Wextra -Werror -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
       - run: test/pqxx
 
+      - if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install valgrind
+          valgrind --leak-check=yes test/pqxx
+
+      - if: ${{ startsWith(matrix.os, 'macos') }}
+        run: /opt/homebrew/opt/llvm@18/bin/scan-build --status-bugs g++ -std=c++17 -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
+
       # test install
       - run: cmake -S . -B build
       - run: cmake --build build
