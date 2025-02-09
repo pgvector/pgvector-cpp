@@ -7,7 +7,7 @@
 
 std::vector<std::vector<float>> random_embeddings(int rows, int dimensions) {
     std::random_device rd;
-    std::mt19937_64 rng(rd());
+    std::mt19937_64 prng(rd());
     std::uniform_real_distribution<float> dist(0, 1);
 
     std::vector<std::vector<float>> embeddings;
@@ -16,7 +16,7 @@ std::vector<std::vector<float>> random_embeddings(int rows, int dimensions) {
         std::vector<float> embedding;
         embedding.reserve(dimensions);
         for (int j = 0; j < dimensions; j++) {
-            embedding.push_back(dist(rng));
+            embedding.push_back(dist(prng));
         }
         embeddings.push_back(embedding);
     }
@@ -25,13 +25,13 @@ std::vector<std::vector<float>> random_embeddings(int rows, int dimensions) {
 
 std::vector<int64_t> random_categories(int rows) {
     std::random_device rd;
-    std::mt19937_64 rng(rd());
+    std::mt19937_64 prng(rd());
     std::uniform_int_distribution<int64_t> dist(1, 100);
 
     std::vector<int64_t> categories;
     categories.reserve(rows);
     for (int i = 0; i < rows; i++) {
-        categories.push_back(dist(rng));
+        categories.push_back(dist(prng));
     }
     return categories;
 }
