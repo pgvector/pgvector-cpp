@@ -82,7 +82,10 @@ int main() {
 
     std::cout << "Running distributed queries" << std::endl;
     for (auto& query : queries) {
-        pqxx::result result = tx2.exec("SELECT id FROM items ORDER BY embedding <-> $1 LIMIT 10", pqxx::params{pgvector::Vector(query)});
+        pqxx::result result = tx2.exec(
+            "SELECT id FROM items ORDER BY embedding <-> $1 LIMIT 10",
+            pqxx::params{pgvector::Vector(query)}
+        );
         for (const auto& row : result) {
             std::cout << row[0].as<int64_t>() << " ";
         }
