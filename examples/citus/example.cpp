@@ -1,20 +1,16 @@
 #include <iostream>
 #include <random>
+#include <cstdint>
 
 #include <pgvector/pqxx.hpp>
 #include <pqxx/pqxx>
 
-int main() {
-    // generate random data
-    int rows = 100000;
-    int dimensions = 128;
-    std::vector<std::vector<float>> embeddings;
-    embeddings.reserve(rows);
-    std::vector<int64_t> categories;
-    categories.reserve(rows);
+std::vector<std::vector<float>> random_embeddings(int rows, int dimensions) {
     std::mt19937_64 prng;
     std::uniform_real_distribution<float> dist(0, 1);
-    std::uniform_int_distribution<int64_t> cdist(1, 100);
+
+    std::vector<std::vector<float>> embeddings;
+    embeddings.reserve(rows);
     for (int i = 0; i < rows; i++) {
         std::vector<float> embedding;
         embedding.reserve(dimensions);
@@ -22,8 +18,29 @@ int main() {
             embedding.push_back(dist(prng));
         }
         embeddings.push_back(embedding);
-        categories.push_back(cdist(prng));
     }
+    return embeddings;
+}
+
+std::vector<int64_t> random_categories(int rows) {
+    std::mt19937_64 prng;
+    std::uniform_int_distribution<int64_t> dist(1, 100);
+
+    std::vector<int64_t> categories;
+    categories.reserve(rows);
+    for (int i = 0; i < rows; i++) {
+        categories.push_back(dist(prng));
+    }
+    return categories;
+}
+
+int main() {
+    // generate random data
+    int rows = 100000;
+    int dimensions = 128;
+    auto embeddings = random_embeddings(rows, dimensions);
+    auto categories = random_categories(rows);
+    auto queries = random_embeddings(10, dimensions);
 
     // enable extensions
     pqxx::connection conn("dbname=pgvector_citus");
@@ -62,9 +79,8 @@ int main() {
     tx2.exec("CREATE INDEX ON items USING hnsw (embedding vector_l2_ops)");
 
     std::cout << "Running distributed queries" << std::endl;
-    std::uniform_int_distribution<size_t> qdist(0, rows - 1);
-    for (size_t i = 0; i < 10; i++) {
-        pqxx::result result = tx2.exec("SELECT id FROM items ORDER BY embedding <-> $1 LIMIT 10", pqxx::params{pgvector::Vector(embeddings[qdist(prng)])});
+    for (auto& query : queries) {
+        pqxx::result result = tx2.exec("SELECT id FROM items ORDER BY embedding <-> $1 LIMIT 10", pqxx::params{pgvector::Vector(query)});
         for (const auto& row : result) {
             std::cout << row[0].as<int64_t>() << " ";
         }
