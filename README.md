@@ -35,6 +35,7 @@ Or check out some examples:
 - [Sparse search](https://github.com/pgvector/pgvector-cpp/blob/master/examples/sparse/example.cpp) with Text Embeddings Inference
 - [Morgan fingerprints](https://github.com/pgvector/pgvector-cpp/blob/master/examples/rdkit/example.cpp) with RDKit
 - [Recommendations](https://github.com/pgvector/pgvector-cpp/blob/master/examples/disco/example.cpp) with Disco
+- [Horizontal scaling](https://github.com/pgvector/pgvector-cpp/blob/master/examples/citus/example.cpp) with Citus
 - [Bulk loading](https://github.com/pgvector/pgvector-cpp/blob/master/examples/loading/example.cpp) with `COPY`
 
 ## libpqxx
