@@ -11,7 +11,15 @@
 
 using json = nlohmann::json;
 
-std::vector<std::vector<float>> fetch_embeddings(const std::vector<std::string>& input) {
+std::vector<std::vector<float>> embed(const std::vector<std::string>& texts, const std::string& taskType) {
+    // nomic-embed-text-v1.5 uses a task prefix
+    // https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
+    std::vector<std::string> input;
+    input.reserve(texts.size());
+    for (auto& v : texts) {
+        input.push_back(taskType + ": " + v);
+    }
+
     std::string url = "http://localhost:8080/v1/embeddings";
     json data = {
         {"input", input}
@@ -48,7 +56,7 @@ int main() {
         "The cat is purring",
         "The bear is growling"
     };
-    auto embeddings = fetch_embeddings(input);
+    auto embeddings = embed(input, "search_document");
 
     for (size_t i = 0; i < input.size(); i++) {
         tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], pgvector::Vector(embeddings[i])});
@@ -78,7 +86,7 @@ int main() {
     LIMIT 5
     )";
     std::string query = "growling bear";
-    auto query_embedding = fetch_embeddings({query})[0];
+    auto query_embedding = embed({query}, "search_query")[0];
     double k = 60;
     pqxx::result result = tx.exec(sql, pqxx::params{query, pgvector::Vector(query_embedding), k});
     for (const auto& row : result) {

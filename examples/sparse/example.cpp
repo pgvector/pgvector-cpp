@@ -15,7 +15,7 @@
 
 using json = nlohmann::json;
 
-std::vector<pgvector::SparseVector> fetch_embeddings(const std::vector<std::string>& inputs) {
+std::vector<pgvector::SparseVector> embed(const std::vector<std::string>& inputs) {
     std::string url = "http://localhost:3000/embed_sparse";
     json data = {
         {"inputs", inputs}
@@ -57,14 +57,13 @@ int main() {
         "The cat is purring",
         "The bear is growling"
     };
-    auto embeddings = fetch_embeddings(input);
-
+    auto embeddings = embed(input);
     for (size_t i = 0; i < input.size(); i++) {
         tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], embeddings[i]});
     }
 
     std::string query = "forest";
-    auto query_embedding = fetch_embeddings({query})[0];
+    auto query_embedding = embed({query})[0];
     pqxx::result result = tx.exec("SELECT content FROM documents ORDER BY embedding <#> $1 LIMIT 5", pqxx::params{query_embedding});
     for (const auto& row : result) {
         std::cout << row[0].as<std::string>() << std::endl;

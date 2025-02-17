@@ -10,7 +10,7 @@
 using json = nlohmann::json;
 
 // https://docs.cohere.com/reference/embed
-std::vector<std::string> fetch_embeddings(const std::vector<std::string>& texts, const std::string& input_type, char *api_key) {
+std::vector<std::string> embed(const std::vector<std::string>& texts, const std::string& input_type, char *api_key) {
     std::string url = "https://api.cohere.com/v1/embed";
     json data = {
         {"texts", texts},
@@ -61,14 +61,13 @@ int main() {
         "The cat is purring",
         "The bear is growling"
     };
-    auto embeddings = fetch_embeddings(input, "search_document", api_key);
-
+    auto embeddings = embed(input, "search_document", api_key);
     for (size_t i = 0; i < input.size(); i++) {
         tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], embeddings[i]});
     }
 
     std::string query = "forest";
-    auto query_embedding = fetch_embeddings({query}, "search_query", api_key)[0];
+    auto query_embedding = embed({query}, "search_query", api_key)[0];
     pqxx::result result = tx.exec("SELECT content FROM documents ORDER BY embedding <~> $1 LIMIT 5", pqxx::params{query_embedding});
     for (const auto& row : result) {
         std::cout << row[0].as<std::string>() << std::endl;

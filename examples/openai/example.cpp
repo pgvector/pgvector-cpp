@@ -9,7 +9,7 @@ using json = nlohmann::json;
 
 // https://platform.openai.com/docs/guides/embeddings/how-to-get-embeddings
 // input can be an array with 2048 elements
-std::vector<std::vector<float>> fetch_embeddings(const std::vector<std::string>& input, char *api_key) {
+std::vector<std::vector<float>> embed(const std::vector<std::string>& input, char *api_key) {
     std::string url = "https://api.openai.com/v1/embeddings";
     json data = {
         {"input", input},
@@ -53,14 +53,14 @@ int main() {
         "The cat is purring",
         "The bear is growling"
     };
-    auto embeddings = fetch_embeddings(input, api_key);
-
+    auto embeddings = embed(input, api_key);
     for (size_t i = 0; i < input.size(); i++) {
         tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], pgvector::Vector(embeddings[i])});
     }
 
-    int document_id = 1;
-    pqxx::result result = tx.exec("SELECT content FROM documents WHERE id != $1 ORDER BY embedding <=> (SELECT embedding FROM documents WHERE id = $1) LIMIT 5", pqxx::params{document_id});
+    std::string query = "forest";
+    auto query_embedding = embed({query}, api_key)[0];
+    pqxx::result result = tx.exec("SELECT content FROM documents ORDER BY embedding <=> $1 LIMIT 5", pqxx::params{pgvector::Vector(query_embedding)});
     for (const auto& row : result) {
         std::cout << row[0].as<std::string>() << std::endl;
     }
