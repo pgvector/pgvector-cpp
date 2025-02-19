@@ -10,6 +10,10 @@
 #include <unordered_map>
 #include <vector>
 
+#if __cplusplus >= 202002L
+#include <span>
+#endif
+
 namespace pgvector {
 /// A sparse vector.
 class SparseVector {
