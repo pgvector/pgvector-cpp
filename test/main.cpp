@@ -5,6 +5,10 @@
 #include "../include/pgvector/sparsevec.hpp"
 #include "../include/pgvector/vector.hpp"
 
+#if __cplusplus >= 202002L
+#include <span>
+#endif
+
 using pgvector::HalfVector;
 using pgvector::SparseVector;
 using pgvector::Vector;
@@ -15,6 +19,13 @@ void test_vector() {
     auto vec = Vector({1, 2, 3});
     assert(vec.dimensions() == 3);
 }
+
+#if __cplusplus >= 202002L
+void test_vector_span() {
+    auto vec = Vector(std::span<const float>({1, 2, 3}));
+    assert(vec.dimensions() == 3);
+}
+#endif
 
 void test_halfvec() {
     auto vec = HalfVector({1, 2, 3});
@@ -39,6 +50,9 @@ void test_sparsevec_map() {
 int main() {
     test_pqxx();
     test_vector();
+#if __cplusplus >= 202002L
+    test_vector_span();
+#endif
     test_halfvec();
     test_sparsevec();
     return 0;
