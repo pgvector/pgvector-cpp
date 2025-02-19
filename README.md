@@ -118,6 +118,13 @@ Create a sparse vector from a `std::vector<float>`
 auto vec = pgvector::SparseVector({1, 0, 2, 0, 3, 0});
 ```
 
+Or a map of non-zero elements [unreleased]
+
+```cpp
+std::unordered_map<int, float> map = {{0, 1}, {2, 2}, {4, 3}};
+auto vec = pgvector::SparseVector(map, 6);
+```
+
 Get the number of dimensions
 
 ```cpp

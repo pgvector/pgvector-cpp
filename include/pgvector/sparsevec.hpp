@@ -7,6 +7,7 @@
 #pragma once
 
 #include <ostream>
+#include <unordered_map>
 #include <vector>
 
 namespace pgvector {
@@ -34,6 +35,30 @@ public:
                 indices_.push_back(i);
                 values_.push_back(v);
             }
+        }
+    }
+
+    /// Creates a sparse vector from a map of non-zero elements.
+    SparseVector(const std::unordered_map<int, float>& map, int dimensions) {
+        if (dimensions < 1) {
+            throw std::invalid_argument("sparsevec must have at least 1 dimension");
+        }
+        dimensions_ = dimensions;
+
+        for (auto [i, v] : map) {
+            if (i < 0 || i >= dimensions) {
+                throw std::invalid_argument("sparsevec index out of bounds");
+            }
+
+            if (v != 0) {
+                indices_.push_back(i);
+            }
+        }
+        std::sort(indices_.begin(), indices_.end());
+
+        values_.reserve(indices_.size());
+        for (auto i : indices_) {
+            values_.push_back(map.at(i));
         }
     }
 

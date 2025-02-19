@@ -1,3 +1,7 @@
+## 0.2.2 (unreleased)
+
+- Added map constructor to `SparseVector`
+
 ## 0.2.1 (2025-01-15)
 
 - Added `std::span` constructor to `Vector`
