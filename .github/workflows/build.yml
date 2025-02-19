@@ -15,27 +15,21 @@ jobs:
           cd pgvector
           make
           sudo make install
-      - run: |
-          git clone --branch 7.10.0 https://github.com/jtv/libpqxx.git
-          cd libpqxx
-          CXXFLAGS=-std=c++17 ./configure
-          make
-          sudo make install
 
-      - run: g++ -std=c++17 -Wall -Wextra -Werror -o test/main test/main.cpp test/pqxx_test.cpp -lpqxx -lpq
-      - run: test/main
+      - run: cmake -S . -B build -DBUILD_TESTING=ON -DCMAKE_CXX_STANDARD=17
+      - run: cmake --build build
+      - run: build/test
 
-      - run: g++ -std=c++20 -Wall -Wextra -Werror -o test/main test/main.cpp test/pqxx_test.cpp -lpqxx -lpq
-      - run: test/main
+      - run: cmake -S . -B build -DBUILD_TESTING=ON -DCMAKE_CXX_STANDARD=20
+      - run: cmake --build build
+      - run: build/test
 
-      - run: g++ -std=c++23 -Wall -Wextra -Werror -o test/main test/main.cpp test/pqxx_test.cpp -lpqxx -lpq
-      - run: test/main
+      - run: cmake -S . -B build -DBUILD_TESTING=ON -DCMAKE_CXX_STANDARD=23
+      - run: cmake --build build
+      - run: build/test
 
       - run: |
           sudo apt-get install valgrind
-          valgrind --leak-check=yes test/main
+          valgrind --leak-check=yes build/test
 
-      # test install
-      - run: cmake -S . -B build
-      - run: cmake --build build
       - run: sudo cmake --install build
