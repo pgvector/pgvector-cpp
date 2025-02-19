@@ -21,8 +21,10 @@ void test_halfvec() {
 }
 
 void test_sparsevec() {
-    auto vec = SparseVector({1, 2, 3});
-    assert(vec.dimensions() == 3);
+    auto vec = SparseVector({1, 0, 2, 0, 3, 0});
+    assert(vec.dimensions() == 6);
+    assert(vec.indices() == (std::vector<int>{0, 2, 4}));
+    assert(vec.values() == (std::vector<float>{1, 2, 3}));
 }
 
 int main() {
