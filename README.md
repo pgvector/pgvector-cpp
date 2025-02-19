@@ -107,8 +107,8 @@ To get started with development:
 git clone https://github.com/pgvector/pgvector-cpp.git
 cd pgvector-cpp
 createdb pgvector_cpp_test
-g++ -std=c++17 -Wall -Wextra -Wno-unknown-attributes -Werror -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
-test/pqxx
+g++ -std=c++17 -Wall -Wextra -Wno-unknown-attributes -Werror -o test/main test/main.cpp test/pqxx_test.cpp -lpqxx -lpq
+test/main
 ```
 
 To run an example:

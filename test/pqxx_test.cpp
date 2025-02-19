@@ -1,7 +1,8 @@
-#include "../include/pgvector/pqxx.hpp"
 #include <cassert>
 #include <optional>
 #include <pqxx/pqxx>
+
+#include "../include/pgvector/pqxx.hpp"
 
 void setup(pqxx::connection &conn) {
     pqxx::nontransaction tx(conn);
@@ -131,7 +132,7 @@ void test_precision(pqxx::connection &conn) {
     assert(res[0][0].as<pgvector::Vector>() == embedding);
 }
 
-int main() {
+void test_pqxx() {
     pqxx::connection conn("dbname=pgvector_cpp_test");
     setup(conn);
 
@@ -143,6 +144,4 @@ int main() {
     test_stream(conn);
     test_stream_to(conn);
     test_precision(conn);
-
-    return 0;
 }

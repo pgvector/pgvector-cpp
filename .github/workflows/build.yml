@@ -22,18 +22,18 @@ jobs:
           make
           sudo make install
 
-      - run: g++ -std=c++17 -Wall -Wextra -Werror -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
-      - run: test/pqxx
+      - run: g++ -std=c++17 -Wall -Wextra -Werror -o test/main test/main.cpp test/pqxx_test.cpp -lpqxx -lpq
+      - run: test/main
 
-      - run: g++ -std=c++20 -Wall -Wextra -Werror -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
-      - run: test/pqxx
+      - run: g++ -std=c++20 -Wall -Wextra -Werror -o test/main test/main.cpp test/pqxx_test.cpp -lpqxx -lpq
+      - run: test/main
 
-      - run: g++ -std=c++23 -Wall -Wextra -Werror -o test/pqxx test/pqxx_test.cpp -lpqxx -lpq
-      - run: test/pqxx
+      - run: g++ -std=c++23 -Wall -Wextra -Werror -o test/main test/main.cpp test/pqxx_test.cpp -lpqxx -lpq
+      - run: test/main
 
       - run: |
           sudo apt-get install valgrind
-          valgrind --leak-check=yes test/pqxx
+          valgrind --leak-check=yes test/main
 
       # test install
       - run: cmake -S . -B build
