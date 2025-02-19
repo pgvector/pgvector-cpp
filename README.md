@@ -82,10 +82,58 @@ Use `std::optional<pgvector::Vector>` if the value could be `NULL`
 
 ## Reference
 
-Convert a vector to a `std::vector<float>`
+### Vectors
+
+Create a vector from a `std::vector<float>`
 
 ```cpp
-auto float_vec = static_cast<std::vector<float>>(embedding);
+auto vec = pgvector::Vector({1, 2, 3});
+```
+
+Convert to a `std::vector<float>`
+
+```cpp
+auto float_vec = static_cast<std::vector<float>>(vec);
+```
+
+### Half Vectors
+
+Create a half vector from a  `std::vector<float>`
+
+```cpp
+auto vec = pgvector::HalfVector({1, 2, 3});
+```
+
+Convert to a `std::vector<float>`
+
+```cpp
+auto float_vec = static_cast<std::vector<float>>(vec);
+```
+
+### Sparse Vectors
+
+Create a sparse vector from a `std::vector<float>`
+
+```cpp
+auto vec = pgvector::SparseVector({1, 0, 2, 0, 3, 0});
+```
+
+Get the number of dimensions
+
+```cpp
+int dim = vec.dimensions();
+```
+
+Get the indices of non-zero elements
+
+```cpp
+auto indices = vec.indices();
+```
+
+Get the values of non-zero elements
+
+```cpp
+auto values = vec.values();
 ```
 
 ## History
