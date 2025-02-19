@@ -9,6 +9,10 @@
 #include <ostream>
 #include <vector>
 
+#if __cplusplus >= 202002L
+#include <span>
+#endif
+
 namespace pgvector {
 /// A half vector.
 class HalfVector {
@@ -27,6 +31,13 @@ public:
     HalfVector(const float* value, size_t n) {
         value_ = std::vector<float>{value, value + n};
     }
+
+#if __cplusplus >= 202002L
+    /// Creates a half vector from a span.
+    HalfVector(std::span<const float> value) {
+        value_ = std::vector<float>(value.begin(), value.end());
+    }
+#endif
 
     /// Returns the number of dimensions.
     size_t dimensions() const {

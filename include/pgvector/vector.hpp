@@ -33,6 +33,7 @@ public:
     }
 
 #if __cplusplus >= 202002L
+    /// Creates a vector from a span.
     Vector(std::span<const float> value) {
         value_ = std::vector<float>(value.begin(), value.end());
     }

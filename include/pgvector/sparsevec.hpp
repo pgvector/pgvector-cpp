@@ -38,6 +38,20 @@ public:
         }
     }
 
+#if __cplusplus >= 202002L
+    /// Creates a sparse vector from a span.
+    SparseVector(std::span<const float> value) {
+        dimensions_ = value.size();
+        for (size_t i = 0; i < value.size(); i++) {
+            float v = value[i];
+            if (v != 0) {
+                indices_.push_back(i);
+                values_.push_back(v);
+            }
+        }
+    }
+#endif
+
     /// Creates a sparse vector from a map of non-zero elements.
     SparseVector(const std::unordered_map<int, float>& map, int dimensions) {
         if (dimensions < 1) {
