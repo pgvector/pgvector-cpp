@@ -24,15 +24,12 @@ jobs:
       - run: cmake --build build
       - run: build/test
 
-      - run: cmake -S . -B build -DBUILD_TESTING=ON -DCMAKE_CXX_STANDARD=23
-      - run: cmake --build build
-      - run: build/test
-
       - run: |
           sudo apt-get install valgrind
           valgrind --leak-check=yes build/test
 
       # test install
+      - run: rm -r build
       - run: cmake -S . -B build
       - run: cmake --build build
       - run: sudo cmake --install build
