@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <ostream>
 #include <unordered_map>
 #include <vector>
