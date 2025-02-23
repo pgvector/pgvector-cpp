@@ -17,6 +17,7 @@ namespace pgvector {
 /// A half vector.
 class HalfVector {
 public:
+    /// @private
     // TODO remove in 0.3.0
     HalfVector() = default;
 

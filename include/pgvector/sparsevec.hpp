@@ -19,6 +19,7 @@ namespace pgvector {
 /// A sparse vector.
 class SparseVector {
 public:
+    /// @private
     // TODO remove in 0.3.0
     SparseVector() = default;
 
