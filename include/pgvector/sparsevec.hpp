@@ -23,6 +23,7 @@ public:
     // TODO remove in 0.3.0
     SparseVector() = default;
 
+    /// @private
     SparseVector(int dimensions, const std::vector<int>& indices, const std::vector<float>& values) {
         if (values.size() != indices.size()) {
             throw std::invalid_argument("indices and values must be the same length");

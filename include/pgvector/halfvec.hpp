@@ -21,14 +21,17 @@ public:
     // TODO remove in 0.3.0
     HalfVector() = default;
 
+    /// Creates a half vector from a `std::vector<float>`.
     HalfVector(const std::vector<float>& value) {
         value_ = value;
     }
 
+    /// Creates a half vector from a `std::vector<float>`.
     HalfVector(std::vector<float>&& value) {
         value_ = std::move(value);
     }
 
+    /// Creates a half vector from an array.
     HalfVector(const float* value, size_t n) {
         value_ = std::vector<float>{value, value + n};
     }

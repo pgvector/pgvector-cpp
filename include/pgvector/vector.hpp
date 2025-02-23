@@ -21,14 +21,17 @@ public:
     // TODO remove in 0.3.0
     Vector() = default;
 
+    /// Creates a vector from a `std::vector<float>`.
     Vector(const std::vector<float>& value) {
         value_ = value;
     }
 
+    /// Creates a vector from a `std::vector<float>`.
     Vector(std::vector<float>&& value) {
         value_ = std::move(value);
     }
 
+    /// Creates a vector from an array.
     Vector(const float* value, size_t n) {
         value_ = std::vector<float>{value, value + n};
     }
