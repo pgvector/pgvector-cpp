@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(pgvector VERSION 0.2.1 LANGUAGES CXX)
+project(pgvector VERSION 0.2.2 LANGUAGES CXX)
 
 include(GNUInstallDirs)
 

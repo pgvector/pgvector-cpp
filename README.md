@@ -8,14 +8,14 @@ Supports [libpqxx](https://github.com/jtv/libpqxx)
 
 ## Installation
 
-Add [the headers](https://github.com/pgvector/pgvector-cpp/tree/v0.2.1/include) to your project (supports C++17 and greater).
+Add [the headers](https://github.com/pgvector/pgvector-cpp/tree/v0.2.2/include) to your project (supports C++17 and greater).
 
 There is also support for CMake and FetchContent:
 
 ```cmake
 include(FetchContent)
 
-FetchContent_Declare(pgvector GIT_REPOSITORY https://github.com/pgvector/pgvector-cpp.git GIT_TAG v0.2.1)
+FetchContent_Declare(pgvector GIT_REPOSITORY https://github.com/pgvector/pgvector-cpp.git GIT_TAG v0.2.2)
 FetchContent_MakeAvailable(pgvector)
 
 target_link_libraries(app PRIVATE pgvector::pgvector)
@@ -98,7 +98,7 @@ auto float_vec = static_cast<std::vector<float>>(vec);
 
 ### Half Vectors
 
-Create a half vector from a  `std::vector<float>`
+Create a half vector from a `std::vector<float>`
 
 ```cpp
 auto vec = pgvector::HalfVector({1, 2, 3});
@@ -118,7 +118,7 @@ Create a sparse vector from a `std::vector<float>`
 auto vec = pgvector::SparseVector({1, 0, 2, 0, 3, 0});
 ```
 
-Or a map of non-zero elements [unreleased]
+Or a map of non-zero elements
 
 ```cpp
 std::unordered_map<int, float> map = {{0, 1}, {2, 2}, {4, 3}};
