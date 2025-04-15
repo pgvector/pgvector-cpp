@@ -11,10 +11,10 @@ using json = nlohmann::json;
 
 // https://docs.cohere.com/reference/embed
 std::vector<std::string> embed(const std::vector<std::string>& texts, const std::string& input_type, char *api_key) {
-    std::string url = "https://api.cohere.com/v1/embed";
+    std::string url = "https://api.cohere.com/v2/embed";
     json data = {
         {"texts", texts},
-        {"model", "embed-english-v3.0"},
+        {"model", "embed-v4.0"},
         {"input_type", input_type},
         {"embedding_types", {"ubinary"}}
     };
@@ -54,7 +54,7 @@ int main() {
     pqxx::nontransaction tx(conn);
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS documents");
-    tx.exec("CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding bit(1024))");
+    tx.exec("CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding bit(1536))");
 
     std::vector<std::string> input = {
         "The dog is barking",
