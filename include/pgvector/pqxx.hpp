@@ -6,13 +6,14 @@
 
 #pragma once
 
-#include "halfvec.hpp"
-#include "sparsevec.hpp"
-#include "vector.hpp"
 #include <pqxx/pqxx>
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include "halfvec.hpp"
+#include "sparsevec.hpp"
+#include "vector.hpp"
 
 /// @cond
 
