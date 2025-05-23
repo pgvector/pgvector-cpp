@@ -38,7 +38,7 @@ std::vector<std::vector<float>> embed(const std::vector<std::string>& texts, con
     json response = json::parse(r.text);
 
     std::vector<std::vector<float>> embeddings;
-    for (auto& v: response["data"]) {
+    for (auto& v : response["data"]) {
         embeddings.emplace_back(v["embedding"]);
     }
     return embeddings;
