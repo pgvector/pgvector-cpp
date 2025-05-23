@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <vector>
 
 #include <pgvector/pqxx.hpp>
 #include <pqxx/pqxx>

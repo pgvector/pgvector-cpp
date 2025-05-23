@@ -1,6 +1,8 @@
 #include <cassert>
 #include <optional>
 #include <pqxx/pqxx>
+#include <string>
+#include <vector>
 
 #include "../include/pgvector/pqxx.hpp"
 

@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
+#include <utility>
 
 #include <disco.hpp>
 #include <pgvector/pqxx.hpp>

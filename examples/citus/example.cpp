@@ -1,6 +1,7 @@
+#include <cstdint>
 #include <iostream>
 #include <random>
-#include <cstdint>
+#include <vector>
 
 #include <pgvector/pqxx.hpp>
 #include <pqxx/pqxx>

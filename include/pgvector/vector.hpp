@@ -7,6 +7,7 @@
 #pragma once
 
 #include <ostream>
+#include <utility>
 #include <vector>
 
 #if __cplusplus >= 202002L

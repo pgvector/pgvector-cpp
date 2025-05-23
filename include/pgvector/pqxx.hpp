@@ -11,6 +11,8 @@
 #include "vector.hpp"
 #include <pqxx/pqxx>
 #include <sstream>
+#include <string>
+#include <vector>
 
 /// @cond
 

@@ -1,3 +1,8 @@
+#include <iostream>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include <DataStructs/ExplicitBitVect.h>
 #include <GraphMol/SmilesParse/SmilesParse.h>
 #include <GraphMol/Fingerprints/MorganFingerprints.h>
