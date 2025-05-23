@@ -6,10 +6,11 @@
 
 #pragma once
 
-#include <pqxx/pqxx>
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include <pqxx/pqxx>
 
 #include "halfvec.hpp"
 #include "sparsevec.hpp"
