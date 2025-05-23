@@ -17,7 +17,7 @@
 namespace pgvector {
 /// A vector.
 class Vector {
-public:
+  public:
     /// @private
     // TODO remove in 0.3.0
     Vector() = default;
@@ -73,7 +73,7 @@ public:
         return os;
     }
 
-private:
+  private:
     std::vector<float> value_;
 };
 } // namespace pgvector

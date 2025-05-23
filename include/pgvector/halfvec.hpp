@@ -17,7 +17,7 @@
 namespace pgvector {
 /// A half vector.
 class HalfVector {
-public:
+  public:
     /// @private
     // TODO remove in 0.3.0
     HalfVector() = default;
@@ -73,7 +73,7 @@ public:
         return os;
     }
 
-private:
+  private:
     // TODO use std::float16_t for C++23
     std::vector<float> value_;
 };

@@ -18,7 +18,7 @@
 namespace pgvector {
 /// A sparse vector.
 class SparseVector {
-public:
+  public:
     /// @private
     // TODO remove in 0.3.0
     SparseVector() = default;
@@ -119,7 +119,7 @@ public:
         return os;
     }
 
-private:
+  private:
     int dimensions_;
     std::vector<int> indices_;
     std::vector<float> values_;
