@@ -23,11 +23,13 @@ public:
     Vector() = default;
 
     /// Creates a vector from a `std::vector<float>`.
+    // TODO add explicit in 0.3.0
     Vector(const std::vector<float>& value) {
         value_ = value;
     }
 
     /// Creates a vector from a `std::vector<float>`.
+    // TODO add explicit in 0.3.0
     Vector(std::vector<float>&& value) {
         value_ = std::move(value);
     }
@@ -39,6 +41,7 @@ public:
 
 #if __cplusplus >= 202002L
     /// Creates a vector from a span.
+    // TODO add explicit in 0.3.0
     Vector(std::span<const float> value) {
         value_ = std::vector<float>(value.begin(), value.end());
     }

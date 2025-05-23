@@ -23,11 +23,13 @@ public:
     HalfVector() = default;
 
     /// Creates a half vector from a `std::vector<float>`.
+    // TODO add explicit in 0.3.0
     HalfVector(const std::vector<float>& value) {
         value_ = value;
     }
 
     /// Creates a half vector from a `std::vector<float>`.
+    // TODO add explicit in 0.3.0
     HalfVector(std::vector<float>&& value) {
         value_ = std::move(value);
     }
@@ -39,6 +41,7 @@ public:
 
 #if __cplusplus >= 202002L
     /// Creates a half vector from a span.
+    // TODO add explicit in 0.3.0
     HalfVector(std::span<const float> value) {
         value_ = std::vector<float>(value.begin(), value.end());
     }

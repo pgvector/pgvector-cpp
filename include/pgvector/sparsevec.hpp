@@ -34,6 +34,7 @@ public:
     }
 
     /// Creates a sparse vector from a dense vector.
+    // TODO add explicit in 0.3.0
     SparseVector(const std::vector<float>& value) {
         dimensions_ = value.size();
         for (size_t i = 0; i < value.size(); i++) {
@@ -47,6 +48,7 @@ public:
 
 #if __cplusplus >= 202002L
     /// Creates a sparse vector from a span.
+    // TODO add explicit in 0.3.0
     SparseVector(std::span<const float> value) {
         dimensions_ = value.size();
         for (size_t i = 0; i < value.size(); i++) {
