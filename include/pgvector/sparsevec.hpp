@@ -7,7 +7,9 @@
 #pragma once
 
 #include <algorithm>
+#include <cstddef>
 #include <ostream>
+#include <stdexcept>
 #include <unordered_map>
 #include <vector>
 

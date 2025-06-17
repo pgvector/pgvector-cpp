@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <ostream>
 #include <utility>
 #include <vector>
