@@ -65,7 +65,7 @@ void test_bit(pqxx::connection &conn) {
     assert(res.size() == 3);
     assert(res[0][0].as<std::string>() == embedding2);
     assert(res[1][0].as<std::string>() == embedding);
-    assert(!res[2][0].as<std::optional<pgvector::HalfVector>>().has_value());
+    assert(!res[2][0].as<std::optional<std::string>>().has_value());
 }
 
 void test_sparsevec(pqxx::connection &conn) {
