@@ -24,6 +24,8 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     option(BUILD_TESTING "" OFF)
 
     if(BUILD_TESTING)
+        option(BUILD_SHARED_LIBS "" ON)
+
         include(FetchContent)
 
         FetchContent_Declare(libpqxx GIT_REPOSITORY https://github.com/jtv/libpqxx.git GIT_TAG 7.10.1)
