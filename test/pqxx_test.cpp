@@ -5,7 +5,7 @@
 
 #include <pqxx/pqxx>
 
-#include "../include/pgvector/pqxx.hpp"
+#include <pgvector/pqxx.hpp>
 
 void setup(pqxx::connection &conn) {
     pqxx::nontransaction tx(conn);

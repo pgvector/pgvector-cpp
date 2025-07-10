@@ -1,6 +1,6 @@
 #include <cassert>
 
-#include "../include/pgvector/halfvec.hpp"
+#include <pgvector/halfvec.hpp>
 
 #if __cplusplus >= 202002L
 #include <span>

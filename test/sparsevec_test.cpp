@@ -1,7 +1,7 @@
 #include <cassert>
 #include <unordered_map>
 
-#include "../include/pgvector/sparsevec.hpp"
+#include <pgvector/sparsevec.hpp>
 
 #if __cplusplus >= 202002L
 #include <span>
