@@ -34,9 +34,6 @@ void test_vector(pqxx::connection &conn) {
     assert(res[0][0].as<pgvector::Vector>() == embedding2);
     assert(res[1][0].as<pgvector::Vector>() == embedding);
     assert(!res[2][0].as<std::optional<pgvector::Vector>>().has_value());
-
-    assert(pqxx::to_string(embedding) == "[1,2,3]");
-    assert(pqxx::from_string<pgvector::Vector>("[1,2,3]") == embedding);
 }
 
 void test_halfvec(pqxx::connection &conn) {
@@ -54,9 +51,6 @@ void test_halfvec(pqxx::connection &conn) {
     assert(res[0][0].as<pgvector::HalfVector>() == embedding2);
     assert(res[1][0].as<pgvector::HalfVector>() == embedding);
     assert(!res[2][0].as<std::optional<pgvector::HalfVector>>().has_value());
-
-    assert(pqxx::to_string(embedding) == "[1,2,3]");
-    assert(pqxx::from_string<pgvector::HalfVector>("[1,2,3]") == embedding);
 }
 
 void test_bit(pqxx::connection &conn) {
@@ -87,10 +81,6 @@ void test_sparsevec(pqxx::connection &conn) {
     assert(res[0][0].as<std::string>() == "{1:4,2:5,3:6}/3");
     assert(res[1][0].as<std::string>() == "{1:1,2:2,3:3}/3");
     assert(!res[2][0].as<std::optional<std::string>>().has_value());
-
-    assert(pqxx::to_string(embedding) == "{1:1,2:2,3:3}/3");
-    // TODO add
-    // assert(pqxx::from_string<pgvector::SparseVector>("{1:1,2:2,3:3}/3") == embedding);
 }
 
 void test_sparsevec_nnz(pqxx::connection &conn) {
@@ -145,6 +135,30 @@ void test_precision(pqxx::connection &conn) {
     assert(res[0][0].as<pgvector::Vector>() == embedding);
 }
 
+void test_vector_to_string() {
+    assert(pqxx::to_string(pgvector::Vector({1, 2, 3})) == "[1,2,3]");
+}
+
+void test_vector_from_string() {
+    assert(pqxx::from_string<pgvector::Vector>("[1,2,3]") == pgvector::Vector({1, 2, 3}));
+}
+
+void test_halfvec_to_string() {
+    assert(pqxx::to_string(pgvector::HalfVector({1, 2, 3})) == "[1,2,3]");
+}
+
+void test_halfvec_from_string() {
+    assert(pqxx::from_string<pgvector::HalfVector>("[1,2,3]") == pgvector::HalfVector({1, 2, 3}));
+}
+
+void test_sparsevec_to_string() {
+    assert(pqxx::to_string(pgvector::SparseVector({1, 0, 2, 0, 3, 0})) == "{1:1,3:2,5:3}/6");
+}
+
+void test_sparsevec_from_string() {
+    // TODO add
+}
+
 void test_pqxx() {
     pqxx::connection conn("dbname=pgvector_cpp_test");
     setup(conn);
@@ -157,4 +171,11 @@ void test_pqxx() {
     test_stream(conn);
     test_stream_to(conn);
     test_precision(conn);
+
+    test_vector_to_string();
+    test_vector_from_string();
+    test_halfvec_to_string();
+    test_halfvec_from_string();
+    test_sparsevec_to_string();
+    test_sparsevec_from_string();
 }
