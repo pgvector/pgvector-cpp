@@ -17,7 +17,7 @@ jobs:
           sudo make install
 
       - run: |
-          git clone --branch 7.10.0 https://github.com/jtv/libpqxx.git
+          git clone --branch 7.10.1 https://github.com/jtv/libpqxx.git
           cd libpqxx
           cmake .
           cmake --build .
