@@ -16,6 +16,8 @@ jobs:
           make
           sudo make install
 
+      - run: sudo apt-get install libpqxx-dev
+
       - run: cmake -S . -B build -DBUILD_TESTING=ON -DCMAKE_CXX_STANDARD=17
       - run: cmake --build build
       - run: build/test

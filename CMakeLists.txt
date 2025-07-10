@@ -24,12 +24,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     option(BUILD_TESTING "" OFF)
 
     if(BUILD_TESTING)
-        option(BUILD_SHARED_LIBS "" ON)
-
-        include(FetchContent)
-
-        FetchContent_Declare(libpqxx GIT_REPOSITORY https://github.com/jtv/libpqxx.git GIT_TAG 7.10.1)
-        FetchContent_MakeAvailable(libpqxx)
+        find_package(libpqxx REQUIRED)
 
         add_executable(test test/halfvec_test.cpp test/main.cpp test/pqxx_test.cpp test/sparsevec_test.cpp test/vector_test.cpp)
         target_link_libraries(test PRIVATE libpqxx::pqxx pgvector::pgvector)
