@@ -103,7 +103,7 @@ void test_sparsevec_nnz(pqxx::connection &conn) {
         tx.exec("INSERT INTO items (sparse_embedding) VALUES ($1)", {embedding});
         assert(false);
     } catch (const pqxx::conversion_overrun& e) {
-        assert(std::strcmp(e.what(), "sparsevec cannot have more than 16000 dimensions") == 0);
+        assert(std::string_view(e.what()) == "sparsevec cannot have more than 16000 dimensions");
     }
 }
 
