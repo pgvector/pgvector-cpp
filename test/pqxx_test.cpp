@@ -149,6 +149,21 @@ void test_vector_from_string() {
         assert(std::string_view(e.what()) == "Malformed vector literal");
     }
 
+    try {
+        auto unused = pqxx::from_string<pgvector::Vector>("[");
+        assert(false);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Malformed vector literal");
+    }
+
+    // TODO change to no error?
+    try {
+        auto unused = pqxx::from_string<pgvector::Vector>("[]");
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
     // TODO change to pqxx::conversion_error
     try {
         auto unused = pqxx::from_string<pgvector::Vector>("[hello]");
@@ -178,6 +193,21 @@ void test_halfvec_from_string() {
         assert(false);
     } catch (const pqxx::conversion_error& e) {
         assert(std::string_view(e.what()) == "Malformed halfvec literal");
+    }
+
+    try {
+        auto unused = pqxx::from_string<pgvector::HalfVector>("[");
+        assert(false);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Malformed halfvec literal");
+    }
+
+    // TODO change to no error?
+    try {
+        auto unused = pqxx::from_string<pgvector::HalfVector>("[]");
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
     }
 
     // TODO change to pqxx::conversion_error
