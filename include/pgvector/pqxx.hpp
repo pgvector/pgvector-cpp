@@ -40,7 +40,7 @@ template <> struct string_traits<pgvector::Vector> {
         std::stringstream ss(std::string(text.substr(1, text.size() - 2)));
         while (ss.good()) {
             std::string substr;
-            getline(ss, substr, ',');
+            std::getline(ss, substr, ',');
             result.push_back(std::stof(substr));
         }
         return pgvector::Vector(result);
@@ -85,7 +85,7 @@ template <> struct string_traits<pgvector::HalfVector> {
         std::stringstream ss(std::string(text.substr(1, text.size() - 2)));
         while (ss.good()) {
             std::string substr;
-            getline(ss, substr, ',');
+            std::getline(ss, substr, ',');
             result.push_back(std::stof(substr));
         }
         return pgvector::HalfVector(result);
