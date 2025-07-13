@@ -1,6 +1,6 @@
 ## 0.2.3 (unreleased)
 
-- Fixed `duplicate symbol` error
+- Fixed `duplicate symbol` errors
 
 ## 0.2.2 (2025-02-23)
 
