@@ -1,3 +1,6 @@
+// Test ODR
+#include <pgvector/pqxx.hpp>
+
 void test_vector();
 void test_halfvec();
 void test_sparsevec();
