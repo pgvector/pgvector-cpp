@@ -1,3 +1,7 @@
+## 0.2.3 (unreleased)
+
+- Fixed `duplicate symbol` error
+
 ## 0.2.2 (2025-02-23)
 
 - Added map constructor to `SparseVector`
