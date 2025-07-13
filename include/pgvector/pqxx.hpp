@@ -21,7 +21,7 @@
 /// @cond
 
 namespace pqxx {
-template <> inline std::string const type_name<pgvector::Vector>{"vector"};
+template <> inline std::string_view const type_name<pgvector::Vector>{"vector"};
 
 template <> struct nullness<pgvector::Vector> : pqxx::no_null<pgvector::Vector> {};
 
@@ -66,7 +66,7 @@ template <> struct string_traits<pgvector::Vector> {
     }
 };
 
-template <> inline std::string const type_name<pgvector::HalfVector>{"halfvec"};
+template <> inline std::string_view const type_name<pgvector::HalfVector>{"halfvec"};
 
 template <> struct nullness<pgvector::HalfVector> : pqxx::no_null<pgvector::HalfVector> {};
 
@@ -111,7 +111,7 @@ template <> struct string_traits<pgvector::HalfVector> {
     }
 };
 
-template <> inline std::string const type_name<pgvector::SparseVector>{"sparsevec"};
+template <> inline std::string_view const type_name<pgvector::SparseVector>{"sparsevec"};
 
 template <> struct nullness<pgvector::SparseVector> : pqxx::no_null<pgvector::SparseVector> {};
 
