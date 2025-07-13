@@ -1,4 +1,4 @@
-## 0.2.3 (unreleased)
+## 0.2.3 (2025-07-13)
 
 - Fixed `duplicate symbol` errors
 
