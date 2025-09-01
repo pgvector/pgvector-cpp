@@ -23,7 +23,7 @@
 namespace pqxx {
 template <> inline std::string_view const type_name<pgvector::Vector>{"vector"};
 
-template <> struct nullness<pgvector::Vector> : pqxx::no_null<pgvector::Vector> {};
+template <> struct nullness<pgvector::Vector> : no_null<pgvector::Vector> {};
 
 template <> struct string_traits<pgvector::Vector> {
     static constexpr bool converts_to_string{true};
@@ -68,7 +68,7 @@ template <> struct string_traits<pgvector::Vector> {
 
 template <> inline std::string_view const type_name<pgvector::HalfVector>{"halfvec"};
 
-template <> struct nullness<pgvector::HalfVector> : pqxx::no_null<pgvector::HalfVector> {};
+template <> struct nullness<pgvector::HalfVector> : no_null<pgvector::HalfVector> {};
 
 template <> struct string_traits<pgvector::HalfVector> {
     static constexpr bool converts_to_string{true};
@@ -113,7 +113,7 @@ template <> struct string_traits<pgvector::HalfVector> {
 
 template <> inline std::string_view const type_name<pgvector::SparseVector>{"sparsevec"};
 
-template <> struct nullness<pgvector::SparseVector> : pqxx::no_null<pgvector::SparseVector> {};
+template <> struct nullness<pgvector::SparseVector> : no_null<pgvector::SparseVector> {};
 
 template <> struct string_traits<pgvector::SparseVector> {
     static constexpr bool converts_to_string{true};
