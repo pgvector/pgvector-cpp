@@ -263,6 +263,20 @@ void test_sparsevec_from_string() {
         assert(std::string_view(e.what()) == "Malformed sparsevec literal");
     }
 
+    try {
+        auto unused = pqxx::from_string<pgvector::SparseVector>("{0:1}/1");
+        assert(false);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Malformed sparsevec literal");
+    }
+
+    try {
+        auto unused = pqxx::from_string<pgvector::SparseVector>("{-2147483648:1}/1");
+        assert(false);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Malformed sparsevec literal");
+    }
+
     // TODO change to pqxx::conversion_error
     try {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{a:1}/1");

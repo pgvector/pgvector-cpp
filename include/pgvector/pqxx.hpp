@@ -149,8 +149,15 @@ template <> struct string_traits<pgvector::SparseVector> {
                     throw conversion_error("Malformed sparsevec literal");
                 }
 
-                indices.push_back(std::stoi(substr.substr(0, ne)) - 1);
-                values.push_back(std::stof(substr.substr(ne + 1)));
+                int index = std::stoi(substr.substr(0, ne));
+                float value = std::stof(substr.substr(ne + 1));
+
+                if (index < 1) {
+                    throw conversion_error("Malformed sparsevec literal");
+                }
+
+                indices.push_back(index - 1);
+                values.push_back(value);
             }
         }
 
