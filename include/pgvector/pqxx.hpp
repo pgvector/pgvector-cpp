@@ -31,7 +31,7 @@ template <> struct string_traits<pgvector::Vector> {
     static constexpr bool converts_from_string{true};
 
     static pgvector::Vector from_string(std::string_view text) {
-        if (text.front() != '[' || text.back() != ']') {
+        if (text.size() < 2 || text.front() != '[' || text.back() != ']') {
             throw conversion_error("Malformed vector literal");
         }
 
@@ -76,7 +76,7 @@ template <> struct string_traits<pgvector::HalfVector> {
     static constexpr bool converts_from_string{true};
 
     static pgvector::HalfVector from_string(std::string_view text) {
-        if (text.front() != '[' || text.back() != ']') {
+        if (text.size() < 2 || text.front() != '[' || text.back() != ']') {
             throw conversion_error("Malformed halfvec literal");
         }
 
