@@ -130,23 +130,30 @@ template <> struct string_traits<pgvector::SparseVector> {
             throw conversion_error("Malformed sparsevec literal");
         }
 
-        std::vector<int> indices;
-        std::vector<float> values;
-        std::istringstream ss(std::string(text.substr(1, n)));
-        while (ss.good()) {
-            std::string substr;
-            std::getline(ss, substr, ',');
-
-            size_t ne = substr.find(":");
-            if (ne == std::string::npos) {
-                throw conversion_error("Malformed sparsevec literal");
-            }
-
-            indices.push_back(std::stoi(substr.substr(0, ne)) - 1);
-            values.push_back(std::stof(substr.substr(ne + 1)));
+        int dimensions = std::stoi(std::string(text.substr(n + 2)));
+        if (dimensions < 0) {
+            throw conversion_error("Malformed sparsevec literal");
         }
 
-        int dimensions = std::stoi(std::string(text.substr(n + 2)));
+        std::vector<int> indices;
+        std::vector<float> values;
+
+        if (n > 1) {
+            std::istringstream ss(std::string(text.substr(1, n)));
+            while (ss.good()) {
+                std::string substr;
+                std::getline(ss, substr, ',');
+
+                size_t ne = substr.find(":");
+                if (ne == std::string::npos) {
+                    throw conversion_error("Malformed sparsevec literal");
+                }
+
+                indices.push_back(std::stoi(substr.substr(0, ne)) - 1);
+                values.push_back(std::stof(substr.substr(ne + 1)));
+            }
+        }
+
         return pgvector::SparseVector(dimensions, indices, values);
     }
 

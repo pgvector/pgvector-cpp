@@ -225,6 +225,67 @@ void test_sparsevec_to_string() {
 
 void test_sparsevec_from_string() {
     assert(pqxx::from_string<pgvector::SparseVector>("{1:1,3:2,5:3}/6") == pgvector::SparseVector({1, 0, 2, 0, 3, 0}));
+    assert(pqxx::from_string<pgvector::SparseVector>("{}/6") == pgvector::SparseVector({0, 0, 0, 0, 0, 0}));
+
+    try {
+        auto unused = pqxx::from_string<pgvector::SparseVector>("");
+        assert(false);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Malformed sparsevec literal");
+    }
+
+    try {
+        auto unused = pqxx::from_string<pgvector::SparseVector>("{");
+        assert(false);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Malformed sparsevec literal");
+    }
+
+    try {
+        auto unused = pqxx::from_string<pgvector::SparseVector>("{}/-1");
+        assert(false);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Malformed sparsevec literal");
+    }
+
+    // TODO change to pqxx::conversion_error
+    try {
+        auto unused = pqxx::from_string<pgvector::SparseVector>("{:}/1");
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+    try {
+        auto unused = pqxx::from_string<pgvector::SparseVector>("{,}/1");
+        assert(false);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Malformed sparsevec literal");
+    }
+
+    // TODO change to pqxx::conversion_error
+    try {
+        auto unused = pqxx::from_string<pgvector::SparseVector>("{a:1}/1");
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+    // TODO change to pqxx::conversion_error
+    try {
+        auto unused = pqxx::from_string<pgvector::SparseVector>("{1:a}/1");
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+    // TODO change to pqxx::conversion_error
+    try {
+        auto unused = pqxx::from_string<pgvector::SparseVector>("{}/a");
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
 }
 
 void test_pqxx() {
