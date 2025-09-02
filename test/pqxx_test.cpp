@@ -279,6 +279,14 @@ void test_sparsevec_from_string() {
 
     // TODO change to pqxx::conversion_error
     try {
+        auto unused = pqxx::from_string<pgvector::SparseVector>("{1:4e38}/1");
+        assert(false);
+    } catch (const std::out_of_range& e) {
+        assert(true);
+    }
+
+    // TODO change to pqxx::conversion_error
+    try {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{a:1}/1");
         assert(false);
     } catch (const std::invalid_argument& e) {
