@@ -118,8 +118,37 @@ template <> struct nullness<pgvector::SparseVector> : no_null<pgvector::SparseVe
 template <> struct string_traits<pgvector::SparseVector> {
     static constexpr bool converts_to_string{true};
 
-    // TODO add from_string
-    static constexpr bool converts_from_string{false};
+    static constexpr bool converts_from_string{true};
+
+    static pgvector::SparseVector from_string(std::string_view text) {
+        if (text.size() < 4 || text.front() != '{') {
+            throw conversion_error("Malformed sparsevec literal");
+        }
+
+        size_t n = text.find("}/", 1);
+        if (n == std::string_view::npos) {
+            throw conversion_error("Malformed sparsevec literal");
+        }
+
+        std::vector<int> indices;
+        std::vector<float> values;
+        std::istringstream ss(std::string(text.substr(1, n)));
+        while (ss.good()) {
+            std::string substr;
+            std::getline(ss, substr, ',');
+
+            size_t ne = substr.find(":");
+            if (ne == std::string::npos) {
+                throw conversion_error("Malformed sparsevec literal");
+            }
+
+            indices.push_back(std::stoi(substr.substr(0, ne)) - 1);
+            values.push_back(std::stof(substr.substr(ne + 1)));
+        }
+
+        int dimensions = std::stoi(std::string(text.substr(n + 2)));
+        return pgvector::SparseVector(dimensions, indices, values);
+    }
 
     static zview to_buf(char* begin, char* end, const pgvector::SparseVector& value) {
         char *const next = into_buf(begin, end, value);

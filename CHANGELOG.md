@@ -1,3 +1,7 @@
+## 0.2.4 (unreleased)
+
+- Added `from_string` support for `SparseVector`
+
 ## 0.2.3 (2025-07-13)
 
 - Fixed `duplicate symbol` errors

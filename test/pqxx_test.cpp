@@ -78,9 +78,9 @@ void test_sparsevec(pqxx::connection &conn) {
 
     pqxx::result res = tx.exec("SELECT sparse_embedding FROM items ORDER BY sparse_embedding <-> $1", {embedding2});
     assert(res.size() == 3);
-    assert(res[0][0].as<std::string>() == "{1:4,2:5,3:6}/3");
-    assert(res[1][0].as<std::string>() == "{1:1,2:2,3:3}/3");
-    assert(!res[2][0].as<std::optional<std::string>>().has_value());
+    assert(res[0][0].as<pgvector::SparseVector>() == embedding2);
+    assert(res[1][0].as<pgvector::SparseVector>() == embedding);
+    assert(!res[2][0].as<std::optional<pgvector::SparseVector>>().has_value());
 }
 
 void test_sparsevec_nnz(pqxx::connection &conn) {
@@ -224,7 +224,7 @@ void test_sparsevec_to_string() {
 }
 
 void test_sparsevec_from_string() {
-    // TODO add
+    assert(pqxx::from_string<pgvector::SparseVector>("{1:1,3:2,5:3}/6") == pgvector::SparseVector({1, 0, 2, 0, 3, 0}));
 }
 
 void test_pqxx() {
