@@ -241,6 +241,14 @@ void test_sparsevec_from_string() {
         assert(std::string_view(e.what()) == "Malformed sparsevec literal");
     }
 
+    // TODO change to pqxx::conversion_error
+    try {
+        auto unused = pqxx::from_string<pgvector::SparseVector>("{ }/");
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
     try {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{}/-1");
         assert(false);
