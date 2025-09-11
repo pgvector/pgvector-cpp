@@ -241,27 +241,25 @@ void test_sparsevec_from_string() {
         assert(std::string_view(e.what()) == "Malformed sparsevec literal");
     }
 
-    // TODO change to pqxx::conversion_error
     try {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{ }/");
         assert(false);
-    } catch (const std::invalid_argument& e) {
-        assert(true);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Could not convert '' to int");
     }
 
     try {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{}/-1");
         assert(false);
     } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Malformed sparsevec literal");
+        assert(std::string_view(e.what()) == "Dimensions cannot be negative");
     }
 
-    // TODO change to pqxx::conversion_error
     try {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{:}/1");
         assert(false);
-    } catch (const std::invalid_argument& e) {
-        assert(true);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Could not convert '' to int");
     }
 
     try {
@@ -275,46 +273,42 @@ void test_sparsevec_from_string() {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{0:1}/1");
         assert(false);
     } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Malformed sparsevec literal");
+        assert(std::string_view(e.what()) == "Index out of bounds");
     }
 
     try {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{-2147483648:1}/1");
         assert(false);
     } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Malformed sparsevec literal");
+        assert(std::string_view(e.what()) == "Index out of bounds");
     }
 
-    // TODO change to pqxx::conversion_error
     try {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{1:4e38}/1");
         assert(false);
-    } catch (const std::out_of_range& e) {
-        assert(true);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Could not convert string to numeric value: '4e38'." || std::string_view(e.what()) == "Could not convert '4e38' to float");
     }
 
-    // TODO change to pqxx::conversion_error
     try {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{a:1}/1");
         assert(false);
-    } catch (const std::invalid_argument& e) {
-        assert(true);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Could not convert 'a' to int");
     }
 
-    // TODO change to pqxx::conversion_error
     try {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{1:a}/1");
         assert(false);
-    } catch (const std::invalid_argument& e) {
-        assert(true);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Could not convert string to numeric value: 'a'." || std::string_view(e.what()) == "Could not convert 'a' to float");
     }
 
-    // TODO change to pqxx::conversion_error
     try {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{}/a");
         assert(false);
-    } catch (const std::invalid_argument& e) {
-        assert(true);
+    } catch (const pqxx::conversion_error& e) {
+        assert(std::string_view(e.what()) == "Could not convert 'a' to int");
     }
 }
 

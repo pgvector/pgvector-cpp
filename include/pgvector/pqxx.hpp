@@ -130,16 +130,16 @@ template <> struct string_traits<pgvector::SparseVector> {
             throw conversion_error("Malformed sparsevec literal");
         }
 
-        int dimensions = std::stoi(std::string(text.substr(n + 2)));
+        int dimensions = pqxx::from_string<int>(text.substr(n + 2));
         if (dimensions < 0) {
-            throw conversion_error("Malformed sparsevec literal");
+            throw conversion_error("Dimensions cannot be negative");
         }
 
         std::vector<int> indices;
         std::vector<float> values;
 
         if (n > 1) {
-            std::istringstream ss(std::string(text.substr(1, n)));
+            std::istringstream ss(std::string(text.substr(1, n - 1)));
             while (ss.good()) {
                 std::string substr;
                 std::getline(ss, substr, ',');
@@ -149,11 +149,11 @@ template <> struct string_traits<pgvector::SparseVector> {
                     throw conversion_error("Malformed sparsevec literal");
                 }
 
-                int index = std::stoi(substr.substr(0, ne));
-                float value = std::stof(substr.substr(ne + 1));
+                int index = pqxx::from_string<int>(substr.substr(0, ne));
+                float value = pqxx::from_string<float>(substr.substr(ne + 1));
 
                 if (index < 1) {
-                    throw conversion_error("Malformed sparsevec literal");
+                    throw conversion_error("Index out of bounds");
                 }
 
                 indices.push_back(index - 1);
