@@ -130,7 +130,7 @@ template <> struct string_traits<pgvector::SparseVector> {
             throw conversion_error("Malformed sparsevec literal");
         }
 
-        int dimensions = pqxx::from_string<int>(text.substr(n + 2));
+        int dimensions = string_traits<int>::from_string(text.substr(n + 2));
         if (dimensions < 0) {
             throw conversion_error("Dimensions cannot be negative");
         }
@@ -149,8 +149,8 @@ template <> struct string_traits<pgvector::SparseVector> {
                     throw conversion_error("Malformed sparsevec literal");
                 }
 
-                int index = pqxx::from_string<int>(substr.substr(0, ne));
-                float value = pqxx::from_string<float>(substr.substr(ne + 1));
+                int index = string_traits<int>::from_string(substr.substr(0, ne));
+                float value = string_traits<float>::from_string(substr.substr(ne + 1));
 
                 if (index < 1) {
                     throw conversion_error("Index out of bounds");
