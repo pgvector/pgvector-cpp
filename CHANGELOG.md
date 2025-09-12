@@ -1,4 +1,4 @@
-## 0.2.4 (unreleased)
+## 0.2.4 (2025-09-12)
 
 - Added `from_string` support for `SparseVector`
 

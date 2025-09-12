@@ -8,14 +8,14 @@ Supports [libpqxx](https://github.com/jtv/libpqxx)
 
 ## Installation
 
-Add [the headers](https://github.com/pgvector/pgvector-cpp/tree/v0.2.3/include) to your project (supports C++17 and greater).
+Add [the headers](https://github.com/pgvector/pgvector-cpp/tree/v0.2.4/include) to your project (supports C++17 and greater).
 
 There is also support for CMake and FetchContent:
 
 ```cmake
 include(FetchContent)
 
-FetchContent_Declare(pgvector GIT_REPOSITORY https://github.com/pgvector/pgvector-cpp.git GIT_TAG v0.2.3)
+FetchContent_Declare(pgvector GIT_REPOSITORY https://github.com/pgvector/pgvector-cpp.git GIT_TAG v0.2.4)
 FetchContent_MakeAvailable(pgvector)
 
 target_link_libraries(app PRIVATE pgvector::pgvector)
