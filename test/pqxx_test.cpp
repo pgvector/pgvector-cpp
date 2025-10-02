@@ -287,7 +287,7 @@ void test_sparsevec_from_string() {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{1:4e38}/1");
         assert(false);
     } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Could not convert string to numeric value: '4e38'." || std::string_view(e.what()) == "Could not convert '4e38' to float");
+        assert(std::string_view(e.what()) == "Could not convert string to numeric value: '4e38'." || std::string_view(e.what()) == "Could not convert '4e38' to float: Invalid argument.");
     }
 
     try {
