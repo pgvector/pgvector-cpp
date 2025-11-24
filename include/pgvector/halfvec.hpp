@@ -36,6 +36,7 @@ class HalfVector {
     }
 
     /// Creates a half vector from an array.
+    // TODO remove in 0.3.0
     HalfVector(const float* value, size_t n) {
         value_ = std::vector<float>{value, value + n};
     }

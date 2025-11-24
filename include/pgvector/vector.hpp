@@ -36,6 +36,7 @@ class Vector {
     }
 
     /// Creates a vector from an array.
+    // TODO remove in 0.3.0
     Vector(const float* value, size_t n) {
         value_ = std::vector<float>{value, value + n};
     }
