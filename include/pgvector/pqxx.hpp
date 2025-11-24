@@ -35,12 +35,14 @@ template <> struct string_traits<pgvector::Vector> {
             throw conversion_error("Malformed vector literal");
         }
 
-        // TODO don't copy string
         std::vector<float> result;
+        // TODO support empty array
+        // TODO don't copy string
         std::istringstream ss(std::string(text.substr(1, text.size() - 2)));
         while (ss.good()) {
             std::string substr;
             std::getline(ss, substr, ',');
+            // TODO use pqxx::from_string<float>
             result.push_back(std::stof(substr));
         }
         return pgvector::Vector(result);
@@ -80,12 +82,14 @@ template <> struct string_traits<pgvector::HalfVector> {
             throw conversion_error("Malformed halfvec literal");
         }
 
-        // TODO don't copy string
         std::vector<float> result;
+        // TODO support empty array
+        // TODO don't copy string
         std::istringstream ss(std::string(text.substr(1, text.size() - 2)));
         while (ss.good()) {
             std::string substr;
             std::getline(ss, substr, ',');
+            // TODO use pqxx::from_string<float>
             result.push_back(std::stof(substr));
         }
         return pgvector::HalfVector(result);
