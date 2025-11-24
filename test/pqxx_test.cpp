@@ -116,8 +116,8 @@ void test_stream_to(pqxx::connection &conn) {
 
     pqxx::nontransaction tx(conn);
     auto stream = pqxx::stream_to::table(tx, {"items"}, {"embedding"});
-    stream << pgvector::Vector({1, 2, 3});
-    stream << pgvector::Vector({4, 5, 6});
+    stream.write_values(pgvector::Vector({1, 2, 3}));
+    stream.write_values(pgvector::Vector({4, 5, 6}));
     stream.complete();
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY id");
     assert(res[0][0].as<std::string>() == "[1,2,3]");
