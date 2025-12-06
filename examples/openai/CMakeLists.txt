@@ -8,7 +8,7 @@ include(FetchContent)
 
 FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git GIT_TAG 1.11.1)
 FetchContent_Declare(json GIT_REPOSITORY https://github.com/nlohmann/json.git GIT_TAG v3.11.3)
-FetchContent_Declare(libpqxx GIT_REPOSITORY https://github.com/jtv/libpqxx.git GIT_TAG 7.10.2)
+FetchContent_Declare(libpqxx GIT_REPOSITORY https://github.com/jtv/libpqxx.git GIT_TAG 7.10.4)
 FetchContent_MakeAvailable(cpr json libpqxx)
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/../.." pgvector)

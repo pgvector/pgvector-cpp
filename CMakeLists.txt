@@ -26,7 +26,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     if(BUILD_TESTING)
         include(FetchContent)
 
-        FetchContent_Declare(libpqxx GIT_REPOSITORY https://github.com/jtv/libpqxx.git GIT_TAG 7.10.2)
+        FetchContent_Declare(libpqxx GIT_REPOSITORY https://github.com/jtv/libpqxx.git GIT_TAG 7.10.4)
         FetchContent_MakeAvailable(libpqxx)
 
         add_executable(test test/halfvec_test.cpp test/main.cpp test/pqxx_test.cpp test/sparsevec_test.cpp test/vector_test.cpp)
