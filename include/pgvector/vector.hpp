@@ -31,6 +31,7 @@ class Vector {
 
     /// Creates a vector from a `std::vector<float>`.
     // TODO add explicit in 0.3.0
+    // TODO add noexcept in 0.3.0
     Vector(std::vector<float>&& value) {
         value_ = std::move(value);
     }

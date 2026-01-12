@@ -31,6 +31,7 @@ class HalfVector {
 
     /// Creates a half vector from a `std::vector<float>`.
     // TODO add explicit in 0.3.0
+    // TODO add noexcept in 0.3.0
     HalfVector(std::vector<float>&& value) {
         value_ = std::move(value);
     }
