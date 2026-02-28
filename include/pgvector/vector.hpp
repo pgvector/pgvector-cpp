@@ -22,7 +22,7 @@ class Vector {
     }
 
     /// Creates a vector from a `std::vector<float>`.
-    explicit Vector(std::vector<float>&& value) noexcept {
+    explicit Vector(std::vector<float>&& value) {
         value_ = std::move(value);
     }
 

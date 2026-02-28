@@ -22,7 +22,7 @@ class HalfVector {
     }
 
     /// Creates a half vector from a `std::vector<float>`.
-    explicit HalfVector(std::vector<float>&& value) noexcept {
+    explicit HalfVector(std::vector<float>&& value) {
         value_ = std::move(value);
     }
 
