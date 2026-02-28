@@ -9,13 +9,10 @@
 #include <algorithm>
 #include <cstddef>
 #include <ostream>
+#include <span>
 #include <stdexcept>
 #include <unordered_map>
 #include <vector>
-
-#if __cplusplus >= 202002L
-#include <span>
-#endif
 
 namespace pgvector {
 /// A sparse vector.
@@ -48,7 +45,6 @@ class SparseVector {
         }
     }
 
-#if __cplusplus >= 202002L
     /// Creates a sparse vector from a span.
     // TODO add explicit in 0.3.0
     SparseVector(std::span<const float> value) {
@@ -61,7 +57,6 @@ class SparseVector {
             }
         }
     }
-#endif
 
     /// Creates a sparse vector from a map of non-zero elements.
     SparseVector(const std::unordered_map<int, float>& map, int dimensions) {

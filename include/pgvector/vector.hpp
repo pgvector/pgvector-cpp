@@ -8,12 +8,9 @@
 
 #include <cstddef>
 #include <ostream>
+#include <span>
 #include <utility>
 #include <vector>
-
-#if __cplusplus >= 202002L
-#include <span>
-#endif
 
 namespace pgvector {
 /// A vector.
@@ -42,13 +39,11 @@ class Vector {
         value_ = std::vector<float>{value, value + n};
     }
 
-#if __cplusplus >= 202002L
     /// Creates a vector from a span.
     // TODO add explicit in 0.3.0
     Vector(std::span<const float> value) {
         value_ = std::vector<float>(value.begin(), value.end());
     }
-#endif
 
     /// Returns the number of dimensions.
     size_t dimensions() const {
