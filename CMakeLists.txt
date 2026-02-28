@@ -7,7 +7,7 @@ include(GNUInstallDirs)
 add_library(pgvector INTERFACE)
 add_library(pgvector::pgvector ALIAS pgvector)
 
-target_compile_features(pgvector INTERFACE cxx_std_17)
+target_compile_features(pgvector INTERFACE cxx_std_20)
 
 target_include_directories(
     pgvector
@@ -26,13 +26,13 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     if(BUILD_TESTING)
         include(FetchContent)
 
-        FetchContent_Declare(libpqxx GIT_REPOSITORY https://github.com/jtv/libpqxx.git GIT_TAG 7.10.5)
+        FetchContent_Declare(libpqxx GIT_REPOSITORY https://github.com/jtv/libpqxx.git GIT_TAG 8.0.0)
         FetchContent_MakeAvailable(libpqxx)
 
         add_executable(test test/halfvec_test.cpp test/main.cpp test/pqxx_test.cpp test/sparsevec_test.cpp test/vector_test.cpp)
         target_link_libraries(test PRIVATE libpqxx::pqxx pgvector::pgvector)
         if(NOT MSVC)
-            target_compile_options(test PRIVATE -Wall -Wextra -Wpedantic -Werror)
+            target_compile_options(test PRIVATE -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter)
         endif()
     endif()
 endif()

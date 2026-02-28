@@ -1,3 +1,9 @@
+## 0.3.0 (unreleased)
+
+- Added support for libpqxx 8
+- Dropped support for libpqxx 7
+- Dropped support for C++17
+
 ## 0.2.4 (2025-09-12)
 
 - Added `from_string` support for `SparseVector`

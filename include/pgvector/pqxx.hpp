@@ -21,16 +21,12 @@
 /// @cond
 
 namespace pqxx {
-template <> inline std::string_view const type_name<pgvector::Vector>{"vector"};
+template <> inline constexpr std::string_view name_type<pgvector::Vector>() noexcept { return "vector"; };
 
 template <> struct nullness<pgvector::Vector> : no_null<pgvector::Vector> {};
 
 template <> struct string_traits<pgvector::Vector> {
-    static constexpr bool converts_to_string{true};
-
-    static constexpr bool converts_from_string{true};
-
-    static pgvector::Vector from_string(std::string_view text) {
+    static pgvector::Vector from_string(std::string_view text, ctx c = {}) {
         if (text.size() < 2 || text.front() != '[' || text.back() != ']') {
             throw conversion_error("Malformed vector literal");
         }
@@ -48,18 +44,12 @@ template <> struct string_traits<pgvector::Vector> {
         return pgvector::Vector(result);
     }
 
-    static zview to_buf(char* begin, char* end, const pgvector::Vector& value) {
-        char *const next = into_buf(begin, end, value);
-        return zview{begin, next - begin - 1};
-    }
-
-    static char* into_buf(char* begin, char* end, const pgvector::Vector& value) {
-        auto ret = string_traits<std::vector<float>>::into_buf(
-            begin, end, static_cast<std::vector<float>>(value));
+    static std::string_view to_buf(std::span<char> buf, const pgvector::Vector& value, ctx c = {}) {
+        auto len = pqxx::into_buf(buf, static_cast<std::vector<float>>(value), c);
         // replace array brackets
-        *begin = '[';
-        *(ret - 2) = ']';
-        return ret;
+        buf[0] = '[';
+        buf[len - 1] = ']';
+        return {std::data(buf), len};
     }
 
     static size_t size_buffer(const pgvector::Vector& value) noexcept {
@@ -68,16 +58,12 @@ template <> struct string_traits<pgvector::Vector> {
     }
 };
 
-template <> inline std::string_view const type_name<pgvector::HalfVector>{"halfvec"};
+template <> inline constexpr std::string_view name_type<pgvector::HalfVector>() noexcept { return "halfvec"; };
 
 template <> struct nullness<pgvector::HalfVector> : no_null<pgvector::HalfVector> {};
 
 template <> struct string_traits<pgvector::HalfVector> {
-    static constexpr bool converts_to_string{true};
-
-    static constexpr bool converts_from_string{true};
-
-    static pgvector::HalfVector from_string(std::string_view text) {
+    static pgvector::HalfVector from_string(std::string_view text, ctx c = {}) {
         if (text.size() < 2 || text.front() != '[' || text.back() != ']') {
             throw conversion_error("Malformed halfvec literal");
         }
@@ -95,18 +81,12 @@ template <> struct string_traits<pgvector::HalfVector> {
         return pgvector::HalfVector(result);
     }
 
-    static zview to_buf(char* begin, char* end, const pgvector::HalfVector& value) {
-        char *const next = into_buf(begin, end, value);
-        return zview{begin, next - begin - 1};
-    }
-
-    static char* into_buf(char* begin, char* end, const pgvector::HalfVector& value) {
-        auto ret = string_traits<std::vector<float>>::into_buf(
-            begin, end, static_cast<std::vector<float>>(value));
+    static std::string_view to_buf(std::span<char> buf, const pgvector::HalfVector& value, ctx c = {}) {
+        auto len = pqxx::into_buf(buf, static_cast<std::vector<float>>(value), c);
         // replace array brackets
-        *begin = '[';
-        *(ret - 2) = ']';
-        return ret;
+        buf[0] = '[';
+        buf[len - 1] = ']';
+        return {std::data(buf), len};
     }
 
     static size_t size_buffer(const pgvector::HalfVector& value) noexcept {
@@ -115,16 +95,12 @@ template <> struct string_traits<pgvector::HalfVector> {
     }
 };
 
-template <> inline std::string_view const type_name<pgvector::SparseVector>{"sparsevec"};
+template <> inline constexpr std::string_view name_type<pgvector::SparseVector>() noexcept { return "sparsevec"; };
 
 template <> struct nullness<pgvector::SparseVector> : no_null<pgvector::SparseVector> {};
 
 template <> struct string_traits<pgvector::SparseVector> {
-    static constexpr bool converts_to_string{true};
-
-    static constexpr bool converts_from_string{true};
-
-    static pgvector::SparseVector from_string(std::string_view text) {
+    static pgvector::SparseVector from_string(std::string_view text, ctx c = {}) {
         if (text.size() < 4 || text.front() != '{') {
             throw conversion_error("Malformed sparsevec literal");
         }
@@ -134,7 +110,7 @@ template <> struct string_traits<pgvector::SparseVector> {
             throw conversion_error("Malformed sparsevec literal");
         }
 
-        int dimensions = string_traits<int>::from_string(text.substr(n + 2));
+        int dimensions = string_traits<int>::from_string(text.substr(n + 2), c);
         if (dimensions < 0) {
             throw conversion_error("Dimensions cannot be negative");
         }
@@ -153,8 +129,8 @@ template <> struct string_traits<pgvector::SparseVector> {
                     throw conversion_error("Malformed sparsevec literal");
                 }
 
-                int index = string_traits<int>::from_string(substr.substr(0, ne));
-                float value = string_traits<float>::from_string(substr.substr(ne + 1));
+                int index = string_traits<int>::from_string(substr.substr(0, ne), c);
+                float value = string_traits<float>::from_string(substr.substr(ne + 1), c);
 
                 if (index < 1) {
                     throw conversion_error("Index out of bounds");
@@ -168,12 +144,7 @@ template <> struct string_traits<pgvector::SparseVector> {
         return pgvector::SparseVector(dimensions, indices, values);
     }
 
-    static zview to_buf(char* begin, char* end, const pgvector::SparseVector& value) {
-        char *const next = into_buf(begin, end, value);
-        return zview{begin, next - begin - 1};
-    }
-
-    static char* into_buf(char* begin, char* end, const pgvector::SparseVector& value) {
+    static std::string_view to_buf(std::span<char> buf, const pgvector::SparseVector& value, ctx c = {}) {
         int dimensions = value.dimensions();
         auto indices = value.indices();
         auto values = value.values();
@@ -185,25 +156,24 @@ template <> struct string_traits<pgvector::SparseVector> {
             throw conversion_overrun{"sparsevec cannot have more than 16000 dimensions"};
         }
 
-        char *here = begin;
-        *here++ = '{';
+        size_t here = 0;
+        buf[here++] = '{';
 
         for (size_t i = 0; i < nnz; i++) {
             if (i != 0) {
-                *here++ = ',';
+                buf[here++] = ',';
             }
 
-            here = string_traits<int>::into_buf(here, end, indices[i] + 1) - 1;
-            *here++ = ':';
-            here = string_traits<float>::into_buf(here, end, values[i]) - 1;
+            here += pqxx::into_buf(buf.subspan(here), indices[i] + 1, c);
+            buf[here++] = ':';
+            here += pqxx::into_buf(buf.subspan(here), values[i], c);
         }
 
-        *here++ = '}';
-        *here++ = '/';
-        here = string_traits<int>::into_buf(here, end, dimensions) - 1;
-        *here++ = '\0';
+        buf[here++] = '}';
+        buf[here++] = '/';
+        here += pqxx::into_buf(buf.subspan(here), dimensions, c);
 
-        return here;
+        return {std::data(buf), here};
     }
 
     static size_t size_buffer(const pgvector::SparseVector& value) noexcept {
