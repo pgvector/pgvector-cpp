@@ -16,32 +16,18 @@ namespace pgvector {
 /// A vector.
 class Vector {
   public:
-    /// @private
-    // TODO remove in 0.3.0
-    Vector() = default;
-
     /// Creates a vector from a `std::vector<float>`.
-    // TODO add explicit in 0.3.0
-    Vector(const std::vector<float>& value) {
+    explicit Vector(const std::vector<float>& value) {
         value_ = value;
     }
 
     /// Creates a vector from a `std::vector<float>`.
-    // TODO add explicit in 0.3.0
-    // TODO add noexcept in 0.3.0
-    Vector(std::vector<float>&& value) {
+    explicit Vector(std::vector<float>&& value) noexcept {
         value_ = std::move(value);
     }
 
-    /// Creates a vector from an array.
-    // TODO remove in 0.3.0
-    Vector(const float* value, size_t n) {
-        value_ = std::vector<float>{value, value + n};
-    }
-
     /// Creates a vector from a span.
-    // TODO add explicit in 0.3.0
-    Vector(std::span<const float> value) {
+    explicit Vector(std::span<const float> value) {
         value_ = std::vector<float>(value.begin(), value.end());
     }
 

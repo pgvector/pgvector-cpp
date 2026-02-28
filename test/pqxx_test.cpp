@@ -26,7 +26,7 @@ void test_vector(pqxx::connection &conn) {
     auto embedding = pgvector::Vector({1, 2, 3});
     assert(embedding.dimensions() == 3);
     float arr[] = {4, 5, 6};
-    auto embedding2 = pgvector::Vector(arr, 3);
+    auto embedding2 = pgvector::Vector(std::span{arr, 3});
     tx.exec("INSERT INTO items (embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY embedding <-> $1", {embedding2});
@@ -43,7 +43,7 @@ void test_halfvec(pqxx::connection &conn) {
     auto embedding = pgvector::HalfVector({1, 2, 3});
     assert(embedding.dimensions() == 3);
     float arr[] = {4, 5, 6};
-    auto embedding2 = pgvector::HalfVector(arr, 3);
+    auto embedding2 = pgvector::HalfVector(std::span{arr, 3});
     tx.exec("INSERT INTO items (half_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
     pqxx::result res = tx.exec("SELECT half_embedding FROM items ORDER BY half_embedding <-> $1", {embedding2});

@@ -19,10 +19,6 @@ namespace pgvector {
 class SparseVector {
   public:
     /// @private
-    // TODO remove in 0.3.0
-    SparseVector() = default;
-
-    /// @private
     SparseVector(int dimensions, const std::vector<int>& indices, const std::vector<float>& values) {
         if (values.size() != indices.size()) {
             throw std::invalid_argument("indices and values must be the same length");
@@ -33,8 +29,7 @@ class SparseVector {
     }
 
     /// Creates a sparse vector from a dense vector.
-    // TODO add explicit in 0.3.0
-    SparseVector(const std::vector<float>& value) {
+    explicit SparseVector(const std::vector<float>& value) {
         dimensions_ = value.size();
         for (size_t i = 0; i < value.size(); i++) {
             float v = value[i];
@@ -46,8 +41,7 @@ class SparseVector {
     }
 
     /// Creates a sparse vector from a span.
-    // TODO add explicit in 0.3.0
-    SparseVector(std::span<const float> value) {
+    explicit SparseVector(std::span<const float> value) {
         dimensions_ = value.size();
         for (size_t i = 0; i < value.size(); i++) {
             float v = value[i];

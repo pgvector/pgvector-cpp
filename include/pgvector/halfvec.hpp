@@ -16,32 +16,18 @@ namespace pgvector {
 /// A half vector.
 class HalfVector {
   public:
-    /// @private
-    // TODO remove in 0.3.0
-    HalfVector() = default;
-
     /// Creates a half vector from a `std::vector<float>`.
-    // TODO add explicit in 0.3.0
-    HalfVector(const std::vector<float>& value) {
+    explicit HalfVector(const std::vector<float>& value) {
         value_ = value;
     }
 
     /// Creates a half vector from a `std::vector<float>`.
-    // TODO add explicit in 0.3.0
-    // TODO add noexcept in 0.3.0
-    HalfVector(std::vector<float>&& value) {
+    explicit HalfVector(std::vector<float>&& value) noexcept {
         value_ = std::move(value);
     }
 
-    /// Creates a half vector from an array.
-    // TODO remove in 0.3.0
-    HalfVector(const float* value, size_t n) {
-        value_ = std::vector<float>{value, value + n};
-    }
-
     /// Creates a half vector from a span.
-    // TODO add explicit in 0.3.0
-    HalfVector(std::span<const float> value) {
+    explicit HalfVector(std::span<const float> value) {
         value_ = std::vector<float>(value.begin(), value.end());
     }
 
