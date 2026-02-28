@@ -33,13 +33,14 @@ template <> struct string_traits<pgvector::Vector> {
 
         std::vector<float> result;
         if (text.size() > 2) {
-            // TODO remove all copying
-            std::istringstream ss(std::string(text.substr(1, text.size() - 2)));
-            while (ss.good()) {
-                std::string substr;
-                std::getline(ss, substr, ',');
-                result.push_back(string_traits<float>::from_string(substr, c));
+            size_t start = 1;
+            for (size_t i = start; i < text.size() - 2; i++) {
+                if (text[i] == ',') {
+                    result.push_back(string_traits<float>::from_string(text.substr(start, i - start), c));
+                    start = i + 1;
+                }
             }
+            result.push_back(string_traits<float>::from_string(text.substr(start, text.size() - start - 1), c));
         }
         return pgvector::Vector(std::move(result));
     }
@@ -70,13 +71,14 @@ template <> struct string_traits<pgvector::HalfVector> {
 
         std::vector<float> result;
         if (text.size() > 2) {
-            // TODO remove all copying
-            std::istringstream ss(std::string(text.substr(1, text.size() - 2)));
-            while (ss.good()) {
-                std::string substr;
-                std::getline(ss, substr, ',');
-                result.push_back(string_traits<float>::from_string(substr, c));
+            size_t start = 1;
+            for (size_t i = start; i < text.size() - 2; i++) {
+                if (text[i] == ',') {
+                    result.push_back(string_traits<float>::from_string(text.substr(start, i - start), c));
+                    start = i + 1;
+                }
             }
+            result.push_back(string_traits<float>::from_string(text.substr(start, text.size() - start - 1), c));
         }
         return pgvector::HalfVector(std::move(result));
     }
