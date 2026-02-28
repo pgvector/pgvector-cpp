@@ -33,7 +33,7 @@ template <> struct string_traits<pgvector::Vector> {
 
         std::vector<float> result;
         if (text.size() > 2) {
-            // TODO don't copy string
+            // TODO remove all copying
             std::istringstream ss(std::string(text.substr(1, text.size() - 2)));
             while (ss.good()) {
                 std::string substr;
@@ -70,7 +70,7 @@ template <> struct string_traits<pgvector::HalfVector> {
 
         std::vector<float> result;
         if (text.size() > 2) {
-            // TODO don't copy string
+            // TODO remove all copying
             std::istringstream ss(std::string(text.substr(1, text.size() - 2)));
             while (ss.good()) {
                 std::string substr;
