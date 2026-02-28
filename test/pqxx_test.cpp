@@ -141,6 +141,7 @@ void test_vector_to_string() {
 
 void test_vector_from_string() {
     assert(pqxx::from_string<pgvector::Vector>("[1,2,3]") == pgvector::Vector({1, 2, 3}));
+    assert(pqxx::from_string<pgvector::Vector>("[]") == pgvector::Vector(std::vector<float>{}));
 
     try {
         auto unused = pqxx::from_string<pgvector::Vector>("");
@@ -156,27 +157,17 @@ void test_vector_from_string() {
         assert(std::string_view(e.what()) == "Malformed vector literal");
     }
 
-    // TODO change to no error?
-    try {
-        auto unused = pqxx::from_string<pgvector::Vector>("[]");
-        assert(false);
-    } catch (const std::invalid_argument& e) {
-        assert(true);
-    }
-
-    // TODO change to pqxx::conversion_error
     try {
         auto unused = pqxx::from_string<pgvector::Vector>("[hello]");
         assert(false);
-    } catch (const std::invalid_argument& e) {
+    } catch (const pqxx::conversion_error& e) {
         assert(true);
     }
 
-    // TODO change to pqxx::conversion_error
     try {
         auto unused = pqxx::from_string<pgvector::Vector>("[4e38]");
         assert(false);
-    } catch (const std::out_of_range& e) {
+    } catch (const pqxx::conversion_error& e) {
         assert(true);
     }
 }
@@ -187,6 +178,7 @@ void test_halfvec_to_string() {
 
 void test_halfvec_from_string() {
     assert(pqxx::from_string<pgvector::HalfVector>("[1,2,3]") == pgvector::HalfVector({1, 2, 3}));
+    assert(pqxx::from_string<pgvector::HalfVector>("[]") == pgvector::HalfVector(std::vector<float>{}));
 
     try {
         auto unused = pqxx::from_string<pgvector::HalfVector>("");
@@ -202,19 +194,10 @@ void test_halfvec_from_string() {
         assert(std::string_view(e.what()) == "Malformed halfvec literal");
     }
 
-    // TODO change to no error?
-    try {
-        auto unused = pqxx::from_string<pgvector::HalfVector>("[]");
-        assert(false);
-    } catch (const std::invalid_argument& e) {
-        assert(true);
-    }
-
-    // TODO change to pqxx::conversion_error
     try {
         auto unused = pqxx::from_string<pgvector::HalfVector>("[hello]");
         assert(false);
-    } catch (const std::invalid_argument& e) {
+    } catch (const pqxx::conversion_error& e) {
         assert(true);
     }
 }

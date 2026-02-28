@@ -32,14 +32,14 @@ template <> struct string_traits<pgvector::Vector> {
         }
 
         std::vector<float> result;
-        // TODO support empty array
-        // TODO don't copy string
-        std::istringstream ss(std::string(text.substr(1, text.size() - 2)));
-        while (ss.good()) {
-            std::string substr;
-            std::getline(ss, substr, ',');
-            // TODO use pqxx::from_string<float>
-            result.push_back(std::stof(substr));
+        if (text.size() > 2) {
+            // TODO don't copy string
+            std::istringstream ss(std::string(text.substr(1, text.size() - 2)));
+            while (ss.good()) {
+                std::string substr;
+                std::getline(ss, substr, ',');
+                result.push_back(string_traits<float>::from_string(substr, c));
+            }
         }
         return pgvector::Vector(result);
     }
@@ -69,14 +69,14 @@ template <> struct string_traits<pgvector::HalfVector> {
         }
 
         std::vector<float> result;
-        // TODO support empty array
-        // TODO don't copy string
-        std::istringstream ss(std::string(text.substr(1, text.size() - 2)));
-        while (ss.good()) {
-            std::string substr;
-            std::getline(ss, substr, ',');
-            // TODO use pqxx::from_string<float>
-            result.push_back(std::stof(substr));
+        if (text.size() > 2) {
+            // TODO don't copy string
+            std::istringstream ss(std::string(text.substr(1, text.size() - 2)));
+            while (ss.good()) {
+                std::string substr;
+                std::getline(ss, substr, ',');
+                result.push_back(string_traits<float>::from_string(substr, c));
+            }
         }
         return pgvector::HalfVector(result);
     }
