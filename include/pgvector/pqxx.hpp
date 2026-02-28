@@ -41,7 +41,7 @@ template <> struct string_traits<pgvector::Vector> {
                 result.push_back(string_traits<float>::from_string(substr, c));
             }
         }
-        return pgvector::Vector(result);
+        return pgvector::Vector(std::move(result));
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::Vector& value, ctx c = {}) {
@@ -78,7 +78,7 @@ template <> struct string_traits<pgvector::HalfVector> {
                 result.push_back(string_traits<float>::from_string(substr, c));
             }
         }
-        return pgvector::HalfVector(result);
+        return pgvector::HalfVector(std::move(result));
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::HalfVector& value, ctx c = {}) {
