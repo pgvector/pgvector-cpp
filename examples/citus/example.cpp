@@ -74,7 +74,7 @@ int main() {
     std::cout << "Loading data in parallel" << std::endl;
     auto stream = pqxx::stream_to::table(tx2, {"items"}, {"embedding", "category_id"});
     for (size_t i = 0; i < embeddings.size(); i++) {
-        stream << std::make_tuple(pgvector::Vector(embeddings[i]), categories[i]);
+        stream.write_values(pgvector::Vector(embeddings[i]), categories[i]);
     }
     stream.complete();
 
