@@ -173,7 +173,7 @@ template <> struct string_traits<pgvector::SparseVector> {
         std::vector<float> values;
 
         if (n > 1) {
-            auto cb = [&](std::string_view substr) {
+            auto add_element = [&](std::string_view substr) {
                 size_t ne = substr.find(":");
                 if (ne == std::string::npos) {
                     throw conversion_error("Malformed sparsevec literal");
@@ -194,11 +194,11 @@ template <> struct string_traits<pgvector::SparseVector> {
             size_t start = 0;
             for (size_t i = 0; i < inner.size(); i++) {
                 if (inner[i] == ',') {
-                    cb(inner.substr(start, i - start));
+                    add_element(inner.substr(start, i - start));
                     start = i + 1;
                 }
             }
-            cb(inner.substr(start));
+            add_element(inner.substr(start));
         }
 
         return pgvector::SparseVector(dimensions, std::move(indices), std::move(values));
