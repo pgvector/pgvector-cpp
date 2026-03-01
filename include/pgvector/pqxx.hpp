@@ -47,16 +47,31 @@ template <> struct string_traits<pgvector::Vector> {
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::Vector& value, ctx c = {}) {
-        auto len = pqxx::into_buf(buf, static_cast<std::vector<float>>(value), c);
-        // replace array brackets
-        buf[0] = '[';
-        buf[len - 1] = ']';
-        return {std::data(buf), len};
+        auto values = static_cast<std::vector<float>>(value);
+
+        size_t here = 0;
+        buf[here++] = '[';
+
+        for (size_t i = 0; i < values.size(); i++) {
+            if (i != 0) {
+                buf[here++] = ',';
+            }
+
+            here += pqxx::into_buf(buf.subspan(here), values[i], c);
+        }
+
+        buf[here++] = ']';
+
+        return {std::data(buf), here};
     }
 
     static size_t size_buffer(const pgvector::Vector& value) noexcept {
-        return string_traits<std::vector<float>>::size_buffer(
-            static_cast<std::vector<float>>(value));
+        size_t size = 2; // [ and ]
+        for (const auto v : static_cast<std::vector<float>>(value)) {
+            size += 1; // ,
+            size += string_traits<float>::size_buffer(v);
+        }
+        return size;
     }
 };
 
@@ -86,16 +101,31 @@ template <> struct string_traits<pgvector::HalfVector> {
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::HalfVector& value, ctx c = {}) {
-        auto len = pqxx::into_buf(buf, static_cast<std::vector<float>>(value), c);
-        // replace array brackets
-        buf[0] = '[';
-        buf[len - 1] = ']';
-        return {std::data(buf), len};
+        auto values = static_cast<std::vector<float>>(value);
+
+        size_t here = 0;
+        buf[here++] = '[';
+
+        for (size_t i = 0; i < values.size(); i++) {
+            if (i != 0) {
+                buf[here++] = ',';
+            }
+
+            here += pqxx::into_buf(buf.subspan(here), values[i], c);
+        }
+
+        buf[here++] = ']';
+
+        return {std::data(buf), here};
     }
 
     static size_t size_buffer(const pgvector::HalfVector& value) noexcept {
-        return string_traits<std::vector<float>>::size_buffer(
-            static_cast<std::vector<float>>(value));
+        size_t size = 2; // [ and ]
+        for (const auto v : static_cast<std::vector<float>>(value)) {
+            size += 1; // ,
+            size += string_traits<float>::size_buffer(v);
+        }
+        return size;
     }
 };
 
