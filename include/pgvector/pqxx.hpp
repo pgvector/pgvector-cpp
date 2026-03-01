@@ -62,7 +62,6 @@ template <> struct string_traits<pgvector::Vector> {
             if (i != 0) {
                 buf[here++] = ',';
             }
-
             here += pqxx::into_buf(buf.subspan(here), values[i], c);
         }
 
@@ -127,7 +126,6 @@ template <> struct string_traits<pgvector::HalfVector> {
             if (i != 0) {
                 buf[here++] = ',';
             }
-
             here += pqxx::into_buf(buf.subspan(here), values[i], c);
         }
 
@@ -225,7 +223,6 @@ template <> struct string_traits<pgvector::SparseVector> {
             if (i != 0) {
                 buf[here++] = ',';
             }
-
             here += pqxx::into_buf(buf.subspan(here), indices[i] + 1, c);
             buf[here++] = ':';
             here += pqxx::into_buf(buf.subspan(here), values[i], c);
