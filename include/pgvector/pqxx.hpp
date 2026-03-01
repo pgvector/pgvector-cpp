@@ -29,19 +29,19 @@ template <> struct string_traits<pgvector::Vector> {
             throw conversion_error("Malformed vector literal");
         }
 
-        std::vector<float> result;
+        std::vector<float> values;
         if (text.size() > 2) {
             std::string_view inner = text.substr(1, text.size() - 2);
             size_t start = 0;
             for (size_t i = 0; i < inner.size(); i++) {
                 if (inner[i] == ',') {
-                    result.push_back(string_traits<float>::from_string(inner.substr(start, i - start), c));
+                    values.push_back(string_traits<float>::from_string(inner.substr(start, i - start), c));
                     start = i + 1;
                 }
             }
-            result.push_back(string_traits<float>::from_string(inner.substr(start), c));
+            values.push_back(string_traits<float>::from_string(inner.substr(start), c));
         }
-        return pgvector::Vector(std::move(result));
+        return pgvector::Vector(std::move(values));
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::Vector& value, ctx c = {}) {
@@ -93,19 +93,19 @@ template <> struct string_traits<pgvector::HalfVector> {
             throw conversion_error("Malformed halfvec literal");
         }
 
-        std::vector<float> result;
+        std::vector<float> values;
         if (text.size() > 2) {
             std::string_view inner = text.substr(1, text.size() - 2);
             size_t start = 0;
             for (size_t i = 0; i < inner.size(); i++) {
                 if (inner[i] == ',') {
-                    result.push_back(string_traits<float>::from_string(inner.substr(start, i - start), c));
+                    values.push_back(string_traits<float>::from_string(inner.substr(start, i - start), c));
                     start = i + 1;
                 }
             }
-            result.push_back(string_traits<float>::from_string(inner.substr(start), c));
+            values.push_back(string_traits<float>::from_string(inner.substr(start), c));
         }
-        return pgvector::HalfVector(std::move(result));
+        return pgvector::HalfVector(std::move(values));
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::HalfVector& value, ctx c = {}) {
