@@ -41,7 +41,7 @@ int main() {
             std::cout << '.' << std::flush;
         }
 
-        stream << pgvector::Vector(embeddings[i]);
+        stream.write_values(pgvector::Vector(embeddings[i]));
     }
     stream.complete();
     std::cout << std::endl << "Success!" << std::endl;
