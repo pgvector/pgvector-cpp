@@ -72,8 +72,13 @@ template <> struct string_traits<pgvector::Vector> {
     }
 
     static size_t size_buffer(const pgvector::Vector& value) noexcept {
+        auto values = static_cast<std::vector<float>>(value);
+
+        // cannot throw an exception here on overflow
+        // so throw in into_buf
+
         size_t size = 2; // [ and ]
-        for (const auto v : static_cast<std::vector<float>>(value)) {
+        for (const auto v : values) {
             size += 1; // ,
             size += string_traits<float>::size_buffer(v);
         }
@@ -132,8 +137,13 @@ template <> struct string_traits<pgvector::HalfVector> {
     }
 
     static size_t size_buffer(const pgvector::HalfVector& value) noexcept {
+        auto values = static_cast<std::vector<float>>(value);
+
+        // cannot throw an exception here on overflow
+        // so throw in into_buf
+
         size_t size = 2; // [ and ]
-        for (const auto v : static_cast<std::vector<float>>(value)) {
+        for (const auto v : values) {
             size += 1; // ,
             size += string_traits<float>::size_buffer(v);
         }
@@ -237,7 +247,7 @@ template <> struct string_traits<pgvector::SparseVector> {
         // cannot throw an exception here on overflow
         // so throw in into_buf
 
-        size_t size = 4; // {, }, /, and \0
+        size_t size = 3; // {, }, and /
         size += string_traits<int>::size_buffer(dimensions);
         for (size_t i = 0; i < nnz; i++) {
             size += 2; // : and ,
