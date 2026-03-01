@@ -137,6 +137,13 @@ void test_precision(pqxx::connection &conn) {
 
 void test_vector_to_string() {
     assert(pqxx::to_string(pgvector::Vector({1, 2, 3})) == "[1,2,3]");
+
+    try {
+        auto unused = pqxx::to_string(pgvector::Vector(std::vector<float>(16001)));
+        assert(false);
+    } catch (const pqxx::conversion_overrun& e) {
+        assert(std::string_view(e.what()) == "vector cannot have more than 16000 dimensions");
+    }
 }
 
 void test_vector_from_string() {
@@ -174,6 +181,13 @@ void test_vector_from_string() {
 
 void test_halfvec_to_string() {
     assert(pqxx::to_string(pgvector::HalfVector({1, 2, 3})) == "[1,2,3]");
+
+    try {
+        auto unused = pqxx::to_string(pgvector::HalfVector(std::vector<float>(16001)));
+        assert(false);
+    } catch (const pqxx::conversion_overrun& e) {
+        assert(std::string_view(e.what()) == "halfvec cannot have more than 16000 dimensions");
+    }
 }
 
 void test_halfvec_from_string() {
@@ -292,6 +306,13 @@ void test_sparsevec_from_string() {
         assert(false);
     } catch (const pqxx::conversion_error& e) {
         assert(std::string_view(e.what()) == "Could not convert 'a' to int: Invalid argument.");
+    }
+
+    try {
+        auto unused = pqxx::to_string(pgvector::SparseVector(std::vector<float>(16001, 1)));
+        assert(false);
+    } catch (const pqxx::conversion_overrun& e) {
+        assert(std::string_view(e.what()) == "sparsevec cannot have more than 16000 dimensions");
     }
 }
 
