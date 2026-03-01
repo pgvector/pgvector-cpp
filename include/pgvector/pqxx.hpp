@@ -49,6 +49,12 @@ template <> struct string_traits<pgvector::Vector> {
     static std::string_view to_buf(std::span<char> buf, const pgvector::Vector& value, ctx c = {}) {
         auto values = static_cast<std::vector<float>>(value);
 
+        // important! size_buffer cannot throw an exception on overflow
+        // so perform this check before writing any data
+        if (values.size() > 16000) {
+            throw conversion_overrun{"vector cannot have more than 16000 dimensions"};
+        }
+
         size_t here = 0;
         buf[here++] = '[';
 
@@ -102,6 +108,12 @@ template <> struct string_traits<pgvector::HalfVector> {
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::HalfVector& value, ctx c = {}) {
         auto values = static_cast<std::vector<float>>(value);
+
+        // important! size_buffer cannot throw an exception on overflow
+        // so perform this check before writing any data
+        if (values.size() > 16000) {
+            throw conversion_overrun{"halfvec cannot have more than 16000 dimensions"};
+        }
 
         size_t here = 0;
         buf[here++] = '[';
