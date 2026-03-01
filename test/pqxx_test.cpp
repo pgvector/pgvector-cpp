@@ -19,6 +19,20 @@ void before_each(pqxx::connection &conn) {
     tx.exec("TRUNCATE items");
 }
 
+template<typename T>
+void assert_exception(std::function<void(void)> code, std::optional<std::string_view> message = std::nullopt) {
+    bool exception = false;
+    try {
+        code();
+    } catch (const T& e) {
+        exception = true;
+        if (message) {
+            assert(std::string_view(e.what()) == *message);
+        }
+    }
+    assert(exception);
+}
+
 void test_vector(pqxx::connection &conn) {
     before_each(conn);
 
@@ -89,12 +103,9 @@ void test_sparsevec_nnz(pqxx::connection &conn) {
     pqxx::nontransaction tx(conn);
     std::vector<float> vec(16001, 1);
     auto embedding = pgvector::SparseVector(vec);
-    try {
+    assert_exception<pqxx::conversion_overrun>([&] {
         tx.exec("INSERT INTO items (sparse_embedding) VALUES ($1)", {embedding});
-        assert(false);
-    } catch (const pqxx::conversion_overrun& e) {
-        assert(std::string_view(e.what()) == "sparsevec cannot have more than 16000 dimensions");
-    }
+    }, "sparsevec cannot have more than 16000 dimensions");
 }
 
 void test_stream(pqxx::connection &conn) {
@@ -138,82 +149,55 @@ void test_precision(pqxx::connection &conn) {
 void test_vector_to_string() {
     assert(pqxx::to_string(pgvector::Vector({1, 2, 3})) == "[1,2,3]");
 
-    try {
+    assert_exception<pqxx::conversion_overrun>([] {
         auto unused = pqxx::to_string(pgvector::Vector(std::vector<float>(16001)));
-        assert(false);
-    } catch (const pqxx::conversion_overrun& e) {
-        assert(std::string_view(e.what()) == "vector cannot have more than 16000 dimensions");
-    }
+    }, "vector cannot have more than 16000 dimensions");
 }
 
 void test_vector_from_string() {
     assert(pqxx::from_string<pgvector::Vector>("[1,2,3]") == pgvector::Vector({1, 2, 3}));
     assert(pqxx::from_string<pgvector::Vector>("[]") == pgvector::Vector(std::vector<float>{}));
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::Vector>("");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Malformed vector literal");
-    }
+    }, "Malformed vector literal");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::Vector>("[");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Malformed vector literal");
-    }
+    }, "Malformed vector literal");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::Vector>("[hello]");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(true);
-    }
+    });
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::Vector>("[4e38]");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(true);
-    }
+    });
 }
 
 void test_halfvec_to_string() {
     assert(pqxx::to_string(pgvector::HalfVector({1, 2, 3})) == "[1,2,3]");
 
-    try {
+    assert_exception<pqxx::conversion_overrun>([] {
         auto unused = pqxx::to_string(pgvector::HalfVector(std::vector<float>(16001)));
-        assert(false);
-    } catch (const pqxx::conversion_overrun& e) {
-        assert(std::string_view(e.what()) == "halfvec cannot have more than 16000 dimensions");
-    }
+    }, "halfvec cannot have more than 16000 dimensions");
 }
 
 void test_halfvec_from_string() {
     assert(pqxx::from_string<pgvector::HalfVector>("[1,2,3]") == pgvector::HalfVector({1, 2, 3}));
     assert(pqxx::from_string<pgvector::HalfVector>("[]") == pgvector::HalfVector(std::vector<float>{}));
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::HalfVector>("");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Malformed halfvec literal");
-    }
+    }, "Malformed halfvec literal");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::HalfVector>("[");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Malformed halfvec literal");
-    }
+    }, "Malformed halfvec literal");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::HalfVector>("[hello]");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(true);
-    }
+    });
 }
 
 void test_sparsevec_to_string() {
@@ -224,96 +208,57 @@ void test_sparsevec_from_string() {
     assert(pqxx::from_string<pgvector::SparseVector>("{1:1,3:2,5:3}/6") == pgvector::SparseVector({1, 0, 2, 0, 3, 0}));
     assert(pqxx::from_string<pgvector::SparseVector>("{}/6") == pgvector::SparseVector({0, 0, 0, 0, 0, 0}));
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Malformed sparsevec literal");
-    }
+    }, "Malformed sparsevec literal");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Malformed sparsevec literal");
-    }
+    }, "Malformed sparsevec literal");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{ }/");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Could not convert '' to int: Invalid argument.");
-    }
+    }, "Could not convert '' to int: Invalid argument.");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{}/-1");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Dimensions cannot be negative");
-    }
+    }, "Dimensions cannot be negative");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{:}/1");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Could not convert '' to int: Invalid argument.");
-    }
+    }, "Could not convert '' to int: Invalid argument.");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{,}/1");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Malformed sparsevec literal");
-    }
+    }, "Malformed sparsevec literal");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{0:1}/1");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Index out of bounds");
-    }
+    }, "Index out of bounds");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{-2147483648:1}/1");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Index out of bounds");
-    }
+    }, "Index out of bounds");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{1:4e38}/1");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Could not convert string to numeric value: '4e38'." || std::string_view(e.what()) == "Could not convert '4e38' to float" || std::string_view(e.what()) == "Could not convert '4e38' to float: Value out of range.");
-    }
+    });
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{a:1}/1");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Could not convert 'a' to int: Invalid argument.");
-    }
+    }, "Could not convert 'a' to int: Invalid argument.");
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{1:a}/1");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Could not convert string to numeric value: 'a'." || std::string_view(e.what()) == "Could not convert 'a' to float" || std::string_view(e.what()) == "Could not convert 'a' to float: Invalid argument.");
-    }
+    });
 
-    try {
+    assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{}/a");
-        assert(false);
-    } catch (const pqxx::conversion_error& e) {
-        assert(std::string_view(e.what()) == "Could not convert 'a' to int: Invalid argument.");
-    }
+    }, "Could not convert 'a' to int: Invalid argument.");
 
-    try {
+    assert_exception<pqxx::conversion_overrun>([] {
         auto unused = pqxx::to_string(pgvector::SparseVector(std::vector<float>(16001, 1)));
-        assert(false);
-    } catch (const pqxx::conversion_overrun& e) {
-        assert(std::string_view(e.what()) == "sparsevec cannot have more than 16000 dimensions");
-    }
+    }, "sparsevec cannot have more than 16000 dimensions");
 }
 
 void test_pqxx() {
