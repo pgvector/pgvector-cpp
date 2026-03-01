@@ -33,14 +33,15 @@ template <> struct string_traits<pgvector::Vector> {
 
         std::vector<float> result;
         if (text.size() > 2) {
-            size_t start = 1;
-            for (size_t i = start; i < text.size() - 2; i++) {
-                if (text[i] == ',') {
-                    result.push_back(string_traits<float>::from_string(text.substr(start, i - start), c));
+            std::string_view inner = text.substr(1, text.size() - 2);
+            size_t start = 0;
+            for (size_t i = 0; i < inner.size(); i++) {
+                if (inner[i] == ',') {
+                    result.push_back(string_traits<float>::from_string(inner.substr(start, i - start), c));
                     start = i + 1;
                 }
             }
-            result.push_back(string_traits<float>::from_string(text.substr(start, text.size() - start - 1), c));
+            result.push_back(string_traits<float>::from_string(inner.substr(start), c));
         }
         return pgvector::Vector(std::move(result));
     }
@@ -71,14 +72,15 @@ template <> struct string_traits<pgvector::HalfVector> {
 
         std::vector<float> result;
         if (text.size() > 2) {
-            size_t start = 1;
-            for (size_t i = start; i < text.size() - 2; i++) {
-                if (text[i] == ',') {
-                    result.push_back(string_traits<float>::from_string(text.substr(start, i - start), c));
+            std::string_view inner = text.substr(1, text.size() - 2);
+            size_t start = 0;
+            for (size_t i = 0; i < inner.size(); i++) {
+                if (inner[i] == ',') {
+                    result.push_back(string_traits<float>::from_string(inner.substr(start, i - start), c));
                     start = i + 1;
                 }
             }
-            result.push_back(string_traits<float>::from_string(text.substr(start, text.size() - start - 1), c));
+            result.push_back(string_traits<float>::from_string(inner.substr(start), c));
         }
         return pgvector::HalfVector(std::move(result));
     }
@@ -138,14 +140,15 @@ template <> struct string_traits<pgvector::SparseVector> {
                 values.push_back(value);
             };
 
-            size_t start = 1;
-            for (size_t i = start; i < n - 1; i++) {
-                if (text[i] == ',') {
-                    cb(text.substr(start, i - start));
+            std::string_view inner = text.substr(1, n - 1);
+            size_t start = 0;
+            for (size_t i = 0; i < inner.size(); i++) {
+                if (inner[i] == ',') {
+                    cb(inner.substr(start, i - start));
                     start = i + 1;
                 }
             }
-            cb(text.substr(start, n - start));
+            cb(inner.substr(start));
         }
 
         return pgvector::SparseVector(dimensions, indices, values);
