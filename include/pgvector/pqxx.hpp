@@ -206,8 +206,8 @@ template <> struct string_traits<pgvector::SparseVector> {
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::SparseVector& value, ctx c = {}) {
         int dimensions = value.dimensions();
-        auto indices = value.indices();
-        auto values = value.values();
+        auto& indices = value.indices();
+        auto& values = value.values();
         size_t nnz = indices.size();
 
         // important! size_buffer cannot throw an exception on overflow
@@ -237,8 +237,8 @@ template <> struct string_traits<pgvector::SparseVector> {
 
     static size_t size_buffer(const pgvector::SparseVector& value) noexcept {
         int dimensions = value.dimensions();
-        auto indices = value.indices();
-        auto values = value.values();
+        auto& indices = value.indices();
+        auto& values = value.values();
         size_t nnz = indices.size();
 
         // cannot throw an exception here on overflow
