@@ -17,9 +17,7 @@ namespace pgvector {
 class HalfVector {
   public:
     /// Creates a half vector from a `std::vector<float>`.
-    explicit HalfVector(const std::vector<float>& value) {
-        value_ = value;
-    }
+    explicit HalfVector(const std::vector<float>& value) : value_{value} {}
 
     /// Creates a half vector from a `std::vector<float>`.
     explicit HalfVector(std::vector<float>&& value) {

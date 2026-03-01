@@ -17,9 +17,7 @@ namespace pgvector {
 class Vector {
   public:
     /// Creates a vector from a `std::vector<float>`.
-    explicit Vector(const std::vector<float>& value) {
-        value_ = value;
-    }
+    explicit Vector(const std::vector<float>& value) : value_{value} {}
 
     /// Creates a vector from a `std::vector<float>`.
     explicit Vector(std::vector<float>&& value) {
