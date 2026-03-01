@@ -120,24 +120,24 @@ template <> struct string_traits<pgvector::SparseVector> {
         std::vector<int> indices;
         std::vector<float> values;
 
-        auto cb = [&](std::string_view substr) {
-            size_t ne = substr.find(":");
-            if (ne == std::string::npos) {
-                throw conversion_error("Malformed sparsevec literal");
-            }
-
-            int index = string_traits<int>::from_string(substr.substr(0, ne), c);
-            float value = string_traits<float>::from_string(substr.substr(ne + 1), c);
-
-            if (index < 1) {
-                throw conversion_error("Index out of bounds");
-            }
-
-            indices.push_back(index - 1);
-            values.push_back(value);
-        };
-
         if (n > 1) {
+            auto cb = [&](std::string_view substr) {
+                size_t ne = substr.find(":");
+                if (ne == std::string::npos) {
+                    throw conversion_error("Malformed sparsevec literal");
+                }
+
+                int index = string_traits<int>::from_string(substr.substr(0, ne), c);
+                float value = string_traits<float>::from_string(substr.substr(ne + 1), c);
+
+                if (index < 1) {
+                    throw conversion_error("Index out of bounds");
+                }
+
+                indices.push_back(index - 1);
+                values.push_back(value);
+            };
+
             size_t start = 1;
             for (size_t i = start; i < n - 1; i++) {
                 if (text[i] == ',') {
