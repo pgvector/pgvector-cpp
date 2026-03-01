@@ -47,7 +47,7 @@ template <> struct string_traits<pgvector::Vector> {
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::Vector& value, ctx c = {}) {
-        auto values = static_cast<std::vector<float>>(value);
+        auto values = static_cast<std::span<const float>>(value);
 
         // important! size_buffer cannot throw an exception on overflow
         // so perform this check before writing any data
@@ -71,7 +71,7 @@ template <> struct string_traits<pgvector::Vector> {
     }
 
     static size_t size_buffer(const pgvector::Vector& value) noexcept {
-        auto values = static_cast<std::vector<float>>(value);
+        auto values = static_cast<std::span<const float>>(value);
 
         // cannot throw an exception here on overflow
         // so throw in into_buf
@@ -111,7 +111,7 @@ template <> struct string_traits<pgvector::HalfVector> {
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::HalfVector& value, ctx c = {}) {
-        auto values = static_cast<std::vector<float>>(value);
+        auto values = static_cast<std::span<const float>>(value);
 
         // important! size_buffer cannot throw an exception on overflow
         // so perform this check before writing any data
@@ -135,7 +135,7 @@ template <> struct string_traits<pgvector::HalfVector> {
     }
 
     static size_t size_buffer(const pgvector::HalfVector& value) noexcept {
-        auto values = static_cast<std::vector<float>>(value);
+        auto values = static_cast<std::span<const float>>(value);
 
         // cannot throw an exception here on overflow
         // so throw in into_buf

@@ -41,6 +41,11 @@ class HalfVector {
         return value_;
     }
 
+    /// Returns the half vector as a `std::span<const float>`.
+    operator const std::span<const float>() const {
+        return value_;
+    }
+
     friend bool operator==(const HalfVector& lhs, const HalfVector& rhs) {
         return lhs.value_ == rhs.value_;
     }

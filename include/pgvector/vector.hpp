@@ -41,6 +41,11 @@ class Vector {
         return value_;
     }
 
+    /// Returns the vector as a `std::span<const float>`.
+    operator const std::span<const float>() const {
+        return value_;
+    }
+
     friend bool operator==(const Vector& lhs, const Vector& rhs) {
         return lhs.value_ == rhs.value_;
     }
