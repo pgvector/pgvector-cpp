@@ -201,7 +201,7 @@ template <> struct string_traits<pgvector::SparseVector> {
             cb(inner.substr(start));
         }
 
-        return pgvector::SparseVector(dimensions, indices, values);
+        return pgvector::SparseVector(dimensions, std::move(indices), std::move(values));
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::SparseVector& value, ctx c = {}) {
