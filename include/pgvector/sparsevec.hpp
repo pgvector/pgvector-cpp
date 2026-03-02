@@ -59,7 +59,7 @@ class SparseVector {
         }
         dimensions_ = dimensions;
 
-        for (auto [i, v] : map) {
+        for (const auto [i, v] : map) {
             if (i < 0 || i >= dimensions) {
                 throw std::invalid_argument("sparsevec index out of bounds");
             }
@@ -71,7 +71,7 @@ class SparseVector {
         std::sort(indices_.begin(), indices_.end());
 
         values_.reserve(indices_.size());
-        for (auto i : indices_) {
+        for (const auto i : indices_) {
             values_.push_back(map.at(i));
         }
     }
