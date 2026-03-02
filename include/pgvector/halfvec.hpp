@@ -20,14 +20,10 @@ class HalfVector {
     explicit HalfVector(const std::vector<float>& value) : value_{value} {}
 
     /// Creates a half vector from a `std::vector<float>`.
-    explicit HalfVector(std::vector<float>&& value) {
-        value_ = std::move(value);
-    }
+    explicit HalfVector(std::vector<float>&& value) : value_{std::move(value)} {}
 
     /// Creates a half vector from a span.
-    explicit HalfVector(std::span<const float> value) {
-        value_ = std::vector<float>(value.begin(), value.end());
-    }
+    explicit HalfVector(std::span<const float> value) : value_{std::vector<float>(value.begin(), value.end())} {}
 
     /// Returns the number of dimensions.
     size_t dimensions() const {

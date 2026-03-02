@@ -20,14 +20,10 @@ class Vector {
     explicit Vector(const std::vector<float>& value) : value_{value} {}
 
     /// Creates a vector from a `std::vector<float>`.
-    explicit Vector(std::vector<float>&& value) {
-        value_ = std::move(value);
-    }
+    explicit Vector(std::vector<float>&& value) : value_{std::move(value)} {}
 
     /// Creates a vector from a span.
-    explicit Vector(std::span<const float> value) {
-        value_ = std::vector<float>(value.begin(), value.end());
-    }
+    explicit Vector(std::span<const float> value) : value_{std::vector<float>(value.begin(), value.end())} {}
 
     /// Returns the number of dimensions.
     size_t dimensions() const {
