@@ -173,6 +173,14 @@ void test_vector_from_string() {
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::Vector>("[4e38]");
     });
+
+    assert_exception<pqxx::conversion_error>([] {
+        auto unused = pqxx::from_string<pgvector::Vector>("[,]");
+    });
+
+    assert_exception<pqxx::conversion_error>([] {
+        auto unused = pqxx::from_string<pgvector::Vector>("[1,]");
+    });
 }
 
 void test_halfvec_to_string() {
@@ -197,6 +205,18 @@ void test_halfvec_from_string() {
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::HalfVector>("[hello]");
+    });
+
+    assert_exception<pqxx::conversion_error>([] {
+        auto unused = pqxx::from_string<pgvector::HalfVector>("[4e38]");
+    });
+
+    assert_exception<pqxx::conversion_error>([] {
+        auto unused = pqxx::from_string<pgvector::HalfVector>("[,]");
+    });
+
+    assert_exception<pqxx::conversion_error>([] {
+        auto unused = pqxx::from_string<pgvector::HalfVector>("[1,]");
     });
 }
 
