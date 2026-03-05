@@ -47,12 +47,7 @@ class HalfVector {
     }
 
     /// Returns the half vector as a `std::vector<pgvector::Half>`.
-    operator const std::vector<Half>() const {
-        return value_;
-    }
-
-    /// Returns the half vector as a `std::span<const pgvector::Half>`.
-    operator const std::span<const Half>() const {
+    const std::vector<Half>& as_vector() const {
         return value_;
     }
 

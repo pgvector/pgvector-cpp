@@ -2,6 +2,7 @@
 
 - Added support for libpqxx 8
 - Changed `HalfVector` to use `std::float16_t` or `_Float16` when available
+- Replaced conversion with `as_vector` function for `Vector` and `HalfVector`
 - Dropped support for libpqxx 7
 - Dropped support for C++17
 

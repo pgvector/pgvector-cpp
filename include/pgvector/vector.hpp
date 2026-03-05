@@ -31,12 +31,7 @@ class Vector {
     }
 
     /// Returns the vector as a `std::vector<float>`.
-    operator const std::vector<float>() const {
-        return value_;
-    }
-
-    /// Returns the vector as a `std::span<const float>`.
-    operator const std::span<const float>() const {
+    const std::vector<float>& as_vector() const {
         return value_;
     }
 
