@@ -9,14 +9,14 @@
 #include "helper.hpp"
 
 void setup(pqxx::connection &conn) {
-    pqxx::nontransaction tx(conn);
+    pqxx::nontransaction tx{conn};
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS items");
     tx.exec("CREATE TABLE items (id serial PRIMARY KEY, embedding vector(3), half_embedding halfvec(3), binary_embedding bit(3), sparse_embedding sparsevec(3))");
 }
 
 void before_each(pqxx::connection &conn) {
-    pqxx::nontransaction tx(conn);
+    pqxx::nontransaction tx{conn};
     tx.exec("TRUNCATE items");
 }
 
@@ -31,9 +31,9 @@ std::optional<std::string_view> float_error([[maybe_unused]] std::string_view me
 void test_vector(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::nontransaction tx(conn);
-    pgvector::Vector embedding({1, 2, 3});
-    pgvector::Vector embedding2({4, 5, 6});
+    pqxx::nontransaction tx{conn};
+    pgvector::Vector embedding{{1, 2, 3}};
+    pgvector::Vector embedding2{{4, 5, 6}};
     tx.exec("INSERT INTO items (embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY embedding <-> $1", {embedding2});
@@ -46,9 +46,9 @@ void test_vector(pqxx::connection &conn) {
 void test_halfvec(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::nontransaction tx(conn);
-    pgvector::HalfVector embedding({1, 2, 3});
-    pgvector::HalfVector embedding2({4, 5, 6});
+    pqxx::nontransaction tx{conn};
+    pgvector::HalfVector embedding{{1, 2, 3}};
+    pgvector::HalfVector embedding2{{4, 5, 6}};
     tx.exec("INSERT INTO items (half_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
     pqxx::result res = tx.exec("SELECT half_embedding FROM items ORDER BY half_embedding <-> $1", {embedding2});
@@ -61,7 +61,7 @@ void test_halfvec(pqxx::connection &conn) {
 void test_bit(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::nontransaction tx(conn);
+    pqxx::nontransaction tx{conn};
     std::string embedding{"101"};
     std::string embedding2{"111"};
     tx.exec("INSERT INTO items (binary_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
@@ -76,9 +76,9 @@ void test_bit(pqxx::connection &conn) {
 void test_sparsevec(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::nontransaction tx(conn);
-    pgvector::SparseVector embedding({1, 2, 3});
-    pgvector::SparseVector embedding2({4, 5, 6});
+    pqxx::nontransaction tx{conn};
+    pgvector::SparseVector embedding{{1, 2, 3}};
+    pgvector::SparseVector embedding2{{4, 5, 6}};
     tx.exec("INSERT INTO items (sparse_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
     pqxx::result res = tx.exec("SELECT sparse_embedding FROM items ORDER BY sparse_embedding <-> $1", {embedding2});
@@ -91,9 +91,9 @@ void test_sparsevec(pqxx::connection &conn) {
 void test_sparsevec_nnz(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::nontransaction tx(conn);
+    pqxx::nontransaction tx{conn};
     std::vector<float> vec(16001, 1);
-    pgvector::SparseVector embedding(vec);
+    pgvector::SparseVector embedding{vec};
     assert_exception<pqxx::conversion_overrun>([&] {
         tx.exec("INSERT INTO items (sparse_embedding) VALUES ($1)", {embedding});
     }, "sparsevec cannot have more than 16000 dimensions");
@@ -102,7 +102,7 @@ void test_sparsevec_nnz(pqxx::connection &conn) {
 void test_stream(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::nontransaction tx(conn);
+    pqxx::nontransaction tx{conn};
     pgvector::Vector embedding({1, 2, 3});
     tx.exec("INSERT INTO items (embedding) VALUES ($1)", {embedding});
     int count = 0;
@@ -116,10 +116,10 @@ void test_stream(pqxx::connection &conn) {
 void test_stream_to(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::nontransaction tx(conn);
+    pqxx::nontransaction tx{conn};
     pqxx::stream_to stream = pqxx::stream_to::table(tx, {"items"}, {"embedding"});
-    stream.write_values(pgvector::Vector({1, 2, 3}));
-    stream.write_values(pgvector::Vector({4, 5, 6}));
+    stream.write_values(pgvector::Vector{{1, 2, 3}});
+    stream.write_values(pgvector::Vector{{4, 5, 6}});
     stream.complete();
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY id");
     assert_equal(res[0][0].as<std::string>(), "[1,2,3]");
@@ -129,8 +129,8 @@ void test_stream_to(pqxx::connection &conn) {
 void test_precision(pqxx::connection &conn) {
     before_each(conn);
 
-    pqxx::nontransaction tx(conn);
-    pgvector::Vector embedding({1.23456789, 0, 0});
+    pqxx::nontransaction tx{conn};
+    pgvector::Vector embedding{{1.23456789, 0, 0}};
     tx.exec("INSERT INTO items (embedding) VALUES ($1)", {embedding});
     tx.exec("SET extra_float_digits = 3");
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY id DESC LIMIT 1");
@@ -138,8 +138,8 @@ void test_precision(pqxx::connection &conn) {
 }
 
 void test_vector_to_string() {
-    assert_equal(pqxx::to_string(pgvector::Vector({1, 2, 3})), "[1,2,3]");
-    assert_equal(pqxx::to_string(pgvector::Vector({-1.234567890123})), "[-1.2345679]");
+    assert_equal(pqxx::to_string(pgvector::Vector{{1, 2, 3}}), "[1,2,3]");
+    assert_equal(pqxx::to_string(pgvector::Vector{{-1.234567890123}}), "[-1.2345679]");
 
     assert_exception<pqxx::conversion_overrun>([] {
         pqxx::to_string(pgvector::Vector(std::vector<float>(16001)));
@@ -147,8 +147,8 @@ void test_vector_to_string() {
 }
 
 void test_vector_from_string() {
-    assert_equal(pqxx::from_string<pgvector::Vector>("[1,2,3]"), pgvector::Vector({1, 2, 3}));
-    assert_equal(pqxx::from_string<pgvector::Vector>("[]"), pgvector::Vector(std::vector<float>{}));
+    assert_equal(pqxx::from_string<pgvector::Vector>("[1,2,3]"), pgvector::Vector{{1, 2, 3}});
+    assert_equal(pqxx::from_string<pgvector::Vector>("[]"), pgvector::Vector{std::vector<float>{}});
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::Vector>("");
@@ -178,9 +178,9 @@ void test_vector_from_string() {
 void test_halfvec_to_string() {
     assert_equal(pqxx::to_string(pgvector::HalfVector({1, 2, 3})), "[1,2,3]");
 #if __STDCPP_FLOAT16_T__ || defined(__FLT16_MAX__)
-    assert_equal(pqxx::to_string(pgvector::HalfVector({static_cast<pgvector::Half>(-1.234567890123)})), "[-1.234375]");
+    assert_equal(pqxx::to_string(pgvector::HalfVector{{static_cast<pgvector::Half>(-1.234567890123)}}), "[-1.234375]");
 #else
-    assert_equal(pqxx::to_string(pgvector::HalfVector({-1.234567890123})), "[-1.2345679]");
+    assert_equal(pqxx::to_string(pgvector::HalfVector{{-1.234567890123}}), "[-1.2345679]");
 #endif
 
     assert_exception<pqxx::conversion_overrun>([] {
@@ -189,8 +189,8 @@ void test_halfvec_to_string() {
 }
 
 void test_halfvec_from_string() {
-    assert_equal(pqxx::from_string<pgvector::HalfVector>("[1,2,3]"), pgvector::HalfVector({1, 2, 3}));
-    assert_equal(pqxx::from_string<pgvector::HalfVector>("[]"), pgvector::HalfVector(std::vector<pgvector::Half>{}));
+    assert_equal(pqxx::from_string<pgvector::HalfVector>("[1,2,3]"), pgvector::HalfVector{{1, 2, 3}});
+    assert_equal(pqxx::from_string<pgvector::HalfVector>("[]"), pgvector::HalfVector{std::vector<pgvector::Half>{}});
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::HalfVector>("");
@@ -218,9 +218,9 @@ void test_halfvec_from_string() {
 }
 
 void test_sparsevec_to_string() {
-    assert_equal(pqxx::to_string(pgvector::SparseVector({1, 0, 2, 0, 3, 0})), "{1:1,3:2,5:3}/6");
-    std::unordered_map<int, float> map = {{999999999, -1.234567890123}};
-    assert_equal(pqxx::to_string(pgvector::SparseVector(map, 1000000000)), "{1000000000:-1.2345679}/1000000000");
+    assert_equal(pqxx::to_string(pgvector::SparseVector{{1, 0, 2, 0, 3, 0}}), "{1:1,3:2,5:3}/6");
+    std::unordered_map<int, float> map{{999999999, -1.234567890123}};
+    assert_equal(pqxx::to_string(pgvector::SparseVector{map, 1000000000}), "{1000000000:-1.2345679}/1000000000");
 
     assert_exception<pqxx::conversion_overrun>([] {
         pqxx::to_string(pgvector::SparseVector(std::vector<float>(16001, 1)));
@@ -228,8 +228,8 @@ void test_sparsevec_to_string() {
 }
 
 void test_sparsevec_from_string() {
-    assert_equal(pqxx::from_string<pgvector::SparseVector>("{1:1,3:2,5:3}/6"), pgvector::SparseVector({1, 0, 2, 0, 3, 0}));
-    assert_equal(pqxx::from_string<pgvector::SparseVector>("{}/6"), pgvector::SparseVector({0, 0, 0, 0, 0, 0}));
+    assert_equal(pqxx::from_string<pgvector::SparseVector>("{1:1,3:2,5:3}/6"), pgvector::SparseVector{{1, 0, 2, 0, 3, 0}});
+    assert_equal(pqxx::from_string<pgvector::SparseVector>("{}/6"), pgvector::SparseVector{{0, 0, 0, 0, 0, 0}});
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::SparseVector>("");
@@ -281,7 +281,7 @@ void test_sparsevec_from_string() {
 }
 
 void test_pqxx() {
-    pqxx::connection conn("dbname=pgvector_cpp_test");
+    pqxx::connection conn{"dbname=pgvector_cpp_test"};
     setup(conn);
 
     test_vector(conn);

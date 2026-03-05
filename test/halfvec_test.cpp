@@ -7,17 +7,17 @@
 using pgvector::HalfVector;
 
 static void test_constructor_vector() {
-    HalfVector vec(std::vector<pgvector::Half>{1, 2, 3});
+    HalfVector vec{std::vector<pgvector::Half>{1, 2, 3}};
     assert_equal(vec.dimensions(), 3u);
 }
 
 static void test_constructor_span() {
-    HalfVector vec(std::span<const pgvector::Half>{{1, 2, 3}});
+    HalfVector vec{std::span<const pgvector::Half>{{1, 2, 3}}};
     assert_equal(vec.dimensions(), 3u);
 }
 
 static void test_as_vector() {
-    HalfVector vec({1, 2, 3});
+    HalfVector vec{{1, 2, 3}};
     assert_equal(vec.as_vector() == std::vector<pgvector::Half>{1, 2, 3}, true);
 }
 

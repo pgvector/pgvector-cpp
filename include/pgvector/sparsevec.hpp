@@ -59,7 +59,7 @@ class SparseVector {
         }
         dimensions_ = dimensions;
 
-        for (const auto [i, v] : map) {
+        for (const auto& [i, v] : map) {
             if (i < 0 || i >= dimensions) {
                 throw std::invalid_argument("sparsevec index out of bounds");
             }

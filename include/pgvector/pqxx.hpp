@@ -41,11 +41,11 @@ template <> struct string_traits<pgvector::Vector> {
             }
             values.push_back(string_traits<float>::from_string(inner.substr(start), c));
         }
-        return pgvector::Vector(std::move(values));
+        return pgvector::Vector{std::move(values)};
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::Vector& value, ctx c = {}) {
-        auto& values = value.as_vector();
+        const std::vector<float>& values = value.as_vector();
 
         // important! size_buffer cannot throw an exception on overflow
         // so perform this check before writing any data
@@ -69,7 +69,7 @@ template <> struct string_traits<pgvector::Vector> {
     }
 
     static size_t size_buffer(const pgvector::Vector& value) noexcept {
-        auto& values = value.as_vector();
+        const std::vector<float>& values = value.as_vector();
 
         // cannot throw an exception here on overflow
         // so throw in into_buf
@@ -105,11 +105,11 @@ template <> struct string_traits<pgvector::HalfVector> {
             }
             values.push_back(static_cast<pgvector::Half>(string_traits<float>::from_string(inner.substr(start), c)));
         }
-        return pgvector::HalfVector(std::move(values));
+        return pgvector::HalfVector{std::move(values)};
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::HalfVector& value, ctx c = {}) {
-        auto& values = value.as_vector();
+        const std::vector<pgvector::Half>& values = value.as_vector();
 
         // important! size_buffer cannot throw an exception on overflow
         // so perform this check before writing any data
@@ -133,7 +133,7 @@ template <> struct string_traits<pgvector::HalfVector> {
     }
 
     static size_t size_buffer(const pgvector::HalfVector& value) noexcept {
-        auto& values = value.as_vector();
+        const std::vector<pgvector::Half>& values = value.as_vector();
 
         // cannot throw an exception here on overflow
         // so throw in into_buf
@@ -199,13 +199,13 @@ template <> struct string_traits<pgvector::SparseVector> {
             add_element(inner.substr(start));
         }
 
-        return pgvector::SparseVector(dimensions, std::move(indices), std::move(values));
+        return pgvector::SparseVector{dimensions, std::move(indices), std::move(values)};
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::SparseVector& value, ctx c = {}) {
         int dimensions = value.dimensions();
-        auto& indices = value.indices();
-        auto& values = value.values();
+        const std::vector<int>& indices = value.indices();
+        const std::vector<float>& values = value.values();
         size_t nnz = indices.size();
 
         // important! size_buffer cannot throw an exception on overflow
@@ -235,8 +235,8 @@ template <> struct string_traits<pgvector::SparseVector> {
 
     static size_t size_buffer(const pgvector::SparseVector& value) noexcept {
         int dimensions = value.dimensions();
-        auto& indices = value.indices();
-        auto& values = value.values();
+        const std::vector<int>& indices = value.indices();
+        const std::vector<float>& values = value.values();
         size_t nnz = indices.size();
 
         // cannot throw an exception here on overflow

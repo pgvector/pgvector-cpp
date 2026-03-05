@@ -8,20 +8,20 @@
 using pgvector::SparseVector;
 
 static void test_constructor_vector() {
-    SparseVector vec(std::vector<float>{1, 0, 2, 0, 3, 0});
+    SparseVector vec{std::vector<float>{1, 0, 2, 0, 3, 0}};
     assert_equal(vec.dimensions(), 6);
     assert_equal(vec.indices() == std::vector<int>{0, 2, 4}, true);
     assert_equal(vec.values() == std::vector<float>{1, 2, 3}, true);
 }
 
 static void test_constructor_span() {
-    SparseVector vec(std::span<const float>{{1, 0, 2, 0, 3, 0}});
+    SparseVector vec{std::span<const float>{{1, 0, 2, 0, 3, 0}}};
     assert_equal(vec.dimensions(), 6);
 }
 
 static void test_constructor_map() {
     std::unordered_map<int, float> map{{2, 2}, {4, 3}, {3, 0}, {0, 1}};
-    SparseVector vec(map, 6);
+    SparseVector vec{map, 6};
     assert_equal(vec.dimensions(), 6);
     assert_equal(vec.indices() == std::vector<int>{0, 2, 4}, true);
     assert_equal(vec.values() == std::vector<float>{1, 2, 3}, true);
