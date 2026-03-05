@@ -20,6 +20,7 @@ jobs:
           cd pgvector
           nmake /NOLOGO /F Makefile.win
           nmake /NOLOGO /F Makefile.win install
+        shell: cmd
 
       - run: cmake -S . -B build -DBUILD_TESTING=ON -DCMAKE_CXX_STANDARD=20
       - run: cmake --build build
