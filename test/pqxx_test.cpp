@@ -49,7 +49,7 @@ void test_halfvec(pqxx::connection &conn) {
 
     pqxx::nontransaction tx(conn);
     auto embedding = pgvector::HalfVector({1, 2, 3});
-    pgvector::HalfType arr[] = {4, 5, 6};
+    pgvector::Half arr[] = {4, 5, 6};
     auto embedding2 = pgvector::HalfVector(std::span{arr, 3});
     tx.exec("INSERT INTO items (half_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
@@ -186,13 +186,13 @@ void test_halfvec_to_string() {
 #endif
 
     assert_exception<pqxx::conversion_overrun>([] {
-        pqxx::to_string(pgvector::HalfVector(std::vector<pgvector::HalfType>(16001)));
+        pqxx::to_string(pgvector::HalfVector(std::vector<pgvector::Half>(16001)));
     }, "halfvec cannot have more than 16000 dimensions");
 }
 
 void test_halfvec_from_string() {
     assert_equal(pqxx::from_string<pgvector::HalfVector>("[1,2,3]"), pgvector::HalfVector({1, 2, 3}));
-    assert_equal(pqxx::from_string<pgvector::HalfVector>("[]"), pgvector::HalfVector(std::vector<pgvector::HalfType>{}));
+    assert_equal(pqxx::from_string<pgvector::HalfVector>("[]"), pgvector::HalfVector(std::vector<pgvector::Half>{}));
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::HalfVector>("");

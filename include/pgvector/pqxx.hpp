@@ -93,23 +93,23 @@ template <> struct string_traits<pgvector::HalfVector> {
             throw conversion_error("Malformed halfvec literal");
         }
 
-        std::vector<pgvector::HalfType> values;
+        std::vector<pgvector::Half> values;
         if (text.size() > 2) {
             std::string_view inner = text.substr(1, text.size() - 2);
             size_t start = 0;
             for (size_t i = 0; i < inner.size(); i++) {
                 if (inner[i] == ',') {
-                    values.push_back(static_cast<pgvector::HalfType>(string_traits<float>::from_string(inner.substr(start, i - start), c)));
+                    values.push_back(static_cast<pgvector::Half>(string_traits<float>::from_string(inner.substr(start, i - start), c)));
                     start = i + 1;
                 }
             }
-            values.push_back(static_cast<pgvector::HalfType>(string_traits<float>::from_string(inner.substr(start), c)));
+            values.push_back(static_cast<pgvector::Half>(string_traits<float>::from_string(inner.substr(start), c)));
         }
         return pgvector::HalfVector(std::move(values));
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::HalfVector& value, ctx c = {}) {
-        std::span<const pgvector::HalfType> values{value};
+        std::span<const pgvector::Half> values{value};
 
         // important! size_buffer cannot throw an exception on overflow
         // so perform this check before writing any data
@@ -133,7 +133,7 @@ template <> struct string_traits<pgvector::HalfVector> {
     }
 
     static size_t size_buffer(const pgvector::HalfVector& value) noexcept {
-        std::span<const pgvector::HalfType> values{value};
+        std::span<const pgvector::Half> values{value};
 
         // cannot throw an exception here on overflow
         // so throw in into_buf
