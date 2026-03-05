@@ -172,7 +172,7 @@ void test_vector_from_string() {
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::Vector>("[4e38]");
-    });
+    }, "Could not convert '4e38' to float: Value out of range.");
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::Vector>("[,]");
@@ -209,7 +209,7 @@ void test_halfvec_from_string() {
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::HalfVector>("[4e38]");
-    });
+    }, "Could not convert '4e38' to float: Value out of range.");
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::HalfVector>("[,]");
@@ -262,7 +262,7 @@ void test_sparsevec_from_string() {
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{1:4e38}/1");
-    });
+    }, "Could not convert '4e38' to float: Value out of range.");
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{a:1}/1");
@@ -270,7 +270,7 @@ void test_sparsevec_from_string() {
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{1:a}/1");
-    });
+    }, "Could not convert 'a' to float: Invalid argument.");
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::SparseVector>("{}/a");
