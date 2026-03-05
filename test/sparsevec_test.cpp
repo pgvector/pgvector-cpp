@@ -10,8 +10,8 @@ using pgvector::SparseVector;
 static void test_constructor_vector() {
     auto vec = SparseVector({1, 0, 2, 0, 3, 0});
     assert_equal(vec.dimensions(), 6);
-    assert_equal(vec.indices() == (std::vector<int>{0, 2, 4}), true);
-    assert_equal(vec.values() == (std::vector<float>{1, 2, 3}), true);
+    assert_equal(vec.indices() == std::vector<int>{0, 2, 4}, true);
+    assert_equal(vec.values() == std::vector<float>{1, 2, 3}, true);
 }
 
 static void test_constructor_span() {
@@ -23,8 +23,8 @@ static void test_constructor_map() {
     std::unordered_map<int, float> map = {{2, 2}, {4, 3}, {3, 0}, {0, 1}};
     auto vec = SparseVector(map, 6);
     assert_equal(vec.dimensions(), 6);
-    assert_equal(vec.indices() == (std::vector<int>{0, 2, 4}), true);
-    assert_equal(vec.values() == (std::vector<float>{1, 2, 3}), true);
+    assert_equal(vec.indices() == std::vector<int>{0, 2, 4}, true);
+    assert_equal(vec.values() == std::vector<float>{1, 2, 3}, true);
 
     assert_exception<std::invalid_argument>([&]{
         auto unused = SparseVector(map, 0);
