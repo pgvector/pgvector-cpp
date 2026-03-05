@@ -125,6 +125,8 @@ std::unordered_map<int, float> map = {{0, 1}, {2, 2}, {4, 3}};
 auto vec = pgvector::SparseVector(map, 6);
 ```
 
+Note: Indices start at 0
+
 Get the number of dimensions
 
 ```cpp
@@ -134,13 +136,13 @@ int dim = vec.dimensions();
 Get the indices of non-zero elements
 
 ```cpp
-auto indices = vec.indices();
+auto& indices = vec.indices();
 ```
 
 Get the values of non-zero elements
 
 ```cpp
-auto values = vec.values();
+auto& values = vec.values();
 ```
 
 ## History
