@@ -156,7 +156,7 @@ void test_precision(pqxx::connection &conn) {
 
 void test_vector_to_string() {
     assert(pqxx::to_string(pgvector::Vector({1, 2, 3})) == "[1,2,3]");
-    assert(pqxx::to_string(pgvector::Vector({1.234567890123})) == "[1.2345679]");
+    assert(pqxx::to_string(pgvector::Vector({-1.234567890123})) == "[-1.2345679]");
 
     assert_exception<pqxx::conversion_overrun>([] {
         auto unused = pqxx::to_string(pgvector::Vector(std::vector<float>(16001)));
@@ -194,7 +194,7 @@ void test_vector_from_string() {
 
 void test_halfvec_to_string() {
     assert(pqxx::to_string(pgvector::HalfVector({1, 2, 3})) == "[1,2,3]");
-    assert(pqxx::to_string(pgvector::HalfVector({1.234567890123})) == "[1.2345679]");
+    assert(pqxx::to_string(pgvector::HalfVector({-1.234567890123})) == "[-1.2345679]");
 
     assert_exception<pqxx::conversion_overrun>([] {
         auto unused = pqxx::to_string(pgvector::HalfVector(std::vector<float>(16001)));
@@ -232,8 +232,8 @@ void test_halfvec_from_string() {
 
 void test_sparsevec_to_string() {
     assert(pqxx::to_string(pgvector::SparseVector({1, 0, 2, 0, 3, 0})) == "{1:1,3:2,5:3}/6");
-    std::unordered_map<int, float> map = {{999999999, 1.234567890123}};
-    assert(pqxx::to_string(pgvector::SparseVector(map, 1000000000)) == "{1000000000:1.2345679}/1000000000");
+    std::unordered_map<int, float> map = {{999999999, -1.234567890123}};
+    assert(pqxx::to_string(pgvector::SparseVector(map, 1000000000)) == "{1000000000:-1.2345679}/1000000000");
 }
 
 void test_sparsevec_from_string() {
