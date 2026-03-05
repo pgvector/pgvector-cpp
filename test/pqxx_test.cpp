@@ -32,8 +32,8 @@ void test_vector(pqxx::connection &conn) {
     before_each(conn);
 
     pqxx::nontransaction tx(conn);
-    auto embedding = pgvector::Vector({1, 2, 3});
-    auto embedding2 = pgvector::Vector({4, 5, 6});
+    pgvector::Vector embedding({1, 2, 3});
+    pgvector::Vector embedding2({4, 5, 6});
     tx.exec("INSERT INTO items (embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY embedding <-> $1", {embedding2});
@@ -47,8 +47,8 @@ void test_halfvec(pqxx::connection &conn) {
     before_each(conn);
 
     pqxx::nontransaction tx(conn);
-    auto embedding = pgvector::HalfVector({1, 2, 3});
-    auto embedding2 = pgvector::HalfVector({4, 5, 6});
+    pgvector::HalfVector embedding({1, 2, 3});
+    pgvector::HalfVector embedding2({4, 5, 6});
     tx.exec("INSERT INTO items (half_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
     pqxx::result res = tx.exec("SELECT half_embedding FROM items ORDER BY half_embedding <-> $1", {embedding2});
@@ -62,8 +62,8 @@ void test_bit(pqxx::connection &conn) {
     before_each(conn);
 
     pqxx::nontransaction tx(conn);
-    std::string embedding = "101";
-    std::string embedding2 = "111";
+    std::string embedding{"101"};
+    std::string embedding2{"111"};
     tx.exec("INSERT INTO items (binary_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
     pqxx::result res = tx.exec("SELECT binary_embedding FROM items ORDER BY binary_embedding <~> $1", pqxx::params{embedding2});
@@ -77,8 +77,8 @@ void test_sparsevec(pqxx::connection &conn) {
     before_each(conn);
 
     pqxx::nontransaction tx(conn);
-    auto embedding = pgvector::SparseVector({1, 2, 3});
-    auto embedding2 = pgvector::SparseVector({4, 5, 6});
+    pgvector::SparseVector embedding({1, 2, 3});
+    pgvector::SparseVector embedding2({4, 5, 6});
     tx.exec("INSERT INTO items (sparse_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
 
     pqxx::result res = tx.exec("SELECT sparse_embedding FROM items ORDER BY sparse_embedding <-> $1", {embedding2});
@@ -93,7 +93,7 @@ void test_sparsevec_nnz(pqxx::connection &conn) {
 
     pqxx::nontransaction tx(conn);
     std::vector<float> vec(16001, 1);
-    auto embedding = pgvector::SparseVector(vec);
+    pgvector::SparseVector embedding(vec);
     assert_exception<pqxx::conversion_overrun>([&] {
         tx.exec("INSERT INTO items (sparse_embedding) VALUES ($1)", {embedding});
     }, "sparsevec cannot have more than 16000 dimensions");
@@ -103,7 +103,7 @@ void test_stream(pqxx::connection &conn) {
     before_each(conn);
 
     pqxx::nontransaction tx(conn);
-    auto embedding = pgvector::Vector({1, 2, 3});
+    pgvector::Vector embedding({1, 2, 3});
     tx.exec("INSERT INTO items (embedding) VALUES ($1)", {embedding});
     int count = 0;
     for (auto [id, embedding2] : tx.stream<int, pgvector::Vector>("SELECT id, embedding FROM items WHERE embedding IS NOT NULL")) {
@@ -117,7 +117,7 @@ void test_stream_to(pqxx::connection &conn) {
     before_each(conn);
 
     pqxx::nontransaction tx(conn);
-    auto stream = pqxx::stream_to::table(tx, {"items"}, {"embedding"});
+    pqxx::stream_to stream = pqxx::stream_to::table(tx, {"items"}, {"embedding"});
     stream.write_values(pgvector::Vector({1, 2, 3}));
     stream.write_values(pgvector::Vector({4, 5, 6}));
     stream.complete();
@@ -130,7 +130,7 @@ void test_precision(pqxx::connection &conn) {
     before_each(conn);
 
     pqxx::nontransaction tx(conn);
-    auto embedding = pgvector::Vector({1.23456789, 0, 0});
+    pgvector::Vector embedding({1.23456789, 0, 0});
     tx.exec("INSERT INTO items (embedding) VALUES ($1)", {embedding});
     tx.exec("SET extra_float_digits = 3");
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY id DESC LIMIT 1");

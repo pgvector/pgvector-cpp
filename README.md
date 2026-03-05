@@ -61,7 +61,7 @@ tx.exec("CREATE TABLE items (id bigserial PRIMARY KEY, embedding vector(3))");
 Insert a vector
 
 ```cpp
-auto embedding = pgvector::Vector({1, 2, 3});
+pgvector::Vector embedding({1, 2, 3});
 tx.exec("INSERT INTO items (embedding) VALUES ($1)", {embedding});
 ```
 
@@ -87,7 +87,7 @@ Use `std::optional<pgvector::Vector>` if the value could be `NULL`
 Create a vector from a `std::vector<float>`
 
 ```cpp
-auto vec = pgvector::Vector({1, 2, 3});
+pgvector::Vector vec(std::vector<float>{1, 2, 3});
 ```
 
 Convert to a `std::vector<float>`
@@ -101,7 +101,7 @@ auto float_vec = static_cast<std::vector<float>>(vec);
 Create a half vector from a `std::vector<float>`
 
 ```cpp
-auto vec = pgvector::HalfVector({1, 2, 3});
+pgvector::HalfVector vec(std::vector<float>{1, 2, 3});
 ```
 
 Convert to a `std::vector<float>`
@@ -115,14 +115,14 @@ auto float_vec = static_cast<std::vector<float>>(vec);
 Create a sparse vector from a `std::vector<float>`
 
 ```cpp
-auto vec = pgvector::SparseVector({1, 0, 2, 0, 3, 0});
+pgvector::SparseVector vec({1, 0, 2, 0, 3, 0});
 ```
 
 Or a map of non-zero elements
 
 ```cpp
-std::unordered_map<int, float> map = {{0, 1}, {2, 2}, {4, 3}};
-auto vec = pgvector::SparseVector(map, 6);
+std::unordered_map<int, float> map{{0, 1}, {2, 2}, {4, 3}};
+pgvector::SparseVector vec(map, 6);
 ```
 
 Note: Indices start at 0

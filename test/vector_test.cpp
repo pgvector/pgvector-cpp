@@ -7,17 +7,17 @@
 using pgvector::Vector;
 
 static void test_constructor_vector() {
-    auto vec = Vector(std::vector<float>{1, 2, 3});
+    Vector vec(std::vector<float>{1, 2, 3});
     assert_equal(vec.dimensions(), 3u);
 }
 
 static void test_constructor_span() {
-    auto vec = Vector(std::span<const float>({1, 2, 3}));
+    Vector vec(std::span<const float>{{1, 2, 3}});
     assert_equal(vec.dimensions(), 3u);
 }
 
 static void test_as_vector() {
-    auto vec = Vector({1, 2, 3});
+    Vector vec({1, 2, 3});
     assert_equal(vec.as_vector() == std::vector<float>{1, 2, 3}, true);
 }
 
