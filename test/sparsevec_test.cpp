@@ -27,11 +27,11 @@ static void test_constructor_map() {
     assert_equal(vec.values() == std::vector<float>{1, 2, 3}, true);
 
     assert_exception<std::invalid_argument>([&]{
-        auto unused = SparseVector(map, 0);
+        SparseVector(map, 0);
     }, "sparsevec must have at least 1 dimension");
 
     assert_exception<std::invalid_argument>([&]{
-        auto unused = SparseVector(map, 4);
+        SparseVector(map, 4);
     }, "sparsevec index out of bounds");
 }
 
