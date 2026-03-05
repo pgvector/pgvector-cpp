@@ -16,10 +16,6 @@ void assert_equal(const T& left, const U& right, const std::source_location& loc
     }
 }
 
-inline void assert_true(bool condition, const std::source_location& loc = std::source_location::current()) {
-    assert_equal(condition, true, loc);
-}
-
 template<typename T>
 void assert_exception(std::function<void(void)> code, std::optional<std::string_view> message = std::nullopt) {
     bool exception = false;
@@ -31,5 +27,5 @@ void assert_exception(std::function<void(void)> code, std::optional<std::string_
             assert_equal(std::string_view(e.what()), *message);
         }
     }
-    assert_true(exception);
+    assert_equal(exception, true);
 }

@@ -41,7 +41,7 @@ void test_vector(pqxx::connection &conn) {
     assert_equal(res.size(), 3);
     assert_equal(res[0][0].as<pgvector::Vector>(), embedding2);
     assert_equal(res[1][0].as<pgvector::Vector>(), embedding);
-    assert_true(!res[2][0].as<std::optional<pgvector::Vector>>().has_value());
+    assert_equal(res[2][0].as<std::optional<pgvector::Vector>>().has_value(), false);
 }
 
 void test_halfvec(pqxx::connection &conn) {
@@ -57,7 +57,7 @@ void test_halfvec(pqxx::connection &conn) {
     assert_equal(res.size(), 3);
     assert_equal(res[0][0].as<pgvector::HalfVector>(), embedding2);
     assert_equal(res[1][0].as<pgvector::HalfVector>(), embedding);
-    assert_true(!res[2][0].as<std::optional<pgvector::HalfVector>>().has_value());
+    assert_equal(res[2][0].as<std::optional<pgvector::HalfVector>>().has_value(), false);
 }
 
 void test_bit(pqxx::connection &conn) {
@@ -72,7 +72,7 @@ void test_bit(pqxx::connection &conn) {
     assert_equal(res.size(), 3);
     assert_equal(res[0][0].as<std::string>(), embedding2);
     assert_equal(res[1][0].as<std::string>(), embedding);
-    assert_true(!res[2][0].as<std::optional<std::string>>().has_value());
+    assert_equal(res[2][0].as<std::optional<std::string>>().has_value(), false);
 }
 
 void test_sparsevec(pqxx::connection &conn) {
@@ -87,7 +87,7 @@ void test_sparsevec(pqxx::connection &conn) {
     assert_equal(res.size(), 3);
     assert_equal(res[0][0].as<pgvector::SparseVector>(), embedding2);
     assert_equal(res[1][0].as<pgvector::SparseVector>(), embedding);
-    assert_true(!res[2][0].as<std::optional<pgvector::SparseVector>>().has_value());
+    assert_equal(res[2][0].as<std::optional<pgvector::SparseVector>>().has_value(), false);
 }
 
 void test_sparsevec_nnz(pqxx::connection &conn) {
