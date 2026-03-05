@@ -5,7 +5,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -13,12 +13,13 @@ jobs:
         with:
           database: pgvector_cpp_test
           dev-files: true
-      - run: |
-          cd /tmp
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          cd %TEMP%
           git clone --branch v0.8.2 https://github.com/pgvector/pgvector.git
           cd pgvector
-          make
-          sudo make install
+          nmake /NOLOGO /F Makefile.win
+          nmake /NOLOGO /F Makefile.win install
 
       - run: cmake -S . -B build -DBUILD_TESTING=ON -DCMAKE_CXX_STANDARD=20
       - run: cmake --build build
