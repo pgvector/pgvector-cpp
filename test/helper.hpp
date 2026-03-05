@@ -1,9 +1,24 @@
 #pragma once
 
-#include <cassert>
 #include <functional>
 #include <optional>
+#include <source_location>
+#include <sstream>
 #include <string_view>
+
+template<typename T>
+void assert_equal(const T& left, const T& right, const std::source_location& loc = std::source_location::current()) {
+    if (left != right) {
+        std::ostringstream message;
+        message << left << " != " << right;
+        message << " in " << loc.function_name() << " " << loc.file_name() << ":" << loc.line();
+        throw std::runtime_error(message.str());
+    }
+}
+
+inline void assert_true(bool condition, const std::source_location& loc = std::source_location::current()) {
+    assert_equal(condition, true, loc);
+}
 
 template<typename T>
 void assert_exception(std::function<void(void)> code, std::optional<std::string_view> message = std::nullopt) {
@@ -13,8 +28,8 @@ void assert_exception(std::function<void(void)> code, std::optional<std::string_
     } catch (const T& e) {
         exception = true;
         if (message) {
-            assert(std::string_view(e.what()) == *message);
+            assert_equal(std::string_view(e.what()), *message);
         }
     }
-    assert(exception);
+    assert_true(exception);
 }
