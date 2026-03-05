@@ -1,13 +1,13 @@
 #include <cassert>
-#include <functional>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
 
 #include <pqxx/pqxx>
-
 #include <pgvector/pqxx.hpp>
+
+#include "helper.hpp"
 
 void setup(pqxx::connection &conn) {
     pqxx::nontransaction tx(conn);
@@ -19,20 +19,6 @@ void setup(pqxx::connection &conn) {
 void before_each(pqxx::connection &conn) {
     pqxx::nontransaction tx(conn);
     tx.exec("TRUNCATE items");
-}
-
-template<typename T>
-void assert_exception(std::function<void(void)> code, std::optional<std::string_view> message = std::nullopt) {
-    bool exception = false;
-    try {
-        code();
-    } catch (const T& e) {
-        exception = true;
-        if (message) {
-            assert(std::string_view(e.what()) == *message);
-        }
-    }
-    assert(exception);
 }
 
 std::optional<std::string_view> float_error([[maybe_unused]] std::string_view message) {

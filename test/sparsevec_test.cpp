@@ -4,6 +4,8 @@
 
 #include <pgvector/sparsevec.hpp>
 
+#include "helper.hpp"
+
 using pgvector::SparseVector;
 
 static void test_constructor_vector() {
@@ -24,6 +26,14 @@ static void test_constructor_map() {
     assert(vec.dimensions() == 6);
     assert(vec.indices() == (std::vector<int>{0, 2, 4}));
     assert(vec.values() == (std::vector<float>{1, 2, 3}));
+
+    assert_exception<std::invalid_argument>([&]{
+        auto unused = SparseVector(map, 0);
+    }, "sparsevec must have at least 1 dimension");
+
+    assert_exception<std::invalid_argument>([&]{
+        auto unused = SparseVector(map, 4);
+    }, "sparsevec index out of bounds");
 }
 
 void test_sparsevec() {
