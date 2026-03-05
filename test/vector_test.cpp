@@ -18,8 +18,7 @@ static void test_constructor_span() {
 
 static void test_as_vector() {
     auto vec = Vector({1, 2, 3});
-    auto& float_vec = vec.as_vector();
-    assert_equal(float_vec == std::vector<float>{1, 2, 3}, true);
+    assert_equal(vec.as_vector() == std::vector<float>{1, 2, 3}, true);
 }
 
 void test_vector() {

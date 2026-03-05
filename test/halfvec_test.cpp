@@ -18,8 +18,7 @@ static void test_constructor_span() {
 
 static void test_as_vector() {
     auto vec = HalfVector({1, 2, 3});
-    auto& half_vec = vec.as_vector();
-    assert_equal(half_vec == std::vector<pgvector::Half>{1, 2, 3}, true);
+    assert_equal(vec.as_vector() == std::vector<pgvector::Half>{1, 2, 3}, true);
 }
 
 void test_halfvec() {
