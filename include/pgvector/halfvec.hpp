@@ -14,12 +14,17 @@
 
 #if __STDCPP_FLOAT16_T__
 #include <stdfloat>
+#else
+#define __STDC_WANT_IEC_60559_TYPES_EXT__
+#include <cfloat>
 #endif
 
 namespace pgvector {
 
 #if __STDCPP_FLOAT16_T__
 using Half = std::float16_t;
+#elif defined(__FLT16_MAX__)
+using Half = _Float16;
 #else
 using Half = float;
 #endif
@@ -61,7 +66,11 @@ class HalfVector {
             if (i > 0) {
                 os << ",";
             }
+#if __STDCPP_FLOAT16_T__
             os << value.value_[i];
+#else
+            os << static_cast<float>(value.value_[i]);
+#endif
         }
         os << "]";
         return os;

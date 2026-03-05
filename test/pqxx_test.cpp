@@ -179,8 +179,8 @@ void test_vector_from_string() {
 
 void test_halfvec_to_string() {
     assert_equal(pqxx::to_string(pgvector::HalfVector({1, 2, 3})), "[1,2,3]");
-#if __STDCPP_FLOAT16_T__
-    assert_equal(pqxx::to_string(pgvector::HalfVector({-1.234567890123f16})), "[-1.234375]");
+#if __STDCPP_FLOAT16_T__ || defined(__FLT16_MAX__)
+    assert_equal(pqxx::to_string(pgvector::HalfVector({static_cast<pgvector::Half>(-1.234567890123)})), "[-1.234375]");
 #else
     assert_equal(pqxx::to_string(pgvector::HalfVector({-1.234567890123})), "[-1.2345679]");
 #endif
