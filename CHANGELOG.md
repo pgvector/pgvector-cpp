@@ -1,6 +1,7 @@
 ## 0.3.0 (unreleased)
 
 - Added support for libpqxx 8
+- Changed `HalfVector` to use `std::float16_t` when available
 - Dropped support for libpqxx 7
 - Dropped support for C++17
 

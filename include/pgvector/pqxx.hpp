@@ -93,23 +93,23 @@ template <> struct string_traits<pgvector::HalfVector> {
             throw conversion_error("Malformed halfvec literal");
         }
 
-        std::vector<float> values;
+        std::vector<pgvector::HalfType> values;
         if (text.size() > 2) {
             std::string_view inner = text.substr(1, text.size() - 2);
             size_t start = 0;
             for (size_t i = 0; i < inner.size(); i++) {
                 if (inner[i] == ',') {
-                    values.push_back(string_traits<float>::from_string(inner.substr(start, i - start), c));
+                    values.push_back(static_cast<pgvector::HalfType>(string_traits<float>::from_string(inner.substr(start, i - start), c)));
                     start = i + 1;
                 }
             }
-            values.push_back(string_traits<float>::from_string(inner.substr(start), c));
+            values.push_back(static_cast<pgvector::HalfType>(string_traits<float>::from_string(inner.substr(start), c)));
         }
         return pgvector::HalfVector(std::move(values));
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::HalfVector& value, ctx c = {}) {
-        std::span<const float> values{value};
+        std::span<const pgvector::HalfType> values{value};
 
         // important! size_buffer cannot throw an exception on overflow
         // so perform this check before writing any data
@@ -124,7 +124,7 @@ template <> struct string_traits<pgvector::HalfVector> {
             if (i != 0) {
                 buf[here++] = ',';
             }
-            here += pqxx::into_buf(buf.subspan(here), values[i], c);
+            here += pqxx::into_buf(buf.subspan(here), static_cast<float>(values[i]), c);
         }
 
         buf[here++] = ']';
@@ -133,7 +133,7 @@ template <> struct string_traits<pgvector::HalfVector> {
     }
 
     static size_t size_buffer(const pgvector::HalfVector& value) noexcept {
-        std::span<const float> values{value};
+        std::span<const pgvector::HalfType> values{value};
 
         // cannot throw an exception here on overflow
         // so throw in into_buf
@@ -141,7 +141,7 @@ template <> struct string_traits<pgvector::HalfVector> {
         size_t size = 2; // [ and ]
         for (const auto v : values) {
             size += 1; // ,
-            size += string_traits<float>::size_buffer(v);
+            size += string_traits<float>::size_buffer(static_cast<float>(v));
         }
         return size;
     }

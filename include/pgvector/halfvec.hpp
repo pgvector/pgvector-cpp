@@ -12,31 +12,42 @@
 #include <utility>
 #include <vector>
 
+#if __STDCPP_FLOAT16_T__
+#include <stdfloat>
+#endif
+
 namespace pgvector {
+
+#if __STDCPP_FLOAT16_T__
+using HalfType = std::float16_t;
+#else
+using HalfType = float;
+#endif
+
 /// A half vector.
 class HalfVector {
   public:
-    /// Creates a half vector from a `std::vector<float>`.
-    explicit HalfVector(const std::vector<float>& value) : value_{value} {}
+    /// Creates a half vector from a `std::vector<pgvector::HalfType>`.
+    explicit HalfVector(const std::vector<HalfType>& value) : value_{value} {}
 
-    /// Creates a half vector from a `std::vector<float>`.
-    explicit HalfVector(std::vector<float>&& value) : value_{std::move(value)} {}
+    /// Creates a half vector from a `std::vector<pgvector::HalfType>`.
+    explicit HalfVector(std::vector<HalfType>&& value) : value_{std::move(value)} {}
 
     /// Creates a half vector from a span.
-    explicit HalfVector(std::span<const float> value) : value_{std::vector<float>(value.begin(), value.end())} {}
+    explicit HalfVector(std::span<const HalfType> value) : value_{std::vector<HalfType>(value.begin(), value.end())} {}
 
     /// Returns the number of dimensions.
     size_t dimensions() const {
         return value_.size();
     }
 
-    /// Returns the half vector as a `std::vector<float>`.
-    operator const std::vector<float>() const {
+    /// Returns the half vector as a `std::vector<pgvector::HalfType>`.
+    operator const std::vector<HalfType>() const {
         return value_;
     }
 
-    /// Returns the half vector as a `std::span<const float>`.
-    operator const std::span<const float>() const {
+    /// Returns the half vector as a `std::span<const pgvector::HalfType>`.
+    operator const std::span<const HalfType>() const {
         return value_;
     }
 
@@ -57,7 +68,6 @@ class HalfVector {
     }
 
   private:
-    // TODO use std::float16_t for C++23
-    std::vector<float> value_;
+    std::vector<HalfType> value_;
 };
 } // namespace pgvector

@@ -12,7 +12,7 @@ static void test_constructor_vector() {
 }
 
 static void test_constructor_span() {
-    auto vec = HalfVector(std::span<const float>({1, 2, 3}));
+    auto vec = HalfVector(std::span<const pgvector::HalfType>({1, 2, 3}));
     assert_equal(vec.dimensions(), 3u);
 }
 
