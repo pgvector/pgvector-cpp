@@ -74,7 +74,7 @@ pqxx::result r = tx.exec("SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5"
 Retrieve a vector
 
 ```cpp
-auto row = tx.exec("SELECT embedding FROM items LIMIT 1").one_row();
+pqxx::row row = tx.exec("SELECT embedding FROM items LIMIT 1").one_row();
 auto embedding = row[0].as<pgvector::Vector>();
 ```
 
@@ -136,13 +136,13 @@ int dim = vec.dimensions();
 Get the indices of non-zero elements
 
 ```cpp
-auto& indices = vec.indices();
+const std::vector<int>& indices = vec.indices();
 ```
 
 Get the values of non-zero elements
 
 ```cpp
-auto& values = vec.values();
+const std::vector<float>& values = vec.values();
 ```
 
 ## History
