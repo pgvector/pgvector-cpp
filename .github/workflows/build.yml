@@ -13,7 +13,7 @@ jobs:
         with:
           database: pgvector_cpp_test
           dev-files: true
-        run: |
+      - run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           cd %TEMP%
           git clone --branch v0.8.2 https://github.com/pgvector/pgvector.git
