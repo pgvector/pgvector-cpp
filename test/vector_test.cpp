@@ -7,7 +7,7 @@
 using pgvector::Vector;
 
 static void test_constructor_vector() {
-    auto vec = Vector({1, 2, 3});
+    auto vec = Vector(std::vector<float>{1, 2, 3});
     assert_equal(vec.dimensions(), 3u);
 }
 

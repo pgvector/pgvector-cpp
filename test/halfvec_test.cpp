@@ -7,7 +7,7 @@
 using pgvector::HalfVector;
 
 static void test_constructor_vector() {
-    auto vec = HalfVector({1, 2, 3});
+    auto vec = HalfVector(std::vector<pgvector::Half>{1, 2, 3});
     assert_equal(vec.dimensions(), 3u);
 }
 

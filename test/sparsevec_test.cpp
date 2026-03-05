@@ -8,7 +8,7 @@
 using pgvector::SparseVector;
 
 static void test_constructor_vector() {
-    auto vec = SparseVector({1, 0, 2, 0, 3, 0});
+    auto vec = SparseVector(std::vector<float>{1, 0, 2, 0, 3, 0});
     assert_equal(vec.dimensions(), 6);
     assert_equal(vec.indices() == std::vector<int>{0, 2, 4}, true);
     assert_equal(vec.values() == std::vector<float>{1, 2, 3}, true);
