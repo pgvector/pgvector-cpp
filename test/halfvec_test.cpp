@@ -16,7 +16,14 @@ static void test_constructor_span() {
     assert_equal(vec.dimensions(), 3u);
 }
 
+static void test_conversion() {
+    auto vec = HalfVector({1, 2, 3});
+    auto half_vec = static_cast<std::vector<pgvector::Half>>(vec);
+    assert_equal(half_vec == std::vector<pgvector::Half>{1, 2, 3}, true);
+}
+
 void test_halfvec() {
     test_constructor_vector();
     test_constructor_span();
+    test_conversion();
 }
