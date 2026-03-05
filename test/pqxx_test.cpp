@@ -168,7 +168,7 @@ void test_vector_from_string() {
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::Vector>("[hello]");
-    });
+    }, "Could not convert 'hello' to float: Invalid argument.");
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::Vector>("[4e38]");
@@ -176,11 +176,11 @@ void test_vector_from_string() {
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::Vector>("[,]");
-    });
+    }, "Could not convert '' to float: Invalid argument.");
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::Vector>("[1,]");
-    });
+    }, "Could not convert '' to float: Invalid argument.");
 }
 
 void test_halfvec_to_string() {
@@ -205,7 +205,7 @@ void test_halfvec_from_string() {
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::HalfVector>("[hello]");
-    });
+    }, "Could not convert 'hello' to float: Invalid argument.");
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::HalfVector>("[4e38]");
@@ -213,11 +213,11 @@ void test_halfvec_from_string() {
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::HalfVector>("[,]");
-    });
+    }, "Could not convert '' to float: Invalid argument.");
 
     assert_exception<pqxx::conversion_error>([] {
         auto unused = pqxx::from_string<pgvector::HalfVector>("[1,]");
-    });
+    }, "Could not convert '' to float: Invalid argument.");
 }
 
 void test_sparsevec_to_string() {
