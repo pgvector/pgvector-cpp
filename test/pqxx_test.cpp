@@ -33,7 +33,7 @@ void assert_exception(std::function<void(void)> code, std::optional<std::string_
     assert(exception);
 }
 
-std::optional<std::string_view> float_error(std::string_view message) {
+std::optional<std::string_view> float_error([[maybe_unused]] std::string_view message) {
 #ifdef __linux__
     return message;
 #else
