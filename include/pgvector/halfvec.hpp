@@ -32,10 +32,10 @@ using Half = float;
 /// A half vector.
 class HalfVector {
   public:
-    /// Creates a half vector from a `std::vector<pgvector::Half>`.
+    /// Creates a half vector from a `std::vector`.
     explicit HalfVector(const std::vector<Half>& value) : value_{value} {}
 
-    /// Creates a half vector from a `std::vector<pgvector::Half>`.
+    /// Creates a half vector from a `std::vector`.
     explicit HalfVector(std::vector<Half>&& value) : value_{std::move(value)} {}
 
     /// Creates a half vector from a span.
@@ -46,7 +46,7 @@ class HalfVector {
         return value_.size();
     }
 
-    /// Returns the half vector as a `std::vector<pgvector::Half>`.
+    /// Returns the half vector as a `std::vector`.
     const std::vector<Half>& as_vector() const {
         return value_;
     }

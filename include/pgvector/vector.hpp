@@ -16,10 +16,10 @@ namespace pgvector {
 /// A vector.
 class Vector {
   public:
-    /// Creates a vector from a `std::vector<float>`.
+    /// Creates a vector from a `std::vector`.
     explicit Vector(const std::vector<float>& value) : value_{value} {}
 
-    /// Creates a vector from a `std::vector<float>`.
+    /// Creates a vector from a `std::vector`.
     explicit Vector(std::vector<float>&& value) : value_{std::move(value)} {}
 
     /// Creates a vector from a span.
@@ -30,7 +30,7 @@ class Vector {
         return value_.size();
     }
 
-    /// Returns the vector as a `std::vector<float>`.
+    /// Returns the vector as a `std::vector`.
     const std::vector<float>& as_vector() const {
         return value_;
     }
