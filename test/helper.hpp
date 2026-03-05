@@ -6,8 +6,8 @@
 #include <sstream>
 #include <string_view>
 
-template<typename T>
-void assert_equal(const T& left, const T& right, const std::source_location& loc = std::source_location::current()) {
+template<typename T, typename U>
+void assert_equal(const T& left, const U& right, const std::source_location& loc = std::source_location::current()) {
     if (left != right) {
         std::ostringstream message;
         message << left << " != " << right;

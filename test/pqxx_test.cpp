@@ -124,8 +124,8 @@ void test_stream_to(pqxx::connection &conn) {
     stream.write_values(pgvector::Vector({4, 5, 6}));
     stream.complete();
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY id");
-    assert_equal(res[0][0].as<std::string>(), std::string("[1,2,3]"));
-    assert_equal(res[1][0].as<std::string>(), std::string("[4,5,6]"));
+    assert_equal(res[0][0].as<std::string>(), "[1,2,3]");
+    assert_equal(res[1][0].as<std::string>(), "[4,5,6]");
 }
 
 void test_precision(pqxx::connection &conn) {
@@ -140,8 +140,8 @@ void test_precision(pqxx::connection &conn) {
 }
 
 void test_vector_to_string() {
-    assert_equal(pqxx::to_string(pgvector::Vector({1, 2, 3})), std::string("[1,2,3]"));
-    assert_equal(pqxx::to_string(pgvector::Vector({-1.234567890123})), std::string("[-1.2345679]"));
+    assert_equal(pqxx::to_string(pgvector::Vector({1, 2, 3})), "[1,2,3]");
+    assert_equal(pqxx::to_string(pgvector::Vector({-1.234567890123})), "[-1.2345679]");
 
     assert_exception<pqxx::conversion_overrun>([] {
         auto unused = pqxx::to_string(pgvector::Vector(std::vector<float>(16001)));
@@ -178,8 +178,8 @@ void test_vector_from_string() {
 }
 
 void test_halfvec_to_string() {
-    assert_equal(pqxx::to_string(pgvector::HalfVector({1, 2, 3})), std::string("[1,2,3]"));
-    assert_equal(pqxx::to_string(pgvector::HalfVector({-1.234567890123})), std::string("[-1.2345679]"));
+    assert_equal(pqxx::to_string(pgvector::HalfVector({1, 2, 3})), "[1,2,3]");
+    assert_equal(pqxx::to_string(pgvector::HalfVector({-1.234567890123})), "[-1.2345679]");
 
     assert_exception<pqxx::conversion_overrun>([] {
         auto unused = pqxx::to_string(pgvector::HalfVector(std::vector<float>(16001)));
@@ -216,9 +216,9 @@ void test_halfvec_from_string() {
 }
 
 void test_sparsevec_to_string() {
-    assert_equal(pqxx::to_string(pgvector::SparseVector({1, 0, 2, 0, 3, 0})), std::string("{1:1,3:2,5:3}/6"));
+    assert_equal(pqxx::to_string(pgvector::SparseVector({1, 0, 2, 0, 3, 0})), "{1:1,3:2,5:3}/6");
     std::unordered_map<int, float> map = {{999999999, -1.234567890123}};
-    assert_equal(pqxx::to_string(pgvector::SparseVector(map, 1000000000)), std::string("{1000000000:-1.2345679}/1000000000"));
+    assert_equal(pqxx::to_string(pgvector::SparseVector(map, 1000000000)), "{1000000000:-1.2345679}/1000000000");
 }
 
 void test_sparsevec_from_string() {

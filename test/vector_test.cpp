@@ -8,12 +8,12 @@ using pgvector::Vector;
 
 static void test_constructor_vector() {
     auto vec = Vector({1, 2, 3});
-    assert_equal(vec.dimensions(), static_cast<size_t>(3));
+    assert_equal(vec.dimensions(), 3u);
 }
 
 static void test_constructor_span() {
     auto vec = Vector(std::span<const float>({1, 2, 3}));
-    assert_equal(vec.dimensions(), static_cast<size_t>(3));
+    assert_equal(vec.dimensions(), 3u);
 }
 
 void test_vector() {
