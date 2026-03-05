@@ -84,38 +84,56 @@ Use `std::optional<pgvector::Vector>` if the value could be `NULL`
 
 ### Vectors
 
-Create a vector from a `std::vector<float>`
+Create a vector from a `std::vector`
 
 ```cpp
 pgvector::Vector vec{std::vector<float>{1, 2, 3}};
 ```
 
-Convert to a `std::vector<float>`
+Or a span
 
 ```cpp
-auto float_vec = static_cast<std::vector<float>>(vec);
+pgvector::Vector vec{std::span<const float>{{1, 2, 3}}};
+```
+
+Convert to a `std::vector`
+
+```cpp
+std::vector<float> float_vec = static_cast<std::vector<float>>(vec);
 ```
 
 ### Half Vectors
 
-Create a half vector from a `std::vector<float>`
+Create a half vector from a `std::vector`
 
 ```cpp
 pgvector::HalfVector vec{std::vector<float>{1, 2, 3}};
 ```
 
-Convert to a `std::vector<float>`
+Or a span
 
 ```cpp
-auto float_vec = static_cast<std::vector<float>>(vec);
+pgvector::HalfVector vec{std::span<const float>{{1, 2, 3}}};
+```
+
+Convert to a `std::vector`
+
+```cpp
+std::vector<float> float_vec = static_cast<std::vector<float>>(vec);
 ```
 
 ### Sparse Vectors
 
-Create a sparse vector from a `std::vector<float>`
+Create a sparse vector from a `std::vector`
 
 ```cpp
-pgvector::SparseVector vec{{1, 0, 2, 0, 3, 0}};
+pgvector::SparseVector vec{std::vector<float>{1, 0, 2, 0, 3, 0}};
+```
+
+Or a span
+
+```cpp
+pgvector::SparseVector vec{std::span<const float>{{1, 0, 2, 0, 3, 0}}};
 ```
 
 Or a map of non-zero elements
