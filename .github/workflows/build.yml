@@ -2,7 +2,11 @@ name: build
 on: [push, pull_request]
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
       - uses: ankane/setup-postgres@v1
@@ -24,7 +28,8 @@ jobs:
       - run: cmake --build build
       - run: build/test
 
-      - run: |
+      - if: ${{ runner.os == 'Linux' }}
+        run: |
           sudo apt-get install valgrind
           valgrind --leak-check=yes --error-exitcode=1 build/test
 
