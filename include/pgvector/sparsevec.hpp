@@ -29,16 +29,7 @@ class SparseVector {
     }
 
     /// Creates a sparse vector from a dense vector.
-    explicit SparseVector(const std::vector<float>& value) {
-        dimensions_ = value.size();
-        for (size_t i = 0; i < value.size(); i++) {
-            float v = value[i];
-            if (v != 0) {
-                indices_.push_back(i);
-                values_.push_back(v);
-            }
-        }
-    }
+    explicit SparseVector(const std::vector<float>& value) : SparseVector(std::span<const float>{value}) {}
 
     /// Creates a sparse vector from a span.
     explicit SparseVector(std::span<const float> value) {
