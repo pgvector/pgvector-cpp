@@ -20,7 +20,6 @@
 #endif
 
 namespace pgvector {
-
 /// A half vector element.
 #if __STDCPP_FLOAT16_T__
 using Half = std::float16_t;

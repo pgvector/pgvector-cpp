@@ -19,7 +19,9 @@
 /// @cond
 
 namespace pqxx {
-template<> inline constexpr std::string_view name_type<pgvector::Vector>() noexcept { return "vector"; };
+template<> inline constexpr std::string_view name_type<pgvector::Vector>() noexcept {
+    return "vector";
+};
 
 template<> struct nullness<pgvector::Vector> : no_null<pgvector::Vector> {};
 
@@ -83,7 +85,9 @@ template<> struct string_traits<pgvector::Vector> {
     }
 };
 
-template<> inline constexpr std::string_view name_type<pgvector::HalfVector>() noexcept { return "halfvec"; };
+template<> inline constexpr std::string_view name_type<pgvector::HalfVector>() noexcept {
+    return "halfvec";
+};
 
 template<> struct nullness<pgvector::HalfVector> : no_null<pgvector::HalfVector> {};
 
@@ -147,7 +151,9 @@ template<> struct string_traits<pgvector::HalfVector> {
     }
 };
 
-template<> inline constexpr std::string_view name_type<pgvector::SparseVector>() noexcept { return "sparsevec"; };
+template<> inline constexpr std::string_view name_type<pgvector::SparseVector>() noexcept {
+    return "sparsevec";
+};
 
 template<> struct nullness<pgvector::SparseVector> : no_null<pgvector::SparseVector> {};
 
