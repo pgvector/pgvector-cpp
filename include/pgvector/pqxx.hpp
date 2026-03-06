@@ -56,16 +56,16 @@ template<> struct string_traits<pgvector::Vector> {
         }
 
         size_t here = 0;
-        buf[here++] = '[';
+        here += pqxx::into_buf(buf.subspan(here), "[", c);
 
         for (size_t i = 0; i < values.size(); i++) {
             if (i != 0) {
-                buf[here++] = ',';
+                here += pqxx::into_buf(buf.subspan(here), ",", c);
             }
             here += pqxx::into_buf(buf.subspan(here), values[i], c);
         }
 
-        buf[here++] = ']';
+        here += pqxx::into_buf(buf.subspan(here), "]", c);
 
         return {std::data(buf), here};
     }
@@ -76,11 +76,13 @@ template<> struct string_traits<pgvector::Vector> {
         // cannot throw an exception here on overflow
         // so throw in into_buf
 
-        size_t size = 2; // [ and ]
+        size_t size = 0;
+        size += pqxx::size_buffer("[");
         for (const auto v : values) {
-            size += 1; // ,
-            size += string_traits<float>::size_buffer(v);
+            size += pqxx::size_buffer(",");
+            size += pqxx::size_buffer(v);
         }
+        size += pqxx::size_buffer("]");
         return size;
     }
 };
@@ -122,16 +124,16 @@ template<> struct string_traits<pgvector::HalfVector> {
         }
 
         size_t here = 0;
-        buf[here++] = '[';
+        here += pqxx::into_buf(buf.subspan(here), "[", c);
 
         for (size_t i = 0; i < values.size(); i++) {
             if (i != 0) {
-                buf[here++] = ',';
+                here += pqxx::into_buf(buf.subspan(here), ",", c);
             }
             here += pqxx::into_buf(buf.subspan(here), static_cast<float>(values[i]), c);
         }
 
-        buf[here++] = ']';
+        here += pqxx::into_buf(buf.subspan(here), "]", c);
 
         return {std::data(buf), here};
     }
@@ -142,11 +144,13 @@ template<> struct string_traits<pgvector::HalfVector> {
         // cannot throw an exception here on overflow
         // so throw in into_buf
 
-        size_t size = 2; // [ and ]
+        size_t size = 0;
+        size += pqxx::size_buffer("[");
         for (const auto v : values) {
-            size += 1; // ,
-            size += string_traits<float>::size_buffer(static_cast<float>(v));
+            size += pqxx::size_buffer(",");
+            size += pqxx::size_buffer(static_cast<float>(v));
         }
+        size += pqxx::size_buffer("]");
         return size;
     }
 };
@@ -221,19 +225,18 @@ template<> struct string_traits<pgvector::SparseVector> {
         }
 
         size_t here = 0;
-        buf[here++] = '{';
+        here += pqxx::into_buf(buf.subspan(here), "{", c);
 
         for (size_t i = 0; i < nnz; i++) {
             if (i != 0) {
-                buf[here++] = ',';
+                here += pqxx::into_buf(buf.subspan(here), ",", c);
             }
             here += pqxx::into_buf(buf.subspan(here), indices[i] + 1, c);
-            buf[here++] = ':';
+            here += pqxx::into_buf(buf.subspan(here), ":", c);
             here += pqxx::into_buf(buf.subspan(here), values[i], c);
         }
 
-        buf[here++] = '}';
-        buf[here++] = '/';
+        here += pqxx::into_buf(buf.subspan(here), "}/", c);
         here += pqxx::into_buf(buf.subspan(here), dimensions, c);
 
         return {std::data(buf), here};
@@ -248,13 +251,16 @@ template<> struct string_traits<pgvector::SparseVector> {
         // cannot throw an exception here on overflow
         // so throw in into_buf
 
-        size_t size = 3; // {, }, and /
-        size += string_traits<int>::size_buffer(dimensions);
+        size_t size = 0;
+        size += pqxx::size_buffer("{");
         for (size_t i = 0; i < nnz; i++) {
-            size += 2; // : and ,
-            size += string_traits<int>::size_buffer(indices[i] + 1);
-            size += string_traits<float>::size_buffer(values[i]);
+            size += pqxx::size_buffer(",");
+            size += pqxx::size_buffer(indices[i] + 1);
+            size += pqxx::size_buffer(":");
+            size += pqxx::size_buffer(values[i]);
         }
+        size += pqxx::size_buffer("}/");
+        size += pqxx::size_buffer(dimensions);
         return size;
     }
 };
