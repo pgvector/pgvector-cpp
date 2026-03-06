@@ -130,7 +130,7 @@ void test_precision(pqxx::connection &conn) {
     before_each(conn);
 
     pqxx::nontransaction tx{conn};
-    pgvector::Vector embedding{{1.23456789, 0, 0}};
+    pgvector::Vector embedding{{1.23456789f, 0, 0}};
     tx.exec("INSERT INTO items (embedding) VALUES ($1)", {embedding});
     tx.exec("SET extra_float_digits = 3");
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY id DESC LIMIT 1");
@@ -139,7 +139,7 @@ void test_precision(pqxx::connection &conn) {
 
 void test_vector_to_string() {
     assert_equal(pqxx::to_string(pgvector::Vector{{1, 2, 3}}), "[1,2,3]");
-    assert_equal(pqxx::to_string(pgvector::Vector{{-1.234567890123}}), "[-1.2345679]");
+    assert_equal(pqxx::to_string(pgvector::Vector{{-1.234567890123f}}), "[-1.2345679]");
 
     assert_exception<pqxx::conversion_overrun>([] {
         pqxx::to_string(pgvector::Vector{std::vector<float>(16001)});
@@ -178,9 +178,9 @@ void test_vector_from_string() {
 void test_halfvec_to_string() {
     assert_equal(pqxx::to_string(pgvector::HalfVector{{1, 2, 3}}), "[1,2,3]");
 #if __STDCPP_FLOAT16_T__ || defined(__FLT16_MAX__)
-    assert_equal(pqxx::to_string(pgvector::HalfVector{{static_cast<pgvector::Half>(-1.234567890123)}}), "[-1.234375]");
+    assert_equal(pqxx::to_string(pgvector::HalfVector{{static_cast<pgvector::Half>(-1.234567890123f)}}), "[-1.234375]");
 #else
-    assert_equal(pqxx::to_string(pgvector::HalfVector{{-1.234567890123}}), "[-1.2345679]");
+    assert_equal(pqxx::to_string(pgvector::HalfVector{{-1.234567890123f}}), "[-1.2345679]");
 #endif
 
     assert_exception<pqxx::conversion_overrun>([] {
@@ -219,7 +219,7 @@ void test_halfvec_from_string() {
 
 void test_sparsevec_to_string() {
     assert_equal(pqxx::to_string(pgvector::SparseVector{{1, 0, 2, 0, 3, 0}}), "{1:1,3:2,5:3}/6");
-    std::unordered_map<int, float> map{{999999999, -1.234567890123}};
+    std::unordered_map<int, float> map{{999999999, -1.234567890123f}};
     assert_equal(pqxx::to_string(pgvector::SparseVector{map, 1000000000}), "{1000000000:-1.2345679}/1000000000");
 
     assert_exception<pqxx::conversion_overrun>([] {
