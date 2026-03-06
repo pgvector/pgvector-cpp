@@ -5,7 +5,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-26]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -32,6 +32,9 @@ jobs:
         run: |
           sudo apt-get install valgrind
           valgrind --leak-check=yes --error-exitcode=1 build/test
+
+      - if: ${{ runner.os == 'macOS' }}
+        run: /opt/homebrew/opt/llvm@20/bin/scan-build --status-bugs cmake --build build --clean-first
 
       # test install
       - run: rm -r build
