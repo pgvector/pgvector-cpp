@@ -252,7 +252,7 @@ template<> struct string_traits<pgvector::SparseVector> {
         size += string_traits<int>::size_buffer(dimensions);
         for (size_t i = 0; i < nnz; i++) {
             size += 2; // : and ,
-            size += string_traits<int>::size_buffer(indices[i]);
+            size += string_traits<int>::size_buffer(indices[i] + 1);
             size += string_traits<float>::size_buffer(values[i]);
         }
         return size;
