@@ -47,7 +47,7 @@ template<> struct string_traits<pgvector::Vector> {
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::Vector& value, ctx c = {}) {
-        const std::vector<float>& values = value.as_vector();
+        const std::vector<float>& values = value.values();
 
         // important! size_buffer cannot throw an exception on overflow
         // so perform this check before writing any data
@@ -71,7 +71,7 @@ template<> struct string_traits<pgvector::Vector> {
     }
 
     static size_t size_buffer(const pgvector::Vector& value) noexcept {
-        const std::vector<float>& values = value.as_vector();
+        const std::vector<float>& values = value.values();
 
         // cannot throw an exception here on overflow
         // so throw in into_buf
@@ -113,7 +113,7 @@ template<> struct string_traits<pgvector::HalfVector> {
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::HalfVector& value, ctx c = {}) {
-        const std::vector<pgvector::Half>& values = value.as_vector();
+        const std::vector<pgvector::Half>& values = value.values();
 
         // important! size_buffer cannot throw an exception on overflow
         // so perform this check before writing any data
@@ -137,7 +137,7 @@ template<> struct string_traits<pgvector::HalfVector> {
     }
 
     static size_t size_buffer(const pgvector::HalfVector& value) noexcept {
-        const std::vector<pgvector::Half>& values = value.as_vector();
+        const std::vector<pgvector::Half>& values = value.values();
 
         // cannot throw an exception here on overflow
         // so throw in into_buf

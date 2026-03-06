@@ -30,8 +30,8 @@ class Vector {
         return value_.size();
     }
 
-    /// Returns the vector as a `std::vector`.
-    const std::vector<float>& as_vector() const {
+    /// Returns the values.
+    const std::vector<float>& values() const {
         return value_;
     }
 

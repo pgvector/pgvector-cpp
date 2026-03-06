@@ -46,8 +46,8 @@ class HalfVector {
         return value_.size();
     }
 
-    /// Returns the half vector as a `std::vector`.
-    const std::vector<Half>& as_vector() const {
+    /// Returns the values.
+    const std::vector<Half>& values() const {
         return value_;
     }
 
