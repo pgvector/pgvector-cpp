@@ -29,7 +29,7 @@ std::vector<pgvector::SparseVector> embed(const std::vector<std::string>& inputs
         cpr::Header{{"Content-Type", "application/json"}}
     );
     if (r.status_code != 200) {
-        throw std::runtime_error("Bad status: " + std::to_string(r.status_code));
+        throw std::runtime_error{"Bad status: " + std::to_string(r.status_code)};
     }
     json response = json::parse(r.text);
 

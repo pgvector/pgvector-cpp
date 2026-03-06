@@ -21,7 +21,7 @@ class SparseVector {
     /// @private
     SparseVector(int dimensions, std::vector<int>&& indices, std::vector<float>&& values) {
         if (values.size() != indices.size()) {
-            throw std::invalid_argument("indices and values must be the same length");
+            throw std::invalid_argument{"indices and values must be the same length"};
         }
         dimensions_ = dimensions;
         indices_ = std::move(indices);
@@ -55,13 +55,13 @@ class SparseVector {
     /// Creates a sparse vector from a map of non-zero elements.
     SparseVector(const std::unordered_map<int, float>& map, int dimensions) {
         if (dimensions < 1) {
-            throw std::invalid_argument("sparsevec must have at least 1 dimension");
+            throw std::invalid_argument{"sparsevec must have at least 1 dimension"};
         }
         dimensions_ = dimensions;
 
         for (const auto& [i, v] : map) {
             if (i < 0 || i >= dimensions) {
-                throw std::invalid_argument("sparsevec index out of bounds");
+                throw std::invalid_argument{"sparsevec index out of bounds"};
             }
 
             if (v != 0) {

@@ -28,7 +28,7 @@ template<> struct nullness<pgvector::Vector> : no_null<pgvector::Vector> {};
 template<> struct string_traits<pgvector::Vector> {
     static pgvector::Vector from_string(std::string_view text, ctx c = {}) {
         if (text.size() < 2 || text.front() != '[' || text.back() != ']') {
-            throw conversion_error("Malformed vector literal");
+            throw conversion_error{"Malformed vector literal"};
         }
 
         std::vector<float> values;
@@ -96,7 +96,7 @@ template<> struct nullness<pgvector::HalfVector> : no_null<pgvector::HalfVector>
 template<> struct string_traits<pgvector::HalfVector> {
     static pgvector::HalfVector from_string(std::string_view text, ctx c = {}) {
         if (text.size() < 2 || text.front() != '[' || text.back() != ']') {
-            throw conversion_error("Malformed halfvec literal");
+            throw conversion_error{"Malformed halfvec literal"};
         }
 
         std::vector<pgvector::Half> values;
@@ -164,17 +164,17 @@ template<> struct nullness<pgvector::SparseVector> : no_null<pgvector::SparseVec
 template<> struct string_traits<pgvector::SparseVector> {
     static pgvector::SparseVector from_string(std::string_view text, ctx c = {}) {
         if (text.size() < 4 || text.front() != '{') {
-            throw conversion_error("Malformed sparsevec literal");
+            throw conversion_error{"Malformed sparsevec literal"};
         }
 
         size_t n = text.find("}/", 1);
         if (n == std::string_view::npos) {
-            throw conversion_error("Malformed sparsevec literal");
+            throw conversion_error{"Malformed sparsevec literal"};
         }
 
         int dimensions = pqxx::from_string<int>(text.substr(n + 2), c);
         if (dimensions < 0) {
-            throw conversion_error("Dimensions cannot be negative");
+            throw conversion_error{"Dimensions cannot be negative"};
         }
 
         std::vector<int> indices;
@@ -184,14 +184,14 @@ template<> struct string_traits<pgvector::SparseVector> {
             auto add_element = [&](std::string_view substr) {
                 size_t ne = substr.find(":");
                 if (ne == std::string::npos) {
-                    throw conversion_error("Malformed sparsevec literal");
+                    throw conversion_error{"Malformed sparsevec literal"};
                 }
 
                 int index = pqxx::from_string<int>(substr.substr(0, ne), c);
                 float value = pqxx::from_string<float>(substr.substr(ne + 1), c);
 
                 if (index < 1) {
-                    throw conversion_error("Index out of bounds");
+                    throw conversion_error{"Index out of bounds"};
                 }
 
                 indices.push_back(index - 1);

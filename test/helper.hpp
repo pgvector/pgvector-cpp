@@ -12,7 +12,7 @@ void assert_equal(const T& left, const U& right, const std::source_location& loc
         std::ostringstream message;
         message << left << " != " << right;
         message << " in " << loc.function_name() << " " << loc.file_name() << ":" << loc.line();
-        throw std::runtime_error(message.str());
+        throw std::runtime_error{message.str()};
     }
 }
 
@@ -26,6 +26,6 @@ void assert_exception(std::function<void(void)> code, std::optional<std::string_
     }
     assert_equal(exception.has_value(), true);
     if (message) {
-        assert_equal(std::string_view((*exception).what()), *message);
+        assert_equal(std::string_view{(*exception).what()}, *message);
     }
 }

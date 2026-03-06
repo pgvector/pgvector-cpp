@@ -28,7 +28,7 @@ std::vector<std::string> embed(const std::vector<std::string>& texts, const std:
         cpr::Header{{"Content-Type", "application/json"}}
     );
     if (r.status_code != 200) {
-        throw std::runtime_error("Bad status: " + std::to_string(r.status_code));
+        throw std::runtime_error{"Bad status: " + std::to_string(r.status_code)};
     }
     json response = json::parse(r.text);
 
