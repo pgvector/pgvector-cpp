@@ -340,6 +340,18 @@ void test_sparsevec_into_buf() {
     });
 }
 
+void test_vector_size_buffer() {
+    assert_equal(pqxx::size_buffer(pgvector::Vector{{1, 2, 3}}), 55u);
+}
+
+void test_halfvec_size_buffer() {
+    assert_equal(pqxx::size_buffer(pgvector::HalfVector{{1, 2, 3}}), 55u);
+}
+
+void test_sparsevec_size_buffer() {
+    assert_equal(pqxx::size_buffer(pgvector::SparseVector{{1, 2, 3}}), 106u);
+}
+
 void test_pqxx() {
     pqxx::connection conn{"dbname=pgvector_cpp_test"};
     setup(conn);
@@ -366,4 +378,8 @@ void test_pqxx() {
     test_halfvec_into_buf();
     test_sparsevec_to_buf();
     test_sparsevec_into_buf();
+
+    test_vector_size_buffer();
+    test_halfvec_size_buffer();
+    test_sparsevec_size_buffer();
 }
