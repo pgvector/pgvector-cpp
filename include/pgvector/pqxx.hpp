@@ -37,11 +37,11 @@ template<> struct string_traits<pgvector::Vector> {
             size_t start = 0;
             for (size_t i = 0; i < inner.size(); i++) {
                 if (inner[i] == ',') {
-                    values.push_back(string_traits<float>::from_string(inner.substr(start, i - start), c));
+                    values.push_back(pqxx::from_string<float>(inner.substr(start, i - start), c));
                     start = i + 1;
                 }
             }
-            values.push_back(string_traits<float>::from_string(inner.substr(start), c));
+            values.push_back(pqxx::from_string<float>(inner.substr(start), c));
         }
         return pgvector::Vector{std::move(values)};
     }
@@ -105,11 +105,11 @@ template<> struct string_traits<pgvector::HalfVector> {
             size_t start = 0;
             for (size_t i = 0; i < inner.size(); i++) {
                 if (inner[i] == ',') {
-                    values.push_back(static_cast<pgvector::Half>(string_traits<float>::from_string(inner.substr(start, i - start), c)));
+                    values.push_back(static_cast<pgvector::Half>(pqxx::from_string<float>(inner.substr(start, i - start), c)));
                     start = i + 1;
                 }
             }
-            values.push_back(static_cast<pgvector::Half>(string_traits<float>::from_string(inner.substr(start), c)));
+            values.push_back(static_cast<pgvector::Half>(pqxx::from_string<float>(inner.substr(start), c)));
         }
         return pgvector::HalfVector{std::move(values)};
     }
@@ -172,7 +172,7 @@ template<> struct string_traits<pgvector::SparseVector> {
             throw conversion_error("Malformed sparsevec literal");
         }
 
-        int dimensions = string_traits<int>::from_string(text.substr(n + 2), c);
+        int dimensions = pqxx::from_string<int>(text.substr(n + 2), c);
         if (dimensions < 0) {
             throw conversion_error("Dimensions cannot be negative");
         }
@@ -187,8 +187,8 @@ template<> struct string_traits<pgvector::SparseVector> {
                     throw conversion_error("Malformed sparsevec literal");
                 }
 
-                int index = string_traits<int>::from_string(substr.substr(0, ne), c);
-                float value = string_traits<float>::from_string(substr.substr(ne + 1), c);
+                int index = pqxx::from_string<int>(substr.substr(0, ne), c);
+                float value = pqxx::from_string<float>(substr.substr(ne + 1), c);
 
                 if (index < 1) {
                     throw conversion_error("Index out of bounds");
