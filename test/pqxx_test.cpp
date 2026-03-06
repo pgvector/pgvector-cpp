@@ -142,7 +142,7 @@ void test_vector_to_string() {
     assert_equal(pqxx::to_string(pgvector::Vector{{-1.234567890123}}), "[-1.2345679]");
 
     assert_exception<pqxx::conversion_overrun>([] {
-        pqxx::to_string(pgvector::Vector(std::vector<float>(16001)));
+        pqxx::to_string(pgvector::Vector{std::vector<float>(16001)});
     }, "vector cannot have more than 16000 dimensions");
 }
 
@@ -176,7 +176,7 @@ void test_vector_from_string() {
 }
 
 void test_halfvec_to_string() {
-    assert_equal(pqxx::to_string(pgvector::HalfVector({1, 2, 3})), "[1,2,3]");
+    assert_equal(pqxx::to_string(pgvector::HalfVector{{1, 2, 3}}), "[1,2,3]");
 #if __STDCPP_FLOAT16_T__ || defined(__FLT16_MAX__)
     assert_equal(pqxx::to_string(pgvector::HalfVector{{static_cast<pgvector::Half>(-1.234567890123)}}), "[-1.234375]");
 #else
@@ -184,7 +184,7 @@ void test_halfvec_to_string() {
 #endif
 
     assert_exception<pqxx::conversion_overrun>([] {
-        pqxx::to_string(pgvector::HalfVector(std::vector<pgvector::Half>(16001)));
+        pqxx::to_string(pgvector::HalfVector{std::vector<pgvector::Half>(16001)});
     }, "halfvec cannot have more than 16000 dimensions");
 }
 
@@ -223,7 +223,7 @@ void test_sparsevec_to_string() {
     assert_equal(pqxx::to_string(pgvector::SparseVector{map, 1000000000}), "{1000000000:-1.2345679}/1000000000");
 
     assert_exception<pqxx::conversion_overrun>([] {
-        pqxx::to_string(pgvector::SparseVector(std::vector<float>(16001, 1)));
+        pqxx::to_string(pgvector::SparseVector{std::vector<float>(16001, 1)});
     }, "sparsevec cannot have more than 16000 dimensions");
 }
 
