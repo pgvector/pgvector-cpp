@@ -18,14 +18,14 @@ void assert_equal(const T& left, const U& right, const std::source_location& loc
 
 template<typename T>
 void assert_exception(std::function<void(void)> code, std::optional<std::string_view> message = std::nullopt) {
-    bool exception = false;
+    std::optional<T> exception;
     try {
         code();
     } catch (const T& e) {
-        exception = true;
-        if (message) {
-            assert_equal(std::string_view(e.what()), *message);
-        }
+        exception = e;
     }
-    assert_equal(exception, true);
+    assert_equal(exception.has_value(), true);
+    if (message) {
+        assert_equal(std::string_view((*exception).what()), *message);
+    }
 }
