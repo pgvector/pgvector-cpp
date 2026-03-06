@@ -47,6 +47,11 @@ template<> struct string_traits<pgvector::Vector> {
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::Vector& value, ctx c = {}) {
+        // confirm caller provided estimated buffer space
+        if (buf.size() < size_buffer(value)) {
+            throw conversion_overrun{"Not enough space in buffer for vector"};
+        }
+
         const std::vector<float>& values = value.values();
 
         // important! size_buffer cannot throw an exception on overflow
@@ -115,6 +120,11 @@ template<> struct string_traits<pgvector::HalfVector> {
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::HalfVector& value, ctx c = {}) {
+        // confirm caller provided estimated buffer space
+        if (buf.size() < size_buffer(value)) {
+            throw conversion_overrun{"Not enough space in buffer for halfvec"};
+        }
+
         const std::vector<pgvector::Half>& values = value.values();
 
         // important! size_buffer cannot throw an exception on overflow
@@ -213,6 +223,11 @@ template<> struct string_traits<pgvector::SparseVector> {
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::SparseVector& value, ctx c = {}) {
+        // confirm caller provided estimated buffer space
+        if (buf.size() < size_buffer(value)) {
+            throw conversion_overrun{"Not enough space in buffer for sparsevec"};
+        }
+
         int dimensions = value.dimensions();
         const std::vector<int>& indices = value.indices();
         const std::vector<float>& values = value.values();

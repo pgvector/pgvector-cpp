@@ -281,63 +281,63 @@ void test_sparsevec_from_string() {
 }
 
 void test_vector_to_buf() {
-    char buf[10];
+    char buf[60];
     assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::Vector{{1, 2, 3}}), "[1,2,3]");
 
     assert_exception<pqxx::conversion_overrun>([] {
         return pqxx::to_buf(std::span<char>{}, pgvector::Vector{{1, 2, 3}});
-    });
+    }, "Not enough space in buffer for vector");
 }
 
 void test_vector_into_buf() {
-    char buf[10];
+    char buf[60];
     size_t size = pqxx::into_buf(std::span<char>{buf}, pgvector::Vector{{1, 2, 3}});
     assert_equal(size, 7u);
     assert_equal(std::string_view{buf, size}, "[1,2,3]");
 
     assert_exception<pqxx::conversion_overrun>([] {
         return pqxx::into_buf(std::span<char>{}, pgvector::Vector{{1, 2, 3}});
-    });
+    }, "Not enough space in buffer for vector");
 }
 
 void test_halfvec_to_buf() {
-    char buf[10];
+    char buf[60];
     assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::HalfVector{{1, 2, 3}}), "[1,2,3]");
 
     assert_exception<pqxx::conversion_overrun>([] {
         return pqxx::to_buf(std::span<char>{}, pgvector::HalfVector{{1, 2, 3}});
-    });
+    }, "Not enough space in buffer for halfvec");
 }
 
 void test_halfvec_into_buf() {
-    char buf[10];
+    char buf[60];
     size_t size = pqxx::into_buf(std::span<char>{buf}, pgvector::HalfVector{{1, 2, 3}});
     assert_equal(size, 7u);
     assert_equal(std::string_view{buf, size}, "[1,2,3]");
 
     assert_exception<pqxx::conversion_overrun>([] {
         return pqxx::into_buf(std::span<char>{}, pgvector::HalfVector{{1, 2, 3}});
-    });
+    }, "Not enough space in buffer for halfvec");
 }
 
 void test_sparsevec_to_buf() {
-    char buf[40];
+    char buf[120];
     assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::SparseVector{{1, 2, 3}}), "{1:1,2:2,3:3}/3");
 
     assert_exception<pqxx::conversion_overrun>([] {
         return pqxx::to_buf(std::span<char>{}, pgvector::SparseVector{{1, 2, 3}});
-    });
+    }, "Not enough space in buffer for sparsevec");
 }
 
 void test_sparsevec_into_buf() {
-    char buf[40];
+    char buf[120];
     size_t size = pqxx::into_buf(std::span<char>{buf}, pgvector::SparseVector{{1, 2, 3}});
     assert_equal(size, 15u);
     assert_equal(std::string_view{buf, size}, "{1:1,2:2,3:3}/3");
 
     assert_exception<pqxx::conversion_overrun>([] {
         return pqxx::into_buf(std::span<char>{}, pgvector::SparseVector{{1, 2, 3}});
-    });
+    }, "Not enough space in buffer for sparsevec");
 }
 
 void test_vector_size_buffer() {
