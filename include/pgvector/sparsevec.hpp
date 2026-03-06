@@ -33,11 +33,12 @@ class SparseVector {
 
     /// Creates a sparse vector from a span.
     explicit SparseVector(std::span<const float> value) {
-        dimensions_ = value.size();
+        // TODO throw exception
+        dimensions_ = static_cast<int>(value.size());
         for (size_t i = 0; i < value.size(); i++) {
             float v = value[i];
             if (v != 0) {
-                indices_.push_back(i);
+                indices_.push_back(static_cast<int>(i));
                 values_.push_back(v);
             }
         }
