@@ -16,7 +16,7 @@ using disco::Recommender;
 
 std::string convert_to_utf8(const std::string& str) {
     std::stringstream buf;
-    for (auto &v : str) {
+    for (const auto& v : str) {
         if (v >= 0) {
             buf << v;
         } else {
@@ -40,7 +40,7 @@ Dataset<int, std::string> load_movielens(const std::string& path) {
     }
 
     // read ratings and create dataset
-    auto data = Dataset<int, std::string>();
+    Dataset<int, std::string> data;
     std::ifstream ratings_file(path + "/u.data");
     assert(ratings_file.is_open());
     while (std::getline(ratings_file, line)) {
@@ -65,29 +65,29 @@ int main() {
         return 1;
     }
 
-    pqxx::connection conn("dbname=pgvector_example");
+    pqxx::connection conn{"dbname=pgvector_example"};
 
-    pqxx::nontransaction tx(conn);
+    pqxx::nontransaction tx{conn};
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS users");
     tx.exec("DROP TABLE IF EXISTS movies");
     tx.exec("CREATE TABLE users (id integer PRIMARY KEY, factors vector(20))");
     tx.exec("CREATE TABLE movies (name text PRIMARY KEY, factors vector(20))");
 
-    auto data = load_movielens(movielens_path);
+    Dataset<int, std::string> data = load_movielens(movielens_path);
     auto recommender = Recommender<int, std::string>::fit_explicit(data, { .factors = 20 });
 
-    for (auto& user_id : recommender.user_ids()) {
-        auto factors = pgvector::Vector(*recommender.user_factors(user_id));
+    for (const auto& user_id : recommender.user_ids()) {
+        pgvector::Vector factors{*recommender.user_factors(user_id)};
         tx.exec("INSERT INTO users (id, factors) VALUES ($1, $2)", pqxx::params{user_id, factors});
     }
 
-    for (auto& item_id : recommender.item_ids()) {
-        auto factors = pgvector::Vector(*recommender.item_factors(item_id));
+    for (const auto& item_id : recommender.item_ids()) {
+        pgvector::Vector factors{*recommender.item_factors(item_id)};
         tx.exec("INSERT INTO movies (name, factors) VALUES ($1, $2)", pqxx::params{item_id, factors});
     }
 
-    std::string movie = "Star Wars (1977)";
+    std::string movie{"Star Wars (1977)"};
     std::cout << "Item-based recommendations for " << movie << std::endl;
     pqxx::result result = tx.exec("SELECT name FROM movies WHERE name != $1 ORDER BY factors <=> (SELECT factors FROM movies WHERE name = $1) LIMIT 5", pqxx::params{movie});
     for (const auto& row : result) {

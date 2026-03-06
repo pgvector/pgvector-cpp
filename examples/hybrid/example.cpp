@@ -18,12 +18,12 @@ std::vector<std::vector<float>> embed(const std::vector<std::string>& texts, con
     // https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
     std::vector<std::string> input;
     input.reserve(texts.size());
-    for (auto& v : texts) {
+    for (const auto& v : texts) {
         input.push_back(taskType + ": " + v);
     }
 
-    std::string url = "http://localhost:8080/v1/embeddings";
-    json data = {
+    std::string url{"http://localhost:8080/v1/embeddings"};
+    json data{
         {"input", input}
     };
 
@@ -38,33 +38,33 @@ std::vector<std::vector<float>> embed(const std::vector<std::string>& texts, con
     json response = json::parse(r.text);
 
     std::vector<std::vector<float>> embeddings;
-    for (auto& v : response["data"]) {
+    for (const auto& v : response["data"]) {
         embeddings.emplace_back(v["embedding"]);
     }
     return embeddings;
 }
 
 int main() {
-    pqxx::connection conn("dbname=pgvector_example");
+    pqxx::connection conn{"dbname=pgvector_example"};
 
-    pqxx::nontransaction tx(conn);
+    pqxx::nontransaction tx{conn};
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS documents");
     tx.exec("CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding vector(768))");
     tx.exec("CREATE INDEX ON documents USING GIN (to_tsvector('english', content))");
 
-    std::vector<std::string> input = {
+    std::vector<std::string> input{
         "The dog is barking",
         "The cat is purring",
         "The bear is growling"
     };
-    auto embeddings = embed(input, "search_document");
+    std::vector<std::vector<float>> embeddings = embed(input, "search_document");
 
     for (size_t i = 0; i < input.size(); i++) {
-        tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], pgvector::Vector(embeddings[i])});
+        tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], pgvector::Vector{embeddings[i]}});
     }
 
-    std::string sql = R"(
+    std::string sql{R"(
     WITH semantic_search AS (
         SELECT id, RANK () OVER (ORDER BY embedding <=> $2) AS rank
         FROM documents
@@ -86,11 +86,11 @@ int main() {
     FULL OUTER JOIN keyword_search ON semantic_search.id = keyword_search.id
     ORDER BY score DESC
     LIMIT 5
-    )";
-    std::string query = "growling bear";
-    auto query_embedding = embed({query}, "search_query")[0];
+    )"};
+    std::string query{"growling bear"};
+    std::vector<float> query_embedding = embed({query}, "search_query")[0];
     double k = 60;
-    pqxx::result result = tx.exec(sql, pqxx::params{query, pgvector::Vector(query_embedding), k});
+    pqxx::result result = tx.exec(sql, pqxx::params{query, pgvector::Vector{query_embedding}, k});
     for (const auto& row : result) {
         std::cout << "document: " << row[0].as<std::string>() << ", RRF score: " << row[1].as<double>() << std::endl;
     }

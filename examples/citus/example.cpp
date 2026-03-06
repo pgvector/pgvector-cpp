@@ -8,8 +8,8 @@
 
 std::vector<std::vector<float>> random_embeddings(int rows, int dimensions) {
     std::random_device rd;
-    std::mt19937_64 prng(rd());
-    std::uniform_real_distribution<float> dist(0, 1);
+    std::mt19937_64 prng{rd()};
+    std::uniform_real_distribution<float> dist{0, 1};
 
     std::vector<std::vector<float>> embeddings;
     embeddings.reserve(rows);
@@ -26,8 +26,8 @@ std::vector<std::vector<float>> random_embeddings(int rows, int dimensions) {
 
 std::vector<int64_t> random_categories(int rows) {
     std::random_device rd;
-    std::mt19937_64 prng(rd());
-    std::uniform_int_distribution<int64_t> dist(1, 100);
+    std::mt19937_64 prng{rd()};
+    std::uniform_int_distribution<int64_t> dist{1, 100};
 
     std::vector<int64_t> categories;
     categories.reserve(rows);
@@ -41,13 +41,13 @@ int main() {
     // generate random data
     int rows = 100000;
     int dimensions = 128;
-    auto embeddings = random_embeddings(rows, dimensions);
-    auto categories = random_categories(rows);
-    auto queries = random_embeddings(10, dimensions);
+    std::vector<std::vector<float>> embeddings = random_embeddings(rows, dimensions);
+    std::vector<int64_t> categories = random_categories(rows);
+    std::vector<std::vector<float>> queries = random_embeddings(10, dimensions);
 
     // enable extensions
-    pqxx::connection conn("dbname=pgvector_citus");
-    pqxx::nontransaction tx(conn);
+    pqxx::connection conn{"dbname=pgvector_citus"};
+    pqxx::nontransaction tx{conn};
     tx.exec("CREATE EXTENSION IF NOT EXISTS citus");
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
 
@@ -61,8 +61,8 @@ int main() {
     conn.close();
 
     // reconnect for updated GUC variables to take effect
-    pqxx::connection conn2("dbname=pgvector_citus");
-    pqxx::nontransaction tx2(conn2);
+    pqxx::connection conn2{"dbname=pgvector_citus"};
+    pqxx::nontransaction tx2{conn2};
 
     std::cout << "Creating distributed table" << std::endl;
     tx2.exec("DROP TABLE IF EXISTS items");
@@ -72,9 +72,9 @@ int main() {
 
     // libpqxx does not support binary COPY
     std::cout << "Loading data in parallel" << std::endl;
-    auto stream = pqxx::stream_to::table(tx2, {"items"}, {"embedding", "category_id"});
+    pqxx::stream_to stream = pqxx::stream_to::table(tx2, {"items"}, {"embedding", "category_id"});
     for (size_t i = 0; i < embeddings.size(); i++) {
-        stream.write_values(pgvector::Vector(embeddings[i]), categories[i]);
+        stream.write_values(pgvector::Vector{embeddings[i]}, categories[i]);
     }
     stream.complete();
 
@@ -82,10 +82,10 @@ int main() {
     tx2.exec("CREATE INDEX ON items USING hnsw (embedding vector_l2_ops)");
 
     std::cout << "Running distributed queries" << std::endl;
-    for (auto& query : queries) {
+    for (const auto& query : queries) {
         pqxx::result result = tx2.exec(
             "SELECT id FROM items ORDER BY embedding <-> $1 LIMIT 10",
-            pqxx::params{pgvector::Vector(query)}
+            pqxx::params{pgvector::Vector{query}}
         );
         for (const auto& row : result) {
             std::cout << row[0].as<int64_t>() << " ";

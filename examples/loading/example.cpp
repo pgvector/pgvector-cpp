@@ -12,7 +12,7 @@ int main() {
     std::vector<std::vector<float>> embeddings;
     embeddings.reserve(rows);
     std::mt19937_64 prng;
-    std::uniform_real_distribution<float> dist(0, 1);
+    std::uniform_real_distribution<float> dist{0, 1};
     for (int i = 0; i < rows; i++) {
         std::vector<float> embedding;
         embedding.reserve(dimensions);
@@ -23,8 +23,8 @@ int main() {
     }
 
     // enable extension
-    pqxx::connection conn("dbname=pgvector_example");
-    pqxx::nontransaction tx(conn);
+    pqxx::connection conn{"dbname=pgvector_example"};
+    pqxx::nontransaction tx{conn};
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
 
     // create table
@@ -34,14 +34,14 @@ int main() {
     // load data
     // libpqxx does not support binary COPY
     std::cout << "Loading " << rows << " rows" << std::endl;
-    auto stream = pqxx::stream_to::table(tx, {"items"}, {"embedding"});
+    pqxx::stream_to stream = pqxx::stream_to::table(tx, {"items"}, {"embedding"});
     for (size_t i = 0; i < embeddings.size(); i++) {
         // show progress
         if (i % 10000 == 0) {
             std::cout << '.' << std::flush;
         }
 
-        stream.write_values(pgvector::Vector(embeddings[i]));
+        stream.write_values(pgvector::Vector{embeddings[i]});
     }
     stream.complete();
     std::cout << std::endl << "Success!" << std::endl;
