@@ -96,7 +96,7 @@ Or a span
 pgvector::Vector vec{std::span<const float>{{1, 2, 3}}};
 ```
 
-Convert to a `std::vector`
+Get a `std::vector`
 
 ```cpp
 std::vector<float> float_vec = static_cast<std::vector<float>>(vec);
@@ -116,7 +116,7 @@ Or a span
 pgvector::HalfVector vec{std::span<const float>{{1, 2, 3}}};
 ```
 
-Convert to a `std::vector`
+Get a `std::vector`
 
 ```cpp
 std::vector<float> float_vec = static_cast<std::vector<float>>(vec);
