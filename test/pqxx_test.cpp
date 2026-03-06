@@ -280,6 +280,66 @@ void test_sparsevec_from_string() {
     }, "Could not convert 'a' to int: Invalid argument.");
 }
 
+void test_vector_to_buf() {
+    char buf[10];
+    assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::Vector{{1, 2, 3}}), "[1,2,3]");
+
+    assert_exception<pqxx::conversion_overrun>([] {
+        return pqxx::to_buf(std::span<char>{}, pgvector::Vector{{1, 2, 3}});
+    });
+}
+
+void test_vector_into_buf() {
+    char buf[10];
+    size_t size = pqxx::into_buf(std::span<char>{buf}, pgvector::Vector{{1, 2, 3}});
+    assert_equal(size, 7u);
+    assert_equal(std::string_view{buf, size}, "[1,2,3]");
+
+    assert_exception<pqxx::conversion_overrun>([] {
+        return pqxx::into_buf(std::span<char>{}, pgvector::Vector{{1, 2, 3}});
+    });
+}
+
+void test_halfvec_to_buf() {
+    char buf[10];
+    assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::HalfVector{{1, 2, 3}}), "[1,2,3]");
+
+    assert_exception<pqxx::conversion_overrun>([] {
+        return pqxx::to_buf(std::span<char>{}, pgvector::HalfVector{{1, 2, 3}});
+    });
+}
+
+void test_halfvec_into_buf() {
+    char buf[10];
+    size_t size = pqxx::into_buf(std::span<char>{buf}, pgvector::HalfVector{{1, 2, 3}});
+    assert_equal(size, 7u);
+    assert_equal(std::string_view{buf, size}, "[1,2,3]");
+
+    assert_exception<pqxx::conversion_overrun>([] {
+        return pqxx::into_buf(std::span<char>{}, pgvector::HalfVector{{1, 2, 3}});
+    });
+}
+
+void test_sparsevec_to_buf() {
+    char buf[40];
+    assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::SparseVector{{1, 2, 3}}), "{1:1,2:2,3:3}/3");
+
+    assert_exception<pqxx::conversion_overrun>([] {
+        return pqxx::to_buf(std::span<char>{}, pgvector::SparseVector{{1, 2, 3}});
+    });
+}
+
+void test_sparsevec_into_buf() {
+    char buf[40];
+    size_t size = pqxx::into_buf(std::span<char>{buf}, pgvector::SparseVector{{1, 2, 3}});
+    assert_equal(size, 15u);
+    assert_equal(std::string_view{buf, size}, "{1:1,2:2,3:3}/3");
+
+    assert_exception<pqxx::conversion_overrun>([] {
+        return pqxx::into_buf(std::span<char>{}, pgvector::SparseVector{{1, 2, 3}});
+    });
+}
+
 void test_pqxx() {
     pqxx::connection conn{"dbname=pgvector_cpp_test"};
     setup(conn);
@@ -299,4 +359,11 @@ void test_pqxx() {
     test_halfvec_from_string();
     test_sparsevec_to_string();
     test_sparsevec_from_string();
+
+    test_vector_to_buf();
+    test_vector_into_buf();
+    test_halfvec_to_buf();
+    test_halfvec_into_buf();
+    test_sparsevec_to_buf();
+    test_sparsevec_into_buf();
 }
