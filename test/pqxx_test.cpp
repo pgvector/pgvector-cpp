@@ -106,7 +106,7 @@ void test_stream(pqxx::connection &conn) {
     pgvector::Vector embedding({1, 2, 3});
     tx.exec("INSERT INTO items (embedding) VALUES ($1)", {embedding});
     int count = 0;
-    for (auto [id, embedding2] : tx.stream<int, pgvector::Vector>("SELECT id, embedding FROM items WHERE embedding IS NOT NULL")) {
+    for (const auto& [id, embedding2] : tx.stream<int, pgvector::Vector>("SELECT id, embedding FROM items WHERE embedding IS NOT NULL")) {
         assert_equal(embedding2, embedding);
         count++;
     }
