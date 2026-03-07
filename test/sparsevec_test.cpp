@@ -27,8 +27,8 @@ static void test_constructor_map() {
     assert_equal(vec.values() == std::vector<float>{1, 2, 3}, true);
 
     assert_exception<std::invalid_argument>([&]{
-        SparseVector(map, 0);
-    }, "sparsevec must have at least 1 dimension");
+        SparseVector(map, -1);
+    }, "sparsevec dimensions cannot be negative");
 
     assert_exception<std::invalid_argument>([&]{
         SparseVector(map, 4);

@@ -246,7 +246,7 @@ void test_sparsevec_from_string() {
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::SparseVector>("{}/-1");
-    }, "sparsevec must have at least 1 dimension");
+    }, "sparsevec dimensions cannot be negative");
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::SparseVector>("{:}/1");

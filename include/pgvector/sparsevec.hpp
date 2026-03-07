@@ -39,8 +39,8 @@ class SparseVector {
 
     /// Creates a sparse vector from a map of non-zero elements.
     SparseVector(const std::unordered_map<int, float>& map, int dimensions) {
-        if (dimensions < 1) {
-            throw std::invalid_argument{"sparsevec must have at least 1 dimension"};
+        if (dimensions < 0) {
+            throw std::invalid_argument{"sparsevec dimensions cannot be negative"};
         }
         dimensions_ = dimensions;
 
