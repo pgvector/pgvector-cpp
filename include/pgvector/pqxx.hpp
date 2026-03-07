@@ -8,6 +8,7 @@
 
 #include <cstddef>
 #include <limits>
+#include <ranges>
 #include <string_view>
 #include <vector>
 
@@ -35,14 +36,10 @@ template<> struct string_traits<pgvector::Vector> {
         std::vector<float> values;
         if (text.size() > 2) {
             std::string_view inner = text.substr(1, text.size() - 2);
-            size_t start = 0;
-            for (size_t i = 0; i < inner.size(); i++) {
-                if (inner[i] == ',') {
-                    values.push_back(pqxx::from_string<float>(inner.substr(start, i - start), c));
-                    start = i + 1;
-                }
+            for (const auto& v : std::views::split(inner, ',')) {
+                std::string_view sv{v.begin(), v.end()};
+                values.push_back(pqxx::from_string<float>(sv, c));
             }
-            values.push_back(pqxx::from_string<float>(inner.substr(start), c));
         }
         return pgvector::Vector{std::move(values)};
     }
@@ -108,14 +105,10 @@ template<> struct string_traits<pgvector::HalfVector> {
         std::vector<pgvector::Half> values;
         if (text.size() > 2) {
             std::string_view inner = text.substr(1, text.size() - 2);
-            size_t start = 0;
-            for (size_t i = 0; i < inner.size(); i++) {
-                if (inner[i] == ',') {
-                    values.push_back(static_cast<pgvector::Half>(pqxx::from_string<float>(inner.substr(start, i - start), c)));
-                    start = i + 1;
-                }
+            for (const auto& v : std::views::split(inner, ',')) {
+                std::string_view sv{v.begin(), v.end()};
+                values.push_back(static_cast<pgvector::Half>(pqxx::from_string<float>(sv, c)));
             }
-            values.push_back(static_cast<pgvector::Half>(pqxx::from_string<float>(inner.substr(start), c)));
         }
         return pgvector::HalfVector{std::move(values)};
     }
@@ -187,14 +180,17 @@ template<> struct string_traits<pgvector::SparseVector> {
         int dimensions = pqxx::from_string<int>(text.substr(n + 2), c);
 
         if (n > 1) {
-            auto add_element = [&](std::string_view substr) {
-                size_t ne = substr.find(":");
+            std::string_view inner = text.substr(1, n - 1);
+            for (const auto& v : std::views::split(inner, ',')) {
+                std::string_view sv{v.begin(), v.end()};
+
+                size_t ne = sv.find(":");
                 if (ne == std::string::npos) {
                     throw conversion_error{"Malformed sparsevec literal"};
                 }
 
-                int index = pqxx::from_string<int>(substr.substr(0, ne), c);
-                float value = pqxx::from_string<float>(substr.substr(ne + 1), c);
+                int index = pqxx::from_string<int>(sv.substr(0, ne), c);
+                float value = pqxx::from_string<float>(sv.substr(ne + 1), c);
 
                 // check to avoid undefined behavior
                 if (index > std::numeric_limits<int>::min()) {
@@ -202,17 +198,7 @@ template<> struct string_traits<pgvector::SparseVector> {
                 }
 
                 map.insert({index, value});
-            };
-
-            std::string_view inner = text.substr(1, n - 1);
-            size_t start = 0;
-            for (size_t i = 0; i < inner.size(); i++) {
-                if (inner[i] == ',') {
-                    add_element(inner.substr(start, i - start));
-                    start = i + 1;
-                }
             }
-            add_element(inner.substr(start));
         }
 
         try {
