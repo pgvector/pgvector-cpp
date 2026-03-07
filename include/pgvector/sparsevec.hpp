@@ -25,7 +25,7 @@ class SparseVector {
     /// Creates a sparse vector from a span.
     explicit SparseVector(std::span<const float> value) {
         if (value.size() > std::numeric_limits<int>::max()) {
-            throw std::invalid_argument{"too many dimensions"};
+            throw std::invalid_argument{"sparsevec cannot have more than max int dimensions"};
         }
         dimensions_ = static_cast<int>(value.size());
 
@@ -42,7 +42,7 @@ class SparseVector {
     /// Creates a sparse vector from a map of non-zero elements.
     SparseVector(const std::unordered_map<int, float>& map, int dimensions) {
         if (dimensions < 0) {
-            throw std::invalid_argument{"sparsevec dimensions cannot be negative"};
+            throw std::invalid_argument{"sparsevec cannot have negative dimensions"};
         }
         dimensions_ = dimensions;
 

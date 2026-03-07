@@ -28,7 +28,7 @@ static void test_constructor_map() {
 
     assert_exception<std::invalid_argument>([&]{
         SparseVector(map, -1);
-    }, "sparsevec dimensions cannot be negative");
+    }, "sparsevec cannot have negative dimensions");
 
     assert_exception<std::invalid_argument>([&]{
         SparseVector(map, 4);
