@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <limits>
 #include <ostream>
 #include <span>
 #include <stdexcept>
@@ -33,7 +34,9 @@ class SparseVector {
 
     /// Creates a sparse vector from a span.
     explicit SparseVector(std::span<const float> value) {
-        // TODO throw exception
+        if (value.size() > std::numeric_limits<int>::max()) {
+            throw std::invalid_argument{"too many dimensions"};
+        }
         dimensions_ = static_cast<int>(value.size());
         for (size_t i = 0; i < value.size(); i++) {
             float v = value[i];
