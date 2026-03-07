@@ -176,9 +176,9 @@ template<> struct string_traits<pgvector::SparseVector> {
             throw conversion_error{"Malformed sparsevec literal"};
         }
 
-        std::unordered_map<int, float> map;
         int dimensions = pqxx::from_string<int>(text.substr(n + 2), c);
 
+        std::unordered_map<int, float> map;
         if (n > 1) {
             std::string_view inner = text.substr(1, n - 1);
             for (const auto& v : std::views::split(inner, ',')) {
