@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cstddef>
+#include <limits>
 #include <string_view>
 #include <vector>
 
@@ -182,13 +183,8 @@ template<> struct string_traits<pgvector::SparseVector> {
             throw conversion_error{"Malformed sparsevec literal"};
         }
 
+        std::unordered_map<int, float> map;
         int dimensions = pqxx::from_string<int>(text.substr(n + 2), c);
-        if (dimensions < 0) {
-            throw conversion_error{"Dimensions cannot be negative"};
-        }
-
-        std::vector<int> indices;
-        std::vector<float> values;
 
         if (n > 1) {
             auto add_element = [&](std::string_view substr) {
@@ -200,12 +196,12 @@ template<> struct string_traits<pgvector::SparseVector> {
                 int index = pqxx::from_string<int>(substr.substr(0, ne), c);
                 float value = pqxx::from_string<float>(substr.substr(ne + 1), c);
 
-                if (index < 1 || index > dimensions) {
-                    throw conversion_error{"Index out of bounds"};
+                // check to avoid undefined behavior
+                if (index > std::numeric_limits<int>::min()) {
+                    index -= 1;
                 }
 
-                indices.push_back(index - 1);
-                values.push_back(value);
+                map.insert({index, value});
             };
 
             std::string_view inner = text.substr(1, n - 1);
@@ -219,7 +215,11 @@ template<> struct string_traits<pgvector::SparseVector> {
             add_element(inner.substr(start));
         }
 
-        return pgvector::SparseVector{dimensions, std::move(indices), std::move(values)};
+        try {
+            return pgvector::SparseVector{map, dimensions};
+        } catch (const std::invalid_argument& e) {
+            throw conversion_error{e.what()};
+        }
     }
 
     static std::string_view to_buf(std::span<char> buf, const pgvector::SparseVector& value, ctx c = {}) {

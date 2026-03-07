@@ -246,7 +246,7 @@ void test_sparsevec_from_string() {
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::SparseVector>("{}/-1");
-    }, "Dimensions cannot be negative");
+    }, "sparsevec must have at least 1 dimension");
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::SparseVector>("{:}/1");
@@ -258,15 +258,15 @@ void test_sparsevec_from_string() {
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::SparseVector>("{0:1}/1");
-    }, "Index out of bounds");
+    }, "sparsevec index out of bounds");
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::SparseVector>("{-2147483648:1}/1");
-    }, "Index out of bounds");
+    }, "sparsevec index out of bounds");
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::SparseVector>("{2:1}/1");
-    }, "Index out of bounds");
+    }, "sparsevec index out of bounds");
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::SparseVector>("{1:4e38}/1");
