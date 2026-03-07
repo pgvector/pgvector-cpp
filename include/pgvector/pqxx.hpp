@@ -200,7 +200,7 @@ template<> struct string_traits<pgvector::SparseVector> {
                 int index = pqxx::from_string<int>(substr.substr(0, ne), c);
                 float value = pqxx::from_string<float>(substr.substr(ne + 1), c);
 
-                if (index < 1) {
+                if (index < 1 || index > dimensions) {
                     throw conversion_error{"Index out of bounds"};
                 }
 
