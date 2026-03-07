@@ -232,7 +232,7 @@ template<> struct string_traits<pgvector::SparseVector> {
             if (i != 0) {
                 here += pqxx::into_buf(buf.subspan(here), ",", c);
             }
-            // cast to prevent undefined behavior and require less buffer space
+            // cast to avoid undefined behavior and require less buffer space
             here += pqxx::into_buf(buf.subspan(here), static_cast<unsigned int>(indices[i]) + 1, c);
             here += pqxx::into_buf(buf.subspan(here), ":", c);
             here += pqxx::into_buf(buf.subspan(here), values[i], c);
