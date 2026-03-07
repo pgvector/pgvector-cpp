@@ -1,3 +1,4 @@
+#include <limits>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -323,6 +324,9 @@ void test_halfvec_into_buf() {
 void test_sparsevec_to_buf() {
     char buf[120];
     assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::SparseVector{{1, 2, 3}}), "{1:1,2:2,3:3}/3");
+
+    int max = std::numeric_limits<int>::max();
+    assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::SparseVector{{{max - 1, 1}}, max}), "{2147483647:1}/2147483647");
 
     assert_exception<pqxx::conversion_overrun>([] {
         return pqxx::to_buf(std::span<char>{}, pgvector::SparseVector{{1, 2, 3}});
