@@ -281,6 +281,10 @@ void test_sparsevec_from_string() {
     }, "sparsevec index out of bounds");
 
     assert_exception<pqxx::conversion_error>([] {
+        auto _ = pqxx::from_string<pgvector::SparseVector>("{1:1}/0");
+    }, "sparsevec index out of bounds");
+
+    assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::SparseVector>("{1:4e38}/1");
     }, float_error("Could not convert '4e38' to float: Value out of range."));
 
