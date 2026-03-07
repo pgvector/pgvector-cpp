@@ -246,7 +246,8 @@ template<> struct string_traits<pgvector::SparseVector> {
             if (i != 0) {
                 here += pqxx::into_buf(buf.subspan(here), ",", c);
             }
-            here += pqxx::into_buf(buf.subspan(here), indices[i] + 1, c);
+            // cast to prevent undefined behavior on overflow and require less buffer space
+            here += pqxx::into_buf(buf.subspan(here), static_cast<unsigned int>(indices[i]) + 1, c);
             here += pqxx::into_buf(buf.subspan(here), ":", c);
             here += pqxx::into_buf(buf.subspan(here), values[i], c);
         }
@@ -270,7 +271,7 @@ template<> struct string_traits<pgvector::SparseVector> {
         size += pqxx::size_buffer("{");
         for (size_t i = 0; i < nnz; i++) {
             size += pqxx::size_buffer(",");
-            size += pqxx::size_buffer(indices[i] + 1);
+            size += pqxx::size_buffer(static_cast<unsigned int>(indices[i]) + 1);
             size += pqxx::size_buffer(":");
             size += pqxx::size_buffer(values[i]);
         }

@@ -353,7 +353,7 @@ void test_halfvec_size_buffer() {
 }
 
 void test_sparsevec_size_buffer() {
-    assert_equal(pqxx::size_buffer(pgvector::SparseVector{{1, 2, 3}}), 106u);
+    assert_equal(pqxx::size_buffer(pgvector::SparseVector{{1, 2, 3}}), 103u);
 }
 
 void test_pqxx() {
