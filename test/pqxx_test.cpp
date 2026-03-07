@@ -231,6 +231,7 @@ void test_sparsevec_to_string() {
 void test_sparsevec_from_string() {
     assert_equal(pqxx::from_string<pgvector::SparseVector>("{1:1,3:2,5:3}/6"), pgvector::SparseVector{{1, 0, 2, 0, 3, 0}});
     assert_equal(pqxx::from_string<pgvector::SparseVector>("{}/6"), pgvector::SparseVector{{0, 0, 0, 0, 0, 0}});
+    assert_equal(pqxx::from_string<pgvector::SparseVector>("{}/0"), pgvector::SparseVector{std::vector<float>{}});
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::SparseVector>("");

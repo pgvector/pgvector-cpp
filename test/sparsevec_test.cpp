@@ -35,8 +35,17 @@ static void test_constructor_map() {
     }, "sparsevec index out of bounds");
 }
 
+static void test_constructor_empty() {
+    SparseVector vec{std::vector<float>{}};
+    assert_equal(vec.dimensions(), 0);
+
+    SparseVector vec2{{}, 0};
+    assert_equal(vec2.dimensions(), 0);
+}
+
 void test_sparsevec() {
     test_constructor_vector();
     test_constructor_span();
+    test_constructor_empty();
     test_constructor_map();
 }
