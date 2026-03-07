@@ -240,7 +240,7 @@ void test_sparsevec_from_string() {
     assert_equal(pqxx::from_string<pgvector::SparseVector>("{}/0"), pgvector::SparseVector{std::vector<float>{}});
     assert_equal(pqxx::from_string<pgvector::SparseVector>("{1:2,1:3}/1"), pgvector::SparseVector{{2}});
 
-    auto vec = pqxx::from_string<pgvector::SparseVector>("{2:4,1:3}/2");
+    auto vec = pqxx::from_string<pgvector::SparseVector>("{2:4,1:3,3:0}/3");
     assert_equal(vec.indices() == std::vector<int>{0, 1}, true);
     assert_equal(vec.values() == std::vector<float>{3, 4}, true);
 
