@@ -28,6 +28,8 @@ class SparseVector {
             throw std::invalid_argument{"too many dimensions"};
         }
         dimensions_ = static_cast<int>(value.size());
+
+        // do not reserve capacity for indices/values since likely many zeros
         for (size_t i = 0; i < value.size(); i++) {
             float v = value[i];
             if (v != 0) {
@@ -44,6 +46,7 @@ class SparseVector {
         }
         dimensions_ = dimensions;
 
+        // could probably reserve capacity for indices since not expecting zeros
         for (const auto& [i, v] : map) {
             if (i < 0 || i >= dimensions) {
                 throw std::invalid_argument{"sparsevec index out of bounds"};
