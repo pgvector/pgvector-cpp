@@ -149,6 +149,8 @@ void test_vector_to_string() {
 
 void test_vector_from_string() {
     assert_equal(pqxx::from_string<pgvector::Vector>("[1,2,3]"), pgvector::Vector{{1, 2, 3}});
+
+    // not valid, but test current behavior
     assert_equal(pqxx::from_string<pgvector::Vector>("[]"), pgvector::Vector{std::vector<float>{}});
 
     assert_exception<pqxx::conversion_error>([] {
@@ -191,6 +193,8 @@ void test_halfvec_to_string() {
 
 void test_halfvec_from_string() {
     assert_equal(pqxx::from_string<pgvector::HalfVector>("[1,2,3]"), pgvector::HalfVector{{1, 2, 3}});
+
+    // not valid, but test current behavior
     assert_equal(pqxx::from_string<pgvector::HalfVector>("[]"), pgvector::HalfVector{std::vector<pgvector::Half>{}});
 
     assert_exception<pqxx::conversion_error>([] {
@@ -231,7 +235,14 @@ void test_sparsevec_to_string() {
 void test_sparsevec_from_string() {
     assert_equal(pqxx::from_string<pgvector::SparseVector>("{1:1,3:2,5:3}/6"), pgvector::SparseVector{{1, 0, 2, 0, 3, 0}});
     assert_equal(pqxx::from_string<pgvector::SparseVector>("{}/6"), pgvector::SparseVector{{0, 0, 0, 0, 0, 0}});
+
+    // not valid, but test current behavior
     assert_equal(pqxx::from_string<pgvector::SparseVector>("{}/0"), pgvector::SparseVector{std::vector<float>{}});
+    assert_equal(pqxx::from_string<pgvector::SparseVector>("{1:2,1:3}/1"), pgvector::SparseVector{{2}});
+
+    auto vec = pqxx::from_string<pgvector::SparseVector>("{2:4,1:3}/2");
+    assert_equal(vec.indices() == std::vector<int>{0, 1}, true);
+    assert_equal(vec.values() == std::vector<float>{3, 4}, true);
 
     assert_exception<pqxx::conversion_error>([] {
         auto _ = pqxx::from_string<pgvector::SparseVector>("");
