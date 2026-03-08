@@ -8,14 +8,14 @@ Supports [libpqxx](https://github.com/jtv/libpqxx)
 
 ## Installation
 
-Add [the headers](https://github.com/pgvector/pgvector-cpp/tree/v0.2.4/include) to your project (supports C++17 and greater).
+Add [the headers](https://github.com/pgvector/pgvector-cpp/tree/v0.3.0/include) to your project (supports C++20 and greater).
 
 There is also support for CMake and FetchContent:
 
 ```cmake
 include(FetchContent)
 
-FetchContent_Declare(pgvector GIT_REPOSITORY https://github.com/pgvector/pgvector-cpp.git GIT_TAG v0.2.4)
+FetchContent_Declare(pgvector GIT_REPOSITORY https://github.com/pgvector/pgvector-cpp.git GIT_TAG v0.3.0)
 FetchContent_MakeAvailable(pgvector)
 
 target_link_libraries(app PRIVATE pgvector::pgvector)
@@ -45,6 +45,8 @@ Include the header
 ```cpp
 #include <pgvector/pqxx.hpp>
 ```
+
+The latest version works libpqxx 8. For libpqxx 7, use version 0.2.4 and [this readme](https://github.com/pgvector/pgvector-cpp/blob/v0.2.4/README.md#libpqxx).
 
 Enable the extension
 
@@ -99,7 +101,7 @@ pgvector::Vector vec{std::span<const float>{{1, 2, 3}}};
 Get a `std::vector`
 
 ```cpp
-std::vector<float> float_vec = static_cast<std::vector<float>>(vec);
+const std::vector<float>& values = vec.values();
 ```
 
 ### Half Vectors
@@ -107,19 +109,21 @@ std::vector<float> float_vec = static_cast<std::vector<float>>(vec);
 Create a half vector from a `std::vector`
 
 ```cpp
-pgvector::HalfVector vec{std::vector<float>{1, 2, 3}};
+pgvector::HalfVector vec{std::vector<pgvector::Half>{1, 2, 3}};
 ```
+
+Note: `pgvector::Half` is `std::float16_t` or `_Float16` when available, or `float` otherwise
 
 Or a span
 
 ```cpp
-pgvector::HalfVector vec{std::span<const float>{{1, 2, 3}}};
+pgvector::HalfVector vec{std::span<const pgvector::Half>{{1, 2, 3}}};
 ```
 
 Get a `std::vector`
 
 ```cpp
-std::vector<float> float_vec = static_cast<std::vector<float>>(vec);
+const std::vector<pgvector::Half>& values = vec.values();
 ```
 
 ### Sparse Vectors

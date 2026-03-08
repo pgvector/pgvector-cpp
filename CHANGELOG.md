@@ -1,4 +1,4 @@
-## 0.3.0 (unreleased)
+## 0.3.0 (2026-03-08)
 
 - Added support for libpqxx 8
 - Changed `HalfVector` to use `std::float16_t` or `_Float16` when available
