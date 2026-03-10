@@ -9,6 +9,7 @@
 #include <cstddef>
 #include <limits>
 #include <ranges>
+#include <span>
 #include <string_view>
 #include <unordered_map>
 #include <utility>
