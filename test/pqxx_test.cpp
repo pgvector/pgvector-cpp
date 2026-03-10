@@ -305,7 +305,7 @@ void test_sparsevec_from_string() {
 }
 
 void test_vector_to_buf() {
-    char buf[60];
+    std::array<char, 60> buf{};
     assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::Vector{{1, 2, 3}}), "[1,2,3]");
 
     assert_exception<pqxx::conversion_overrun>([] {
@@ -314,10 +314,10 @@ void test_vector_to_buf() {
 }
 
 void test_vector_into_buf() {
-    char buf[60];
+    std::array<char, 60> buf{};
     size_t size = pqxx::into_buf(std::span<char>{buf}, pgvector::Vector{{1, 2, 3}});
     assert_equal(size, 7u);
-    assert_equal(std::string_view{buf, size}, "[1,2,3]");
+    assert_equal(std::string_view{buf.data(), size}, "[1,2,3]");
 
     assert_exception<pqxx::conversion_overrun>([] {
         return pqxx::into_buf(std::span<char>{}, pgvector::Vector{{1, 2, 3}});
@@ -325,7 +325,7 @@ void test_vector_into_buf() {
 }
 
 void test_halfvec_to_buf() {
-    char buf[60];
+    std::array<char, 60> buf{};
     assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::HalfVector{{1, 2, 3}}), "[1,2,3]");
 
     assert_exception<pqxx::conversion_overrun>([] {
@@ -334,10 +334,10 @@ void test_halfvec_to_buf() {
 }
 
 void test_halfvec_into_buf() {
-    char buf[60];
+    std::array<char, 60> buf{};
     size_t size = pqxx::into_buf(std::span<char>{buf}, pgvector::HalfVector{{1, 2, 3}});
     assert_equal(size, 7u);
-    assert_equal(std::string_view{buf, size}, "[1,2,3]");
+    assert_equal(std::string_view{buf.data(), size}, "[1,2,3]");
 
     assert_exception<pqxx::conversion_overrun>([] {
         return pqxx::into_buf(std::span<char>{}, pgvector::HalfVector{{1, 2, 3}});
@@ -345,7 +345,7 @@ void test_halfvec_into_buf() {
 }
 
 void test_sparsevec_to_buf() {
-    char buf[120];
+    std::array<char, 120> buf{};
     assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::SparseVector{{1, 2, 3}}), "{1:1,2:2,3:3}/3");
 
     int max = std::numeric_limits<int>::max();
@@ -357,10 +357,10 @@ void test_sparsevec_to_buf() {
 }
 
 void test_sparsevec_into_buf() {
-    char buf[120];
+    std::array<char, 120> buf{};
     size_t size = pqxx::into_buf(std::span<char>{buf}, pgvector::SparseVector{{1, 2, 3}});
     assert_equal(size, 15u);
-    assert_equal(std::string_view{buf, size}, "{1:1,2:2,3:3}/3");
+    assert_equal(std::string_view{buf.data(), size}, "{1:1,2:2,3:3}/3");
 
     assert_exception<pqxx::conversion_overrun>([] {
         return pqxx::into_buf(std::span<char>{}, pgvector::SparseVector{{1, 2, 3}});
