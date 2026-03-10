@@ -10,6 +10,7 @@
 #include <limits>
 #include <ranges>
 #include <span>
+#include <stdexcept>
 #include <string_view>
 #include <unordered_map>
 #include <utility>
