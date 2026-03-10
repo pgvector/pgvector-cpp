@@ -26,6 +26,6 @@ void assert_exception(std::function<void(void)> code, std::optional<std::string_
     }
     assert_equal(exception.has_value(), true);
     if (message) {
-        assert_equal(std::string_view{(*exception).what()}, *message);
+        assert_equal(std::string_view{exception.value().what()}, message.value());
     }
 }
