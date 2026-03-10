@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <limits>
 #include <ostream>
+#include <ranges>
 #include <span>
 #include <stdexcept>
 #include <unordered_map>
@@ -56,7 +57,7 @@ class SparseVector {
                 indices_.push_back(i);
             }
         }
-        std::sort(indices_.begin(), indices_.end());
+        std::ranges::sort(indices_);
 
         values_.reserve(indices_.size());
         for (const auto i : indices_) {
