@@ -1,4 +1,5 @@
 #include <span>
+#include <vector>
 
 #include <pgvector/halfvec.hpp>
 

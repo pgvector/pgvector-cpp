@@ -10,6 +10,8 @@
 #include <limits>
 #include <ranges>
 #include <string_view>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include <pqxx/pqxx>
@@ -185,7 +187,7 @@ template<> struct string_traits<pgvector::SparseVector> {
                 std::string_view sv{v.begin(), v.end()};
 
                 size_t ne = sv.find(":");
-                if (ne == std::string::npos) {
+                if (ne == std::string_view::npos) {
                     throw conversion_error{"Malformed sparsevec literal"};
                 }
 

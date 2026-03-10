@@ -1,5 +1,6 @@
 #include <span>
 #include <unordered_map>
+#include <vector>
 
 #include <pgvector/sparsevec.hpp>
 
