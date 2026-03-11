@@ -42,9 +42,9 @@ void test_vector(pqxx::connection &conn) {
 
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY embedding <-> $1", {embedding2});
     assert_equal(res.size(), 3);
-    assert_equal(res[0][0].as<pgvector::Vector>(), embedding2);
-    assert_equal(res[1][0].as<pgvector::Vector>(), embedding);
-    assert_equal(res[2][0].as<std::optional<pgvector::Vector>>().has_value(), false);
+    assert_equal(res.at(0).at(0).as<pgvector::Vector>(), embedding2);
+    assert_equal(res.at(1).at(0).as<pgvector::Vector>(), embedding);
+    assert_equal(res.at(2).at(0).as<std::optional<pgvector::Vector>>().has_value(), false);
 }
 
 void test_halfvec(pqxx::connection &conn) {
@@ -57,9 +57,9 @@ void test_halfvec(pqxx::connection &conn) {
 
     pqxx::result res = tx.exec("SELECT half_embedding FROM items ORDER BY half_embedding <-> $1", {embedding2});
     assert_equal(res.size(), 3);
-    assert_equal(res[0][0].as<pgvector::HalfVector>(), embedding2);
-    assert_equal(res[1][0].as<pgvector::HalfVector>(), embedding);
-    assert_equal(res[2][0].as<std::optional<pgvector::HalfVector>>().has_value(), false);
+    assert_equal(res.at(0).at(0).as<pgvector::HalfVector>(), embedding2);
+    assert_equal(res.at(1).at(0).as<pgvector::HalfVector>(), embedding);
+    assert_equal(res.at(2).at(0).as<std::optional<pgvector::HalfVector>>().has_value(), false);
 }
 
 void test_bit(pqxx::connection &conn) {
@@ -72,9 +72,9 @@ void test_bit(pqxx::connection &conn) {
 
     pqxx::result res = tx.exec("SELECT binary_embedding FROM items ORDER BY binary_embedding <~> $1", pqxx::params{embedding2});
     assert_equal(res.size(), 3);
-    assert_equal(res[0][0].as<std::string>(), embedding2);
-    assert_equal(res[1][0].as<std::string>(), embedding);
-    assert_equal(res[2][0].as<std::optional<std::string>>().has_value(), false);
+    assert_equal(res.at(0).at(0).as<std::string>(), embedding2);
+    assert_equal(res.at(1).at(0).as<std::string>(), embedding);
+    assert_equal(res.at(2).at(0).as<std::optional<std::string>>().has_value(), false);
 }
 
 void test_sparsevec(pqxx::connection &conn) {
@@ -87,9 +87,9 @@ void test_sparsevec(pqxx::connection &conn) {
 
     pqxx::result res = tx.exec("SELECT sparse_embedding FROM items ORDER BY sparse_embedding <-> $1", {embedding2});
     assert_equal(res.size(), 3);
-    assert_equal(res[0][0].as<pgvector::SparseVector>(), embedding2);
-    assert_equal(res[1][0].as<pgvector::SparseVector>(), embedding);
-    assert_equal(res[2][0].as<std::optional<pgvector::SparseVector>>().has_value(), false);
+    assert_equal(res.at(0).at(0).as<pgvector::SparseVector>(), embedding2);
+    assert_equal(res.at(1).at(0).as<pgvector::SparseVector>(), embedding);
+    assert_equal(res.at(2).at(0).as<std::optional<pgvector::SparseVector>>().has_value(), false);
 }
 
 void test_sparsevec_nnz(pqxx::connection &conn) {
@@ -126,8 +126,8 @@ void test_stream_to(pqxx::connection &conn) {
     stream.write_values(pgvector::Vector{{4, 5, 6}});
     stream.complete();
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY id");
-    assert_equal(res[0][0].as<std::string>(), "[1,2,3]");
-    assert_equal(res[1][0].as<std::string>(), "[4,5,6]");
+    assert_equal(res.at(0).at(0).as<std::string>(), "[1,2,3]");
+    assert_equal(res.at(1).at(0).as<std::string>(), "[4,5,6]");
 }
 
 void test_precision(pqxx::connection &conn) {
@@ -138,7 +138,7 @@ void test_precision(pqxx::connection &conn) {
     tx.exec("INSERT INTO items (embedding) VALUES ($1)", {embedding});
     tx.exec("SET extra_float_digits = 3");
     pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY id DESC LIMIT 1");
-    assert_equal(res[0][0].as<pgvector::Vector>(), embedding);
+    assert_equal(res.at(0).at(0).as<pgvector::Vector>(), embedding);
 }
 
 void test_vector_to_string() {

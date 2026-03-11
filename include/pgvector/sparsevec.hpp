@@ -30,12 +30,14 @@ class SparseVector {
         dimensions_ = static_cast<int>(value.size());
 
         // do not reserve capacity for indices/values since likely many zeros
-        for (size_t i = 0; i < value.size(); i++) {
-            float v = value[i];
+        // TODO use std::views::enumerate for C++23
+        size_t i = 0;
+        for (auto v : value) {
             if (v != 0) {
                 indices_.push_back(static_cast<int>(i));
                 values_.push_back(v);
             }
+            i++;
         }
     }
 
@@ -85,13 +87,14 @@ class SparseVector {
 
     friend std::ostream& operator<<(std::ostream& os, const SparseVector& value) {
         os << "{";
+        // TODO use std::views::zip for C++23
         for (size_t i = 0; i < value.indices_.size(); i++) {
             if (i > 0) {
                 os << ",";
             }
-            os << value.indices_[i] + 1;
+            os << value.indices_.at(i) + 1;
             os << ":";
-            os << value.values_[i];
+            os << value.values_.at(i);
         }
         os << "}/";
         os << value.dimensions_;

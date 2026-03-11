@@ -65,11 +65,14 @@ template<> struct string_traits<pgvector::Vector> {
         size_t here = 0;
         here += pqxx::into_buf(buf.subspan(here), "[", c);
 
-        for (size_t i = 0; i < values.size(); i++) {
+        // TODO use std::views::enumerate for C++23
+        size_t i = 0;
+        for (auto v : values) {
             if (i != 0) {
                 here += pqxx::into_buf(buf.subspan(here), ",", c);
             }
-            here += pqxx::into_buf(buf.subspan(here), values[i], c);
+            here += pqxx::into_buf(buf.subspan(here), v, c);
+            i++;
         }
 
         here += pqxx::into_buf(buf.subspan(here), "]", c);
@@ -134,11 +137,14 @@ template<> struct string_traits<pgvector::HalfVector> {
         size_t here = 0;
         here += pqxx::into_buf(buf.subspan(here), "[", c);
 
-        for (size_t i = 0; i < values.size(); i++) {
+        // TODO use std::views::enumerate for C++23
+        size_t i = 0;
+        for (auto v : values) {
             if (i != 0) {
                 here += pqxx::into_buf(buf.subspan(here), ",", c);
             }
-            here += pqxx::into_buf(buf.subspan(here), static_cast<float>(values[i]), c);
+            here += pqxx::into_buf(buf.subspan(here), static_cast<float>(v), c);
+            i++;
         }
 
         here += pqxx::into_buf(buf.subspan(here), "]", c);
@@ -232,14 +238,15 @@ template<> struct string_traits<pgvector::SparseVector> {
         size_t here = 0;
         here += pqxx::into_buf(buf.subspan(here), "{", c);
 
+        // TODO use std::views::zip for C++23
         for (size_t i = 0; i < nnz; i++) {
             if (i != 0) {
                 here += pqxx::into_buf(buf.subspan(here), ",", c);
             }
             // cast to avoid undefined behavior and require less buffer space
-            here += pqxx::into_buf(buf.subspan(here), static_cast<unsigned int>(indices[i]) + 1, c);
+            here += pqxx::into_buf(buf.subspan(here), static_cast<unsigned int>(indices.at(i)) + 1, c);
             here += pqxx::into_buf(buf.subspan(here), ":", c);
-            here += pqxx::into_buf(buf.subspan(here), values[i], c);
+            here += pqxx::into_buf(buf.subspan(here), values.at(i), c);
         }
 
         here += pqxx::into_buf(buf.subspan(here), "}/", c);
@@ -259,11 +266,12 @@ template<> struct string_traits<pgvector::SparseVector> {
 
         size_t size = 0;
         size += pqxx::size_buffer("{");
+        // TODO use std::views::zip for C++23
         for (size_t i = 0; i < nnz; i++) {
             size += pqxx::size_buffer(",");
-            size += pqxx::size_buffer(static_cast<unsigned int>(indices[i]) + 1);
+            size += pqxx::size_buffer(static_cast<unsigned int>(indices.at(i)) + 1);
             size += pqxx::size_buffer(":");
-            size += pqxx::size_buffer(values[i]);
+            size += pqxx::size_buffer(values.at(i));
         }
         size += pqxx::size_buffer("}/");
         size += pqxx::size_buffer(dimensions);

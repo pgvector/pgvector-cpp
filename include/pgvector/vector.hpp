@@ -41,11 +41,14 @@ class Vector {
 
     friend std::ostream& operator<<(std::ostream& os, const Vector& value) {
         os << "[";
-        for (size_t i = 0; i < value.value_.size(); i++) {
+        // TODO use std::views::enumerate for C++23
+        size_t i = 0;
+        for (auto v : value.value_) {
             if (i > 0) {
                 os << ",";
             }
-            os << value.value_[i];
+            os << v;
+            i++;
         }
         os << "]";
         return os;

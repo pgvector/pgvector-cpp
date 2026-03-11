@@ -57,15 +57,18 @@ class HalfVector {
 
     friend std::ostream& operator<<(std::ostream& os, const HalfVector& value) {
         os << "[";
-        for (size_t i = 0; i < value.value_.size(); i++) {
+        // TODO use std::views::enumerate for C++23
+        size_t i = 0;
+        for (auto v : value.value_) {
             if (i > 0) {
                 os << ",";
             }
 #if __STDCPP_FLOAT16_T__
-            os << value.value_[i];
+            os << v;
 #else
-            os << static_cast<float>(value.value_[i]);
+            os << static_cast<float>(v);
 #endif
+            i++;
         }
         os << "]";
         return os;
