@@ -12,14 +12,14 @@
 
 #include "helper.hpp"
 
-void setup(pqxx::connection &conn) {
+void setup(pqxx::connection& conn) {
     pqxx::nontransaction tx{conn};
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS items");
     tx.exec("CREATE TABLE items (id serial PRIMARY KEY, embedding vector(3), half_embedding halfvec(3), binary_embedding bit(3), sparse_embedding sparsevec(3))");
 }
 
-void before_each(pqxx::connection &conn) {
+void before_each(pqxx::connection& conn) {
     pqxx::nontransaction tx{conn};
     tx.exec("TRUNCATE items");
 }
@@ -32,7 +32,7 @@ std::optional<std::string_view> float_error([[maybe_unused]] std::string_view me
 #endif
 }
 
-void test_vector(pqxx::connection &conn) {
+void test_vector(pqxx::connection& conn) {
     before_each(conn);
 
     pqxx::nontransaction tx{conn};
@@ -47,7 +47,7 @@ void test_vector(pqxx::connection &conn) {
     assert_equal(res.at(2).at(0).as<std::optional<pgvector::Vector>>().has_value(), false);
 }
 
-void test_halfvec(pqxx::connection &conn) {
+void test_halfvec(pqxx::connection& conn) {
     before_each(conn);
 
     pqxx::nontransaction tx{conn};
@@ -62,7 +62,7 @@ void test_halfvec(pqxx::connection &conn) {
     assert_equal(res.at(2).at(0).as<std::optional<pgvector::HalfVector>>().has_value(), false);
 }
 
-void test_bit(pqxx::connection &conn) {
+void test_bit(pqxx::connection& conn) {
     before_each(conn);
 
     pqxx::nontransaction tx{conn};
@@ -77,7 +77,7 @@ void test_bit(pqxx::connection &conn) {
     assert_equal(res.at(2).at(0).as<std::optional<std::string>>().has_value(), false);
 }
 
-void test_sparsevec(pqxx::connection &conn) {
+void test_sparsevec(pqxx::connection& conn) {
     before_each(conn);
 
     pqxx::nontransaction tx{conn};
@@ -92,7 +92,7 @@ void test_sparsevec(pqxx::connection &conn) {
     assert_equal(res.at(2).at(0).as<std::optional<pgvector::SparseVector>>().has_value(), false);
 }
 
-void test_sparsevec_nnz(pqxx::connection &conn) {
+void test_sparsevec_nnz(pqxx::connection& conn) {
     before_each(conn);
 
     pqxx::nontransaction tx{conn};
@@ -103,7 +103,7 @@ void test_sparsevec_nnz(pqxx::connection &conn) {
     }, "sparsevec cannot have more than 16000 dimensions");
 }
 
-void test_stream(pqxx::connection &conn) {
+void test_stream(pqxx::connection& conn) {
     before_each(conn);
 
     pqxx::nontransaction tx{conn};
@@ -117,7 +117,7 @@ void test_stream(pqxx::connection &conn) {
     assert_equal(count, 1);
 }
 
-void test_stream_to(pqxx::connection &conn) {
+void test_stream_to(pqxx::connection& conn) {
     before_each(conn);
 
     pqxx::nontransaction tx{conn};
@@ -130,7 +130,7 @@ void test_stream_to(pqxx::connection &conn) {
     assert_equal(res.at(1).at(0).as<std::string>(), "[4,5,6]");
 }
 
-void test_precision(pqxx::connection &conn) {
+void test_precision(pqxx::connection& conn) {
     before_each(conn);
 
     pqxx::nontransaction tx{conn};
