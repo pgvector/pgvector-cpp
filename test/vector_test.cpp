@@ -1,4 +1,5 @@
 #include <span>
+#include <sstream>
 #include <vector>
 
 #include <pgvector/vector.hpp>
@@ -27,9 +28,17 @@ static void test_values() {
     assert_equal(vec.values() == std::vector<float>{1, 2, 3}, true);
 }
 
+static void test_string() {
+    Vector vec{{1, 2, 3}};
+    std::ostringstream oss;
+    oss << vec;
+    assert_equal(oss.str(), "[1,2,3]");
+}
+
 void test_vector() {
     test_constructor_vector();
     test_constructor_span();
     test_constructor_empty();
     test_values();
+    test_string();
 }

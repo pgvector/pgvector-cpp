@@ -1,4 +1,5 @@
 #include <span>
+#include <sstream>
 #include <stdexcept>
 #include <unordered_map>
 #include <vector>
@@ -49,9 +50,17 @@ static void test_constructor_empty() {
     assert_equal(vec2.dimensions(), 0);
 }
 
+static void test_string() {
+    SparseVector vec{std::vector<float>{1, 0, 2, 0, 3, 0}};
+    std::ostringstream oss;
+    oss << vec;
+    assert_equal(oss.str(), "{1:1,3:2,5:3}/6");
+}
+
 void test_sparsevec() {
     test_constructor_vector();
     test_constructor_span();
     test_constructor_empty();
     test_constructor_map();
+    test_string();
 }
