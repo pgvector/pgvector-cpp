@@ -194,7 +194,7 @@ template<> struct string_traits<pgvector::SparseVector> {
             for (const auto& v : std::views::split(inner, ',')) {
                 std::string_view sv{v.begin(), v.end()};
 
-                size_t ne = sv.find(":");
+                size_t ne = sv.find(':');
                 if (ne == std::string_view::npos) {
                     throw conversion_error{"Malformed sparsevec literal"};
                 }
