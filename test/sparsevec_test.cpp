@@ -50,6 +50,21 @@ static void test_constructor_empty() {
     assert_equal(vec2.dimensions(), 0);
 }
 
+static void test_dimensions() {
+    SparseVector vec{std::vector<float>{1, 0, 2, 0, 3, 0}};
+    assert_equal(vec.dimensions(), 6);
+}
+
+static void test_indices() {
+    SparseVector vec{std::vector<float>{1, 0, 2, 0, 3, 0}};
+    assert_equal(vec.indices() == std::vector<int>{0, 2, 4}, true);
+}
+
+static void test_values() {
+    SparseVector vec{std::vector<float>{1, 0, 2, 0, 3, 0}};
+    assert_equal(vec.values() == std::vector<float>{1, 2, 3}, true);
+}
+
 static void test_string() {
     SparseVector vec{std::vector<float>{1, 0, 2, 0, 3, 0}};
     std::ostringstream oss;
@@ -62,5 +77,8 @@ void test_sparsevec() {
     test_constructor_span();
     test_constructor_empty();
     test_constructor_map();
+    test_dimensions();
+    test_indices();
+    test_values();
     test_string();
 }
