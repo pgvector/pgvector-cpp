@@ -7,8 +7,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include <pqxx/pqxx>
 #include <pgvector/pqxx.hpp>
+#include <pqxx/pqxx>
 
 #include "helper.hpp"
 
