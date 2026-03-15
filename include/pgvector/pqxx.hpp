@@ -25,13 +25,16 @@
 /// @cond
 
 namespace pqxx {
-template<> inline constexpr std::string_view name_type<pgvector::Vector>() noexcept {
+template<>
+inline constexpr std::string_view name_type<pgvector::Vector>() noexcept {
     return "vector";
 };
 
-template<> struct nullness<pgvector::Vector> : no_null<pgvector::Vector> {};
+template<>
+struct nullness<pgvector::Vector> : no_null<pgvector::Vector> {};
 
-template<> struct string_traits<pgvector::Vector> {
+template<>
+struct string_traits<pgvector::Vector> {
     static pgvector::Vector from_string(std::string_view text, ctx c = {}) {
         if (text.size() < 2 || text.front() != '[' || text.back() != ']') {
             throw conversion_error{"Malformed vector literal"};
@@ -97,13 +100,16 @@ template<> struct string_traits<pgvector::Vector> {
     }
 };
 
-template<> inline constexpr std::string_view name_type<pgvector::HalfVector>() noexcept {
+template<>
+inline constexpr std::string_view name_type<pgvector::HalfVector>() noexcept {
     return "halfvec";
 };
 
-template<> struct nullness<pgvector::HalfVector> : no_null<pgvector::HalfVector> {};
+template<>
+struct nullness<pgvector::HalfVector> : no_null<pgvector::HalfVector> {};
 
-template<> struct string_traits<pgvector::HalfVector> {
+template<>
+struct string_traits<pgvector::HalfVector> {
     static pgvector::HalfVector from_string(std::string_view text, ctx c = {}) {
         if (text.size() < 2 || text.front() != '[' || text.back() != ']') {
             throw conversion_error{"Malformed halfvec literal"};
@@ -169,13 +175,16 @@ template<> struct string_traits<pgvector::HalfVector> {
     }
 };
 
-template<> inline constexpr std::string_view name_type<pgvector::SparseVector>() noexcept {
+template<>
+inline constexpr std::string_view name_type<pgvector::SparseVector>() noexcept {
     return "sparsevec";
 };
 
-template<> struct nullness<pgvector::SparseVector> : no_null<pgvector::SparseVector> {};
+template<>
+struct nullness<pgvector::SparseVector> : no_null<pgvector::SparseVector> {};
 
-template<> struct string_traits<pgvector::SparseVector> {
+template<>
+struct string_traits<pgvector::SparseVector> {
     static pgvector::SparseVector from_string(std::string_view text, ctx c = {}) {
         if (text.size() < 4 || text.front() != '{') {
             throw conversion_error{"Malformed sparsevec literal"};
