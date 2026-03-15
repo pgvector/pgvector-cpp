@@ -13,7 +13,10 @@
 
 using json = nlohmann::json;
 
-std::vector<std::vector<float>> embed(const std::vector<std::string>& texts, const std::string& taskType) {
+std::vector<std::vector<float>> embed(
+    const std::vector<std::string>& texts,
+    const std::string& taskType
+) {
     // nomic-embed-text-v1.5 uses a task prefix
     // https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
     std::vector<std::string> input;

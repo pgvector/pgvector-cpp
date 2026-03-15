@@ -4,8 +4,8 @@
 #include <vector>
 
 #include <DataStructs/ExplicitBitVect.h>
-#include <GraphMol/SmilesParse/SmilesParse.h>
 #include <GraphMol/Fingerprints/MorganFingerprints.h>
+#include <GraphMol/SmilesParse/SmilesParse.h>
 #include <pgvector/pqxx.hpp>
 #include <pqxx/pqxx>
 
