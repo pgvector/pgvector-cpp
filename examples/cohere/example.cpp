@@ -12,7 +12,7 @@
 using json = nlohmann::json;
 
 // https://docs.cohere.com/reference/embed
-std::vector<std::string> embed(const std::vector<std::string>& texts, const std::string& input_type, char *api_key) {
+std::vector<std::string> embed(const std::vector<std::string>& texts, const std::string& input_type, char* api_key) {
     std::string url{"https://api.cohere.com/v2/embed"};
     json data{
         {"texts", texts},
@@ -45,7 +45,7 @@ std::vector<std::string> embed(const std::vector<std::string>& texts, const std:
 }
 
 int main() {
-    char *api_key = std::getenv("CO_API_KEY");
+    char* api_key = std::getenv("CO_API_KEY");
     if (!api_key) {
         std::cout << "Set CO_API_KEY" << std::endl;
         return 1;

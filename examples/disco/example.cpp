@@ -59,7 +59,7 @@ Dataset<int, std::string> load_movielens(const std::string& path) {
 
 int main() {
     // https://grouplens.org/datasets/movielens/100k/
-    char *movielens_path = std::getenv("MOVIELENS_100K_PATH");
+    char* movielens_path = std::getenv("MOVIELENS_100K_PATH");
     if (!movielens_path) {
         std::cout << "Set MOVIELENS_100K_PATH" << std::endl;
         return 1;

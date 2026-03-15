@@ -11,7 +11,7 @@ using json = nlohmann::json;
 
 // https://platform.openai.com/docs/guides/embeddings/how-to-get-embeddings
 // input can be an array with 2048 elements
-std::vector<std::vector<float>> embed(const std::vector<std::string>& input, char *api_key) {
+std::vector<std::vector<float>> embed(const std::vector<std::string>& input, char* api_key) {
     std::string url{"https://api.openai.com/v1/embeddings"};
     json data{
         {"input", input},
@@ -37,7 +37,7 @@ std::vector<std::vector<float>> embed(const std::vector<std::string>& input, cha
 }
 
 int main() {
-    char *api_key = std::getenv("OPENAI_API_KEY");
+    char* api_key = std::getenv("OPENAI_API_KEY");
     if (!api_key) {
         std::cout << "Set OPENAI_API_KEY" << std::endl;
         return 1;
