@@ -126,7 +126,11 @@ struct string_traits<pgvector::HalfVector> {
         return pgvector::HalfVector{std::move(values)};
     }
 
-    static std::string_view to_buf(std::span<char> buf, const pgvector::HalfVector& value, ctx c = {}) {
+    static std::string_view to_buf(
+        std::span<char> buf,
+        const pgvector::HalfVector& value,
+        ctx c = {}
+    ) {
         // confirm caller provided estimated buffer space
         if (buf.size() < size_buffer(value)) {
             throw conversion_overrun{"Not enough space in buffer for halfvec"};
@@ -227,7 +231,11 @@ struct string_traits<pgvector::SparseVector> {
         }
     }
 
-    static std::string_view to_buf(std::span<char> buf, const pgvector::SparseVector& value, ctx c = {}) {
+    static std::string_view to_buf(
+        std::span<char> buf,
+        const pgvector::SparseVector& value,
+        ctx c = {}
+    ) {
         // confirm caller provided estimated buffer space
         if (buf.size() < size_buffer(value)) {
             throw conversion_overrun{"Not enough space in buffer for sparsevec"};
@@ -253,7 +261,9 @@ struct string_traits<pgvector::SparseVector> {
                 here += pqxx::into_buf(buf.subspan(here), ",", c);
             }
             // cast to avoid undefined behavior and require less buffer space
-            here += pqxx::into_buf(buf.subspan(here), static_cast<unsigned int>(indices.at(i)) + 1, c);
+            here += pqxx::into_buf(
+                buf.subspan(here), static_cast<unsigned int>(indices.at(i)) + 1, c
+            );
             here += pqxx::into_buf(buf.subspan(here), ":", c);
             here += pqxx::into_buf(buf.subspan(here), values.at(i), c);
         }

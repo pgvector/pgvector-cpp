@@ -66,7 +66,9 @@ int main() {
 
     std::cout << "Creating distributed table" << std::endl;
     tx2.exec("DROP TABLE IF EXISTS items");
-    tx2.exec("CREATE TABLE items (id bigserial, embedding vector(128), category_id bigint, PRIMARY KEY (id, category_id))");
+    tx2.exec(
+        "CREATE TABLE items (id bigserial, embedding vector(128), category_id bigint, PRIMARY KEY (id, category_id))"
+    );
     tx2.exec("SET citus.shard_count = 4");
     tx2.exec("SELECT create_distributed_table('items', 'category_id')");
 

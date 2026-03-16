@@ -36,7 +36,9 @@ Dataset<int, std::string> load_movielens(const std::string& path) {
     while (std::getline(movies_file, line)) {
         std::string::size_type n = line.find('|');
         std::string::size_type n2 = line.find('|', n + 1);
-        movies.emplace(std::make_pair(line.substr(0, n), convert_to_utf8(line.substr(n + 1, n2 - n - 1))));
+        movies.emplace(
+            std::make_pair(line.substr(0, n), convert_to_utf8(line.substr(n + 1, n2 - n - 1)))
+        );
     }
 
     // read ratings and create dataset
@@ -75,7 +77,7 @@ int main() {
     tx.exec("CREATE TABLE movies (name text PRIMARY KEY, factors vector(20))");
 
     Dataset<int, std::string> data = load_movielens(movielens_path);
-    auto recommender = Recommender<int, std::string>::fit_explicit(data, { .factors = 20 });
+    auto recommender = Recommender<int, std::string>::fit_explicit(data, {.factors = 20});
 
     for (const auto& user_id : recommender.user_ids()) {
         pgvector::Vector factors{*recommender.user_factors(user_id)};
@@ -84,19 +86,27 @@ int main() {
 
     for (const auto& item_id : recommender.item_ids()) {
         pgvector::Vector factors{*recommender.item_factors(item_id)};
-        tx.exec("INSERT INTO movies (name, factors) VALUES ($1, $2)", pqxx::params{item_id, factors});
+        tx.exec(
+            "INSERT INTO movies (name, factors) VALUES ($1, $2)", pqxx::params{item_id, factors}
+        );
     }
 
     std::string movie{"Star Wars (1977)"};
     std::cout << "Item-based recommendations for " << movie << std::endl;
-    pqxx::result result = tx.exec("SELECT name FROM movies WHERE name != $1 ORDER BY factors <=> (SELECT factors FROM movies WHERE name = $1) LIMIT 5", pqxx::params{movie});
+    pqxx::result result = tx.exec(
+        "SELECT name FROM movies WHERE name != $1 ORDER BY factors <=> (SELECT factors FROM movies WHERE name = $1) LIMIT 5",
+        pqxx::params{movie}
+    );
     for (const auto& row : result) {
         std::cout << "- " << row[0].as<std::string>() << std::endl;
     }
 
     int user_id = 123;
     std::cout << std::endl << "User-based recommendations for " << user_id << std::endl;
-    result = tx.exec("SELECT name FROM movies ORDER BY factors <#> (SELECT factors FROM users WHERE id = $1) LIMIT 5", pqxx::params{user_id});
+    result = tx.exec(
+        "SELECT name FROM movies ORDER BY factors <#> (SELECT factors FROM users WHERE id = $1) LIMIT 5",
+        pqxx::params{user_id}
+    );
     for (const auto& row : result) {
         std::cout << "- " << row[0].as<std::string>() << std::endl;
     }

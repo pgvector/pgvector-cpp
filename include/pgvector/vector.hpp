@@ -23,7 +23,8 @@ class Vector {
     explicit Vector(std::vector<float>&& value) : value_{std::move(value)} {}
 
     /// Creates a vector from a span.
-    explicit Vector(std::span<const float> value) : value_{std::vector<float>(value.begin(), value.end())} {}
+    explicit Vector(std::span<const float> value) :
+        value_{std::vector<float>(value.begin(), value.end())} {}
 
     /// Returns the number of dimensions.
     size_t dimensions() const {

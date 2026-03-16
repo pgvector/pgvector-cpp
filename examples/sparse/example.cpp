@@ -20,14 +20,10 @@ using json = nlohmann::json;
 
 std::vector<pgvector::SparseVector> embed(const std::vector<std::string>& inputs) {
     std::string url{"http://localhost:3000/embed_sparse"};
-    json data{
-        {"inputs", inputs}
-    };
+    json data{{"inputs", inputs}};
 
     cpr::Response r = cpr::Post(
-        cpr::Url{url},
-        cpr::Body{data.dump()},
-        cpr::Header{{"Content-Type", "application/json"}}
+        cpr::Url{url}, cpr::Body{data.dump()}, cpr::Header{{"Content-Type", "application/json"}}
     );
     if (r.status_code != 200) {
         throw std::runtime_error{"Bad status: " + std::to_string(r.status_code)};
@@ -51,21 +47,27 @@ int main() {
     pqxx::nontransaction tx{conn};
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS documents");
-    tx.exec("CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding sparsevec(30522))");
+    tx.exec(
+        "CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding sparsevec(30522))"
+    );
 
     std::vector<std::string> input{
-        "The dog is barking",
-        "The cat is purring",
-        "The bear is growling"
+        "The dog is barking", "The cat is purring", "The bear is growling"
     };
     std::vector<pgvector::SparseVector> embeddings = embed(input);
     for (size_t i = 0; i < input.size(); i++) {
-        tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], embeddings[i]});
+        tx.exec(
+            "INSERT INTO documents (content, embedding) VALUES ($1, $2)",
+            pqxx::params{input[i], embeddings[i]}
+        );
     }
 
     std::string query{"forest"};
     pgvector::SparseVector query_embedding = embed({query})[0];
-    pqxx::result result = tx.exec("SELECT content FROM documents ORDER BY embedding <#> $1 LIMIT 5", pqxx::params{query_embedding});
+    pqxx::result result = tx.exec(
+        "SELECT content FROM documents ORDER BY embedding <#> $1 LIMIT 5",
+        pqxx::params{query_embedding}
+    );
     for (const auto& row : result) {
         std::cout << row[0].as<std::string>() << std::endl;
     }

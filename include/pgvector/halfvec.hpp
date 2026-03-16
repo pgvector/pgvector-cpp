@@ -39,7 +39,8 @@ class HalfVector {
     explicit HalfVector(std::vector<Half>&& value) : value_{std::move(value)} {}
 
     /// Creates a half vector from a span.
-    explicit HalfVector(std::span<const Half> value) : value_{std::vector<Half>(value.begin(), value.end())} {}
+    explicit HalfVector(std::span<const Half> value) :
+        value_{std::vector<Half>(value.begin(), value.end())} {}
 
     /// Returns the number of dimensions.
     size_t dimensions() const {

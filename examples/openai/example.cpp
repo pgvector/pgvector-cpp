@@ -13,10 +13,7 @@ using json = nlohmann::json;
 // input can be an array with 2048 elements
 std::vector<std::vector<float>> embed(const std::vector<std::string>& input, char* api_key) {
     std::string url{"https://api.openai.com/v1/embeddings"};
-    json data{
-        {"input", input},
-        {"model", "text-embedding-3-small"}
-    };
+    json data{{"input", input}, {"model", "text-embedding-3-small"}};
 
     cpr::Response r = cpr::Post(
         cpr::Url{url},
@@ -48,21 +45,27 @@ int main() {
     pqxx::nontransaction tx{conn};
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS documents");
-    tx.exec("CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding vector(1536))");
+    tx.exec(
+        "CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding vector(1536))"
+    );
 
     std::vector<std::string> input{
-        "The dog is barking",
-        "The cat is purring",
-        "The bear is growling"
+        "The dog is barking", "The cat is purring", "The bear is growling"
     };
     std::vector<std::vector<float>> embeddings = embed(input, api_key);
     for (size_t i = 0; i < input.size(); i++) {
-        tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], pgvector::Vector{embeddings[i]}});
+        tx.exec(
+            "INSERT INTO documents (content, embedding) VALUES ($1, $2)",
+            pqxx::params{input[i], pgvector::Vector{embeddings[i]}}
+        );
     }
 
     std::string query{"forest"};
     std::vector<float> query_embedding = embed({query}, api_key)[0];
-    pqxx::result result = tx.exec("SELECT content FROM documents ORDER BY embedding <=> $1 LIMIT 5", pqxx::params{pgvector::Vector{query_embedding}});
+    pqxx::result result = tx.exec(
+        "SELECT content FROM documents ORDER BY embedding <=> $1 LIMIT 5",
+        pqxx::params{pgvector::Vector{query_embedding}}
+    );
     for (const auto& row : result) {
         std::cout << row[0].as<std::string>() << std::endl;
     }

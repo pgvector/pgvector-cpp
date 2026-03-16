@@ -63,18 +63,22 @@ int main() {
     tx.exec("CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding bit(1536))");
 
     std::vector<std::string> input{
-        "The dog is barking",
-        "The cat is purring",
-        "The bear is growling"
+        "The dog is barking", "The cat is purring", "The bear is growling"
     };
     std::vector<std::string> embeddings = embed(input, "search_document", api_key);
     for (size_t i = 0; i < input.size(); i++) {
-        tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], embeddings[i]});
+        tx.exec(
+            "INSERT INTO documents (content, embedding) VALUES ($1, $2)",
+            pqxx::params{input[i], embeddings[i]}
+        );
     }
 
     std::string query{"forest"};
     std::string query_embedding = embed({query}, "search_query", api_key)[0];
-    pqxx::result result = tx.exec("SELECT content FROM documents ORDER BY embedding <~> $1 LIMIT 5", pqxx::params{query_embedding});
+    pqxx::result result = tx.exec(
+        "SELECT content FROM documents ORDER BY embedding <~> $1 LIMIT 5",
+        pqxx::params{query_embedding}
+    );
     for (const auto& row : result) {
         std::cout << row[0].as<std::string>() << std::endl;
     }

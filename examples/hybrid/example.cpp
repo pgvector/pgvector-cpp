@@ -26,14 +26,10 @@ std::vector<std::vector<float>> embed(
     }
 
     std::string url{"http://localhost:8080/v1/embeddings"};
-    json data{
-        {"input", input}
-    };
+    json data{{"input", input}};
 
     cpr::Response r = cpr::Post(
-        cpr::Url{url},
-        cpr::Body{data.dump()},
-        cpr::Header{{"Content-Type", "application/json"}}
+        cpr::Url{url}, cpr::Body{data.dump()}, cpr::Header{{"Content-Type", "application/json"}}
     );
     if (r.status_code != 200) {
         throw std::runtime_error{"Bad status: " + std::to_string(r.status_code)};
@@ -53,18 +49,21 @@ int main() {
     pqxx::nontransaction tx{conn};
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS documents");
-    tx.exec("CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding vector(768))");
+    tx.exec(
+        "CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding vector(768))"
+    );
     tx.exec("CREATE INDEX ON documents USING GIN (to_tsvector('english', content))");
 
     std::vector<std::string> input{
-        "The dog is barking",
-        "The cat is purring",
-        "The bear is growling"
+        "The dog is barking", "The cat is purring", "The bear is growling"
     };
     std::vector<std::vector<float>> embeddings = embed(input, "search_document");
 
     for (size_t i = 0; i < input.size(); i++) {
-        tx.exec("INSERT INTO documents (content, embedding) VALUES ($1, $2)", pqxx::params{input[i], pgvector::Vector{embeddings[i]}});
+        tx.exec(
+            "INSERT INTO documents (content, embedding) VALUES ($1, $2)",
+            pqxx::params{input[i], pgvector::Vector{embeddings[i]}}
+        );
     }
 
     std::string sql{R"(
@@ -95,7 +94,8 @@ int main() {
     double k = 60;
     pqxx::result result = tx.exec(sql, pqxx::params{query, pgvector::Vector{query_embedding}, k});
     for (const auto& row : result) {
-        std::cout << "document: " << row[0].as<std::string>() << ", RRF score: " << row[1].as<double>() << std::endl;
+        std::cout << "document: " << row[0].as<std::string>()
+                  << ", RRF score: " << row[1].as<double>() << std::endl;
     }
 
     return 0;

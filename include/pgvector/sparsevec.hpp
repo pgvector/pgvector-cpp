@@ -20,7 +20,8 @@ namespace pgvector {
 class SparseVector {
   public:
     /// Creates a sparse vector from a dense vector.
-    explicit SparseVector(const std::vector<float>& value) : SparseVector(std::span<const float>{value}) {}
+    explicit SparseVector(const std::vector<float>& value) :
+        SparseVector(std::span<const float>{value}) {}
 
     /// Creates a sparse vector from a span.
     explicit SparseVector(std::span<const float> value) {
@@ -82,7 +83,8 @@ class SparseVector {
     }
 
     friend bool operator==(const SparseVector& lhs, const SparseVector& rhs) {
-        return lhs.dimensions_ == rhs.dimensions_ && lhs.indices_ == rhs.indices_ && lhs.values_ == rhs.values_;
+        return lhs.dimensions_ == rhs.dimensions_ && lhs.indices_ == rhs.indices_
+            && lhs.values_ == rhs.values_;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const SparseVector& value) {

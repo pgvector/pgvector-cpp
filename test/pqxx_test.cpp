@@ -16,7 +16,9 @@ void setup(pqxx::connection& conn) {
     pqxx::nontransaction tx{conn};
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS items");
-    tx.exec("CREATE TABLE items (id serial PRIMARY KEY, embedding vector(3), half_embedding halfvec(3), binary_embedding bit(3), sparse_embedding sparsevec(3))");
+    tx.exec(
+        "CREATE TABLE items (id serial PRIMARY KEY, embedding vector(3), half_embedding halfvec(3), binary_embedding bit(3), sparse_embedding sparsevec(3))"
+    );
 }
 
 void before_each(pqxx::connection& conn) {
@@ -38,9 +40,14 @@ void test_vector(pqxx::connection& conn) {
     pqxx::nontransaction tx{conn};
     pgvector::Vector embedding{{1, 2, 3}};
     pgvector::Vector embedding2{{4, 5, 6}};
-    tx.exec("INSERT INTO items (embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
+    tx.exec(
+        "INSERT INTO items (embedding) VALUES ($1), ($2), ($3)",
+        {embedding, embedding2, std::nullopt}
+    );
 
-    pqxx::result res = tx.exec("SELECT embedding FROM items ORDER BY embedding <-> $1", {embedding2});
+    pqxx::result res = tx.exec(
+        "SELECT embedding FROM items ORDER BY embedding <-> $1", {embedding2}
+    );
     assert_equal(res.size(), 3);
     assert_equal(res.at(0).at(0).as<pgvector::Vector>(), embedding2);
     assert_equal(res.at(1).at(0).as<pgvector::Vector>(), embedding);
@@ -53,9 +60,14 @@ void test_halfvec(pqxx::connection& conn) {
     pqxx::nontransaction tx{conn};
     pgvector::HalfVector embedding{{1, 2, 3}};
     pgvector::HalfVector embedding2{{4, 5, 6}};
-    tx.exec("INSERT INTO items (half_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
+    tx.exec(
+        "INSERT INTO items (half_embedding) VALUES ($1), ($2), ($3)",
+        {embedding, embedding2, std::nullopt}
+    );
 
-    pqxx::result res = tx.exec("SELECT half_embedding FROM items ORDER BY half_embedding <-> $1", {embedding2});
+    pqxx::result res = tx.exec(
+        "SELECT half_embedding FROM items ORDER BY half_embedding <-> $1", {embedding2}
+    );
     assert_equal(res.size(), 3);
     assert_equal(res.at(0).at(0).as<pgvector::HalfVector>(), embedding2);
     assert_equal(res.at(1).at(0).as<pgvector::HalfVector>(), embedding);
@@ -68,9 +80,15 @@ void test_bit(pqxx::connection& conn) {
     pqxx::nontransaction tx{conn};
     std::string embedding{"101"};
     std::string embedding2{"111"};
-    tx.exec("INSERT INTO items (binary_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
+    tx.exec(
+        "INSERT INTO items (binary_embedding) VALUES ($1), ($2), ($3)",
+        {embedding, embedding2, std::nullopt}
+    );
 
-    pqxx::result res = tx.exec("SELECT binary_embedding FROM items ORDER BY binary_embedding <~> $1", pqxx::params{embedding2});
+    pqxx::result res = tx.exec(
+        "SELECT binary_embedding FROM items ORDER BY binary_embedding <~> $1",
+        pqxx::params{embedding2}
+    );
     assert_equal(res.size(), 3);
     assert_equal(res.at(0).at(0).as<std::string>(), embedding2);
     assert_equal(res.at(1).at(0).as<std::string>(), embedding);
@@ -83,9 +101,14 @@ void test_sparsevec(pqxx::connection& conn) {
     pqxx::nontransaction tx{conn};
     pgvector::SparseVector embedding{{1, 2, 3}};
     pgvector::SparseVector embedding2{{4, 5, 6}};
-    tx.exec("INSERT INTO items (sparse_embedding) VALUES ($1), ($2), ($3)", {embedding, embedding2, std::nullopt});
+    tx.exec(
+        "INSERT INTO items (sparse_embedding) VALUES ($1), ($2), ($3)",
+        {embedding, embedding2, std::nullopt}
+    );
 
-    pqxx::result res = tx.exec("SELECT sparse_embedding FROM items ORDER BY sparse_embedding <-> $1", {embedding2});
+    pqxx::result res = tx.exec(
+        "SELECT sparse_embedding FROM items ORDER BY sparse_embedding <-> $1", {embedding2}
+    );
     assert_equal(res.size(), 3);
     assert_equal(res.at(0).at(0).as<pgvector::SparseVector>(), embedding2);
     assert_equal(res.at(1).at(0).as<pgvector::SparseVector>(), embedding);
@@ -98,9 +121,10 @@ void test_sparsevec_nnz(pqxx::connection& conn) {
     pqxx::nontransaction tx{conn};
     std::vector<float> vec(16001, 1);
     pgvector::SparseVector embedding{vec};
-    assert_exception<pqxx::conversion_overrun>([&] {
-        tx.exec("INSERT INTO items (sparse_embedding) VALUES ($1)", {embedding});
-    }, "sparsevec cannot have more than 16000 dimensions");
+    assert_exception<pqxx::conversion_overrun>(
+        [&] { tx.exec("INSERT INTO items (sparse_embedding) VALUES ($1)", {embedding}); },
+        "sparsevec cannot have more than 16000 dimensions"
+    );
 }
 
 void test_stream(pqxx::connection& conn) {
@@ -110,7 +134,9 @@ void test_stream(pqxx::connection& conn) {
     pgvector::Vector embedding({1, 2, 3});
     tx.exec("INSERT INTO items (embedding) VALUES ($1)", {embedding});
     int count = 0;
-    auto stream = tx.stream<int, pgvector::Vector>("SELECT id, embedding FROM items WHERE embedding IS NOT NULL");
+    auto stream = tx.stream<int, pgvector::Vector>(
+        "SELECT id, embedding FROM items WHERE embedding IS NOT NULL"
+    );
     for (const auto& [id, embedding2] : stream) {
         assert_equal(embedding2, embedding);
         count++;
@@ -146,9 +172,10 @@ void test_vector_to_string() {
     assert_equal(pqxx::to_string(pgvector::Vector{{1, 2, 3}}), "[1,2,3]");
     assert_equal(pqxx::to_string(pgvector::Vector{{-1.234567890123f}}), "[-1.2345679]");
 
-    assert_exception<pqxx::conversion_overrun>([] {
-        pqxx::to_string(pgvector::Vector{std::vector<float>(16001)});
-    }, "vector cannot have more than 16000 dimensions");
+    assert_exception<pqxx::conversion_overrun>(
+        [] { pqxx::to_string(pgvector::Vector{std::vector<float>(16001)}); },
+        "vector cannot have more than 16000 dimensions"
+    );
 }
 
 void test_vector_from_string() {
@@ -157,161 +184,208 @@ void test_vector_from_string() {
     // not valid, but test current behavior
     assert_equal(pqxx::from_string<pgvector::Vector>("[]"), pgvector::Vector{std::vector<float>{}});
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::Vector>("");
-    }, "Malformed vector literal");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::Vector>(""); }, "Malformed vector literal"
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::Vector>("[");
-    }, "Malformed vector literal");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::Vector>("["); }, "Malformed vector literal"
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::Vector>("[hello]");
-    }, float_error("Could not convert 'hello' to float: Invalid argument."));
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::Vector>("[hello]"); },
+        float_error("Could not convert 'hello' to float: Invalid argument.")
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::Vector>("[4e38]");
-    }, float_error("Could not convert '4e38' to float: Value out of range."));
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::Vector>("[4e38]"); },
+        float_error("Could not convert '4e38' to float: Value out of range.")
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::Vector>("[,]");
-    }, float_error("Could not convert '' to float: Invalid argument."));
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::Vector>("[,]"); },
+        float_error("Could not convert '' to float: Invalid argument.")
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::Vector>("[1,]");
-    }, float_error("Could not convert '' to float: Invalid argument."));
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::Vector>("[1,]"); },
+        float_error("Could not convert '' to float: Invalid argument.")
+    );
 }
 
 void test_halfvec_to_string() {
     assert_equal(pqxx::to_string(pgvector::HalfVector{{1, 2, 3}}), "[1,2,3]");
 #if __STDCPP_FLOAT16_T__ || defined(__FLT16_MAX__)
-    assert_equal(pqxx::to_string(pgvector::HalfVector{{static_cast<pgvector::Half>(-1.234567890123f)}}), "[-1.234375]");
+    assert_equal(
+        pqxx::to_string(pgvector::HalfVector{{static_cast<pgvector::Half>(-1.234567890123f)}}),
+        "[-1.234375]"
+    );
 #else
     assert_equal(pqxx::to_string(pgvector::HalfVector{{-1.234567890123f}}), "[-1.2345679]");
 #endif
 
-    assert_exception<pqxx::conversion_overrun>([] {
-        pqxx::to_string(pgvector::HalfVector{std::vector<pgvector::Half>(16001)});
-    }, "halfvec cannot have more than 16000 dimensions");
+    assert_exception<pqxx::conversion_overrun>(
+        [] { pqxx::to_string(pgvector::HalfVector{std::vector<pgvector::Half>(16001)}); },
+        "halfvec cannot have more than 16000 dimensions"
+    );
 }
 
 void test_halfvec_from_string() {
-    assert_equal(pqxx::from_string<pgvector::HalfVector>("[1,2,3]"), pgvector::HalfVector{{1, 2, 3}});
+    assert_equal(
+        pqxx::from_string<pgvector::HalfVector>("[1,2,3]"), pgvector::HalfVector{{1, 2, 3}}
+    );
 
     // not valid, but test current behavior
-    assert_equal(pqxx::from_string<pgvector::HalfVector>("[]"), pgvector::HalfVector{std::vector<pgvector::Half>{}});
+    assert_equal(
+        pqxx::from_string<pgvector::HalfVector>("[]"),
+        pgvector::HalfVector{std::vector<pgvector::Half>{}}
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::HalfVector>("");
-    }, "Malformed halfvec literal");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::HalfVector>(""); }, "Malformed halfvec literal"
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::HalfVector>("[");
-    }, "Malformed halfvec literal");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::HalfVector>("["); }, "Malformed halfvec literal"
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::HalfVector>("[hello]");
-    }, float_error("Could not convert 'hello' to float: Invalid argument."));
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::HalfVector>("[hello]"); },
+        float_error("Could not convert 'hello' to float: Invalid argument.")
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::HalfVector>("[4e38]");
-    }, float_error("Could not convert '4e38' to float: Value out of range."));
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::HalfVector>("[4e38]"); },
+        float_error("Could not convert '4e38' to float: Value out of range.")
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::HalfVector>("[,]");
-    }, float_error("Could not convert '' to float: Invalid argument."));
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::HalfVector>("[,]"); },
+        float_error("Could not convert '' to float: Invalid argument.")
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::HalfVector>("[1,]");
-    }, float_error("Could not convert '' to float: Invalid argument."));
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::HalfVector>("[1,]"); },
+        float_error("Could not convert '' to float: Invalid argument.")
+    );
 }
 
 void test_sparsevec_to_string() {
     assert_equal(pqxx::to_string(pgvector::SparseVector{{1, 0, 2, 0, 3, 0}}), "{1:1,3:2,5:3}/6");
     std::unordered_map<int, float> map{{999999999, -1.234567890123f}};
-    assert_equal(pqxx::to_string(pgvector::SparseVector{map, 1000000000}), "{1000000000:-1.2345679}/1000000000");
+    assert_equal(
+        pqxx::to_string(pgvector::SparseVector{map, 1000000000}),
+        "{1000000000:-1.2345679}/1000000000"
+    );
 
-    assert_exception<pqxx::conversion_overrun>([] {
-        pqxx::to_string(pgvector::SparseVector{std::vector<float>(16001, 1)});
-    }, "sparsevec cannot have more than 16000 dimensions");
+    assert_exception<pqxx::conversion_overrun>(
+        [] { pqxx::to_string(pgvector::SparseVector{std::vector<float>(16001, 1)}); },
+        "sparsevec cannot have more than 16000 dimensions"
+    );
 }
 
 void test_sparsevec_from_string() {
-    assert_equal(pqxx::from_string<pgvector::SparseVector>("{1:1,3:2,5:3}/6"), pgvector::SparseVector{{1, 0, 2, 0, 3, 0}});
-    assert_equal(pqxx::from_string<pgvector::SparseVector>("{}/6"), pgvector::SparseVector{{0, 0, 0, 0, 0, 0}});
+    assert_equal(
+        pqxx::from_string<pgvector::SparseVector>("{1:1,3:2,5:3}/6"),
+        pgvector::SparseVector{{1, 0, 2, 0, 3, 0}}
+    );
+    assert_equal(
+        pqxx::from_string<pgvector::SparseVector>("{}/6"),
+        pgvector::SparseVector{{0, 0, 0, 0, 0, 0}}
+    );
 
     // not valid, but test current behavior
-    assert_equal(pqxx::from_string<pgvector::SparseVector>("{}/0"), pgvector::SparseVector{std::vector<float>{}});
-    assert_equal(pqxx::from_string<pgvector::SparseVector>("{1:2,1:3}/1"), pgvector::SparseVector{{2}});
+    assert_equal(
+        pqxx::from_string<pgvector::SparseVector>("{}/0"),
+        pgvector::SparseVector{std::vector<float>{}}
+    );
+    assert_equal(
+        pqxx::from_string<pgvector::SparseVector>("{1:2,1:3}/1"), pgvector::SparseVector{{2}}
+    );
 
     auto vec = pqxx::from_string<pgvector::SparseVector>("{2:4,1:3,3:0}/3");
     assert_equal(vec.indices() == std::vector<int>{0, 1}, true);
     assert_equal(vec.values() == std::vector<float>{3, 4}, true);
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("");
-    }, "Malformed sparsevec literal");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>(""); },
+        "Malformed sparsevec literal"
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{");
-    }, "Malformed sparsevec literal");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{"); },
+        "Malformed sparsevec literal"
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{ }/");
-    }, "Could not convert '' to int: Invalid argument.");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{ }/"); },
+        "Could not convert '' to int: Invalid argument."
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{}/-1");
-    }, "sparsevec cannot have negative dimensions");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{}/-1"); },
+        "sparsevec cannot have negative dimensions"
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{:}/1");
-    }, "Could not convert '' to int: Invalid argument.");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{:}/1"); },
+        "Could not convert '' to int: Invalid argument."
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{,}/1");
-    }, "Malformed sparsevec literal");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{,}/1"); },
+        "Malformed sparsevec literal"
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{0:1}/1");
-    }, "sparsevec index out of bounds");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{0:1}/1"); },
+        "sparsevec index out of bounds"
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{-2147483648:1}/1");
-    }, "sparsevec index out of bounds");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{-2147483648:1}/1"); },
+        "sparsevec index out of bounds"
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{2:1}/1");
-    }, "sparsevec index out of bounds");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{2:1}/1"); },
+        "sparsevec index out of bounds"
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{1:1}/0");
-    }, "sparsevec index out of bounds");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{1:1}/0"); },
+        "sparsevec index out of bounds"
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{1:4e38}/1");
-    }, float_error("Could not convert '4e38' to float: Value out of range."));
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{1:4e38}/1"); },
+        float_error("Could not convert '4e38' to float: Value out of range.")
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{a:1}/1");
-    }, "Could not convert 'a' to int: Invalid argument.");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{a:1}/1"); },
+        "Could not convert 'a' to int: Invalid argument."
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{1:a}/1");
-    }, float_error("Could not convert 'a' to float: Invalid argument."));
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{1:a}/1"); },
+        float_error("Could not convert 'a' to float: Invalid argument.")
+    );
 
-    assert_exception<pqxx::conversion_error>([] {
-        auto _ = pqxx::from_string<pgvector::SparseVector>("{}/a");
-    }, "Could not convert 'a' to int: Invalid argument.");
+    assert_exception<pqxx::conversion_error>(
+        [] { auto _ = pqxx::from_string<pgvector::SparseVector>("{}/a"); },
+        "Could not convert 'a' to int: Invalid argument."
+    );
 }
 
 void test_vector_to_buf() {
     std::array<char, 60> buf{};
     assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::Vector{{1, 2, 3}}), "[1,2,3]");
 
-    assert_exception<pqxx::conversion_overrun>([] {
-        return pqxx::to_buf(std::span<char>{}, pgvector::Vector{{1, 2, 3}});
-    }, "Not enough space in buffer for vector");
+    assert_exception<pqxx::conversion_overrun>(
+        [] { return pqxx::to_buf(std::span<char>{}, pgvector::Vector{{1, 2, 3}}); },
+        "Not enough space in buffer for vector"
+    );
 }
 
 void test_vector_into_buf() {
@@ -320,18 +394,20 @@ void test_vector_into_buf() {
     assert_equal(size, 7u);
     assert_equal(std::string_view{buf.data(), size}, "[1,2,3]");
 
-    assert_exception<pqxx::conversion_overrun>([] {
-        return pqxx::into_buf(std::span<char>{}, pgvector::Vector{{1, 2, 3}});
-    }, "Not enough space in buffer for vector");
+    assert_exception<pqxx::conversion_overrun>(
+        [] { return pqxx::into_buf(std::span<char>{}, pgvector::Vector{{1, 2, 3}}); },
+        "Not enough space in buffer for vector"
+    );
 }
 
 void test_halfvec_to_buf() {
     std::array<char, 60> buf{};
     assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::HalfVector{{1, 2, 3}}), "[1,2,3]");
 
-    assert_exception<pqxx::conversion_overrun>([] {
-        return pqxx::to_buf(std::span<char>{}, pgvector::HalfVector{{1, 2, 3}});
-    }, "Not enough space in buffer for halfvec");
+    assert_exception<pqxx::conversion_overrun>(
+        [] { return pqxx::to_buf(std::span<char>{}, pgvector::HalfVector{{1, 2, 3}}); },
+        "Not enough space in buffer for halfvec"
+    );
 }
 
 void test_halfvec_into_buf() {
@@ -340,21 +416,28 @@ void test_halfvec_into_buf() {
     assert_equal(size, 7u);
     assert_equal(std::string_view{buf.data(), size}, "[1,2,3]");
 
-    assert_exception<pqxx::conversion_overrun>([] {
-        return pqxx::into_buf(std::span<char>{}, pgvector::HalfVector{{1, 2, 3}});
-    }, "Not enough space in buffer for halfvec");
+    assert_exception<pqxx::conversion_overrun>(
+        [] { return pqxx::into_buf(std::span<char>{}, pgvector::HalfVector{{1, 2, 3}}); },
+        "Not enough space in buffer for halfvec"
+    );
 }
 
 void test_sparsevec_to_buf() {
     std::array<char, 120> buf{};
-    assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::SparseVector{{1, 2, 3}}), "{1:1,2:2,3:3}/3");
+    assert_equal(
+        pqxx::to_buf(std::span<char>{buf}, pgvector::SparseVector{{1, 2, 3}}), "{1:1,2:2,3:3}/3"
+    );
 
     int max = std::numeric_limits<int>::max();
-    assert_equal(pqxx::to_buf(std::span<char>{buf}, pgvector::SparseVector{{{max - 1, 1}}, max}), "{2147483647:1}/2147483647");
+    assert_equal(
+        pqxx::to_buf(std::span<char>{buf}, pgvector::SparseVector{{{max - 1, 1}}, max}),
+        "{2147483647:1}/2147483647"
+    );
 
-    assert_exception<pqxx::conversion_overrun>([] {
-        return pqxx::to_buf(std::span<char>{}, pgvector::SparseVector{{1, 2, 3}});
-    }, "Not enough space in buffer for sparsevec");
+    assert_exception<pqxx::conversion_overrun>(
+        [] { return pqxx::to_buf(std::span<char>{}, pgvector::SparseVector{{1, 2, 3}}); },
+        "Not enough space in buffer for sparsevec"
+    );
 }
 
 void test_sparsevec_into_buf() {
@@ -363,9 +446,10 @@ void test_sparsevec_into_buf() {
     assert_equal(size, 15u);
     assert_equal(std::string_view{buf.data(), size}, "{1:1,2:2,3:3}/3");
 
-    assert_exception<pqxx::conversion_overrun>([] {
-        return pqxx::into_buf(std::span<char>{}, pgvector::SparseVector{{1, 2, 3}});
-    }, "Not enough space in buffer for sparsevec");
+    assert_exception<pqxx::conversion_overrun>(
+        [] { return pqxx::into_buf(std::span<char>{}, pgvector::SparseVector{{1, 2, 3}}); },
+        "Not enough space in buffer for sparsevec"
+    );
 }
 
 void test_vector_size_buffer() {
