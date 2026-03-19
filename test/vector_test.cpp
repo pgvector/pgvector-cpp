@@ -8,37 +8,39 @@
 
 using pgvector::Vector;
 
-static void test_constructor_vector() {
+namespace {
+void test_constructor_vector() {
     Vector vec{std::vector<float>{1, 2, 3}};
     assert_equal(vec.dimensions(), 3u);
 }
 
-static void test_constructor_span() {
+void test_constructor_span() {
     Vector vec{std::span<const float>{{1, 2, 3}}};
     assert_equal(vec.dimensions(), 3u);
 }
 
-static void test_constructor_empty() {
+void test_constructor_empty() {
     Vector vec{std::vector<float>{}};
     assert_equal(vec.dimensions(), 0u);
 }
 
-static void test_dimensions() {
+void test_dimensions() {
     Vector vec{{1, 2, 3}};
     assert_equal(vec.dimensions(), 3u);
 }
 
-static void test_values() {
+void test_values() {
     Vector vec{{1, 2, 3}};
     assert_equal(vec.values() == std::vector<float>{1, 2, 3}, true);
 }
 
-static void test_string() {
+void test_string() {
     Vector vec{{1, 2, 3}};
     std::ostringstream oss;
     oss << vec;
     assert_equal(oss.str(), "[1,2,3]");
 }
+} // namespace
 
 void test_vector() {
     test_constructor_vector();

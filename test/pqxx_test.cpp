@@ -12,6 +12,7 @@
 
 #include "helper.hpp"
 
+namespace {
 void setup(pqxx::connection& conn) {
     pqxx::nontransaction tx{conn};
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
@@ -463,6 +464,7 @@ void test_halfvec_size_buffer() {
 void test_sparsevec_size_buffer() {
     assert_equal(pqxx::size_buffer(pgvector::SparseVector{{1, 2, 3}}), 103u);
 }
+} // namespace
 
 void test_pqxx() {
     pqxx::connection conn{"dbname=pgvector_cpp_test"};

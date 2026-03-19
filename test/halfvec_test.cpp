@@ -8,37 +8,39 @@
 
 using pgvector::HalfVector;
 
-static void test_constructor_vector() {
+namespace {
+void test_constructor_vector() {
     HalfVector vec{std::vector<pgvector::Half>{1, 2, 3}};
     assert_equal(vec.dimensions(), 3u);
 }
 
-static void test_constructor_span() {
+void test_constructor_span() {
     HalfVector vec{std::span<const pgvector::Half>{{1, 2, 3}}};
     assert_equal(vec.dimensions(), 3u);
 }
 
-static void test_constructor_empty() {
+void test_constructor_empty() {
     HalfVector vec{std::vector<pgvector::Half>{}};
     assert_equal(vec.dimensions(), 0u);
 }
 
-static void test_dimensions() {
+void test_dimensions() {
     HalfVector vec{{1, 2, 3}};
     assert_equal(vec.dimensions(), 3u);
 }
 
-static void test_values() {
+void test_values() {
     HalfVector vec{{1, 2, 3}};
     assert_equal(vec.values() == std::vector<pgvector::Half>{1, 2, 3}, true);
 }
 
-static void test_string() {
+void test_string() {
     HalfVector vec{{1, 2, 3}};
     std::ostringstream oss;
     oss << vec;
     assert_equal(oss.str(), "[1,2,3]");
 }
+} // namespace
 
 void test_halfvec() {
     test_constructor_vector();

@@ -10,19 +10,20 @@
 
 using pgvector::SparseVector;
 
-static void test_constructor_vector() {
+namespace {
+void test_constructor_vector() {
     SparseVector vec{std::vector<float>{1, 0, 2, 0, 3, 0}};
     assert_equal(vec.dimensions(), 6);
     assert_equal(vec.indices() == std::vector<int>{0, 2, 4}, true);
     assert_equal(vec.values() == std::vector<float>{1, 2, 3}, true);
 }
 
-static void test_constructor_span() {
+void test_constructor_span() {
     SparseVector vec{std::span<const float>{{1, 0, 2, 0, 3, 0}}};
     assert_equal(vec.dimensions(), 6);
 }
 
-static void test_constructor_map() {
+void test_constructor_map() {
     std::unordered_map<int, float> map{{2, 2}, {4, 3}, {3, 0}, {0, 1}};
     SparseVector vec{map, 6};
     assert_equal(vec.dimensions(), 6);
@@ -42,7 +43,7 @@ static void test_constructor_map() {
     );
 }
 
-static void test_constructor_empty() {
+void test_constructor_empty() {
     SparseVector vec{std::vector<float>{}};
     assert_equal(vec.dimensions(), 0);
 
@@ -50,27 +51,28 @@ static void test_constructor_empty() {
     assert_equal(vec2.dimensions(), 0);
 }
 
-static void test_dimensions() {
+void test_dimensions() {
     SparseVector vec{std::vector<float>{1, 0, 2, 0, 3, 0}};
     assert_equal(vec.dimensions(), 6);
 }
 
-static void test_indices() {
+void test_indices() {
     SparseVector vec{std::vector<float>{1, 0, 2, 0, 3, 0}};
     assert_equal(vec.indices() == std::vector<int>{0, 2, 4}, true);
 }
 
-static void test_values() {
+void test_values() {
     SparseVector vec{std::vector<float>{1, 0, 2, 0, 3, 0}};
     assert_equal(vec.values() == std::vector<float>{1, 2, 3}, true);
 }
 
-static void test_string() {
+void test_string() {
     SparseVector vec{std::vector<float>{1, 0, 2, 0, 3, 0}};
     std::ostringstream oss;
     oss << vec;
     assert_equal(oss.str(), "{1:1,3:2,5:3}/6");
 }
+} // namespace
 
 void test_sparsevec() {
     test_constructor_vector();
