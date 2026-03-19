@@ -1,3 +1,4 @@
+#include <array>
 #include <cstddef>
 #include <limits>
 #include <optional>
@@ -7,7 +8,10 @@
 #include <unordered_map>
 #include <vector>
 
+#include <pgvector/halfvec.hpp>
 #include <pgvector/pqxx.hpp>
+#include <pgvector/sparsevec.hpp>
+#include <pgvector/vector.hpp>
 #include <pqxx/pqxx>
 
 #include "helper.hpp"
