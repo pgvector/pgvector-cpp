@@ -1,8 +1,8 @@
-#include <cassert>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -32,19 +32,24 @@ Dataset<int, std::string> load_movielens(const std::string& path) {
     // read movies
     std::unordered_map<std::string, std::string> movies;
     std::ifstream movies_file(path + "/u.item");
-    assert(movies_file.is_open());
+    if (!movies_file.is_open()) {
+        throw std::runtime_error{"Could not open file"};
+    }
     while (std::getline(movies_file, line)) {
         std::string::size_type n = line.find('|');
         std::string::size_type n2 = line.find('|', n + 1);
         movies.emplace(
-            std::make_pair(line.substr(0, n), convert_to_utf8(line.substr(n + 1, n2 - n - 1)))
+            line.substr(0, n),
+            convert_to_utf8(line.substr(n + 1, n2 - n - 1))
         );
     }
 
     // read ratings and create dataset
     Dataset<int, std::string> data;
     std::ifstream ratings_file(path + "/u.data");
-    assert(ratings_file.is_open());
+    if (!ratings_file.is_open()) {
+        throw std::runtime_error{"Could not open file"};
+    }
     while (std::getline(ratings_file, line)) {
         std::string::size_type n = line.find('\t');
         std::string::size_type n2 = line.find('\t', n + 1);
