@@ -11,9 +11,6 @@
 #include <pgvector/pqxx.hpp>
 #include <pqxx/pqxx>
 
-using disco::Dataset;
-using disco::Recommender;
-
 std::string convert_to_utf8(const std::string& str) {
     std::stringstream buf;
     for (const unsigned char v : str) {
@@ -26,7 +23,7 @@ std::string convert_to_utf8(const std::string& str) {
     return buf.str();
 }
 
-Dataset<int, std::string> load_movielens(const std::string& path) {
+disco::Dataset<int, std::string> load_movielens(const std::string& path) {
     std::string line;
 
     // read movies
@@ -42,7 +39,7 @@ Dataset<int, std::string> load_movielens(const std::string& path) {
     }
 
     // read ratings and create dataset
-    Dataset<int, std::string> data;
+    disco::Dataset<int, std::string> data;
     std::ifstream ratings_file(path + "/u.data");
     if (!ratings_file.is_open()) {
         throw std::runtime_error{"Could not open file"};
@@ -78,8 +75,8 @@ int main() {
     tx.exec("CREATE TABLE users (id integer PRIMARY KEY, factors vector(20))");
     tx.exec("CREATE TABLE movies (name text PRIMARY KEY, factors vector(20))");
 
-    Dataset<int, std::string> data = load_movielens(movielens_path);
-    auto recommender = Recommender<int, std::string>::fit_explicit(data, {.factors = 20});
+    disco::Dataset<int, std::string> data = load_movielens(movielens_path);
+    auto recommender = disco::Recommender<int, std::string>::fit_explicit(data, {.factors = 20});
 
     for (const auto& user_id : recommender.user_ids()) {
         pgvector::Vector factors{*recommender.user_factors(user_id)};
