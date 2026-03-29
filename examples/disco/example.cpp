@@ -20,7 +20,7 @@ std::string convert_to_utf8(const std::string& str) {
         if (v < 128) {
             buf << v;
         } else {
-            buf << static_cast<char>(195) << static_cast<char>(v - 64);
+            buf << static_cast<unsigned char>(195) << static_cast<unsigned char>(v - 64);
         }
     }
     return buf.str();
