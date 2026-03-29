@@ -16,7 +16,7 @@
 #include <utility>
 #include <vector>
 
-#include <pqxx/pqxx>
+#include <pqxx/strconv>
 
 #include "halfvec.hpp"
 #include "sparsevec.hpp"
