@@ -9,7 +9,7 @@ find_package(Boost COMPONENTS iostreams serialization REQUIRED)
 
 include(FetchContent)
 
-FetchContent_Declare(libpqxx GIT_REPOSITORY https://github.com/jtv/libpqxx.git GIT_TAG 8.0.1)
+FetchContent_Declare(libpqxx GIT_REPOSITORY https://github.com/jtv/libpqxx.git GIT_TAG 8.0.2)
 FetchContent_MakeAvailable(libpqxx)
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/../.." pgvector)
