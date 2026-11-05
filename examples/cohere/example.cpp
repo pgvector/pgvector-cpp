@@ -20,7 +20,7 @@ std::vector<std::string> embed(
     std::string url{"https://api.cohere.com/v2/embed"};
     json data{
         {"texts", texts},
-        {"model", "embed-v4.0"},
+        {"model", "embed-v5.0-pro"},
         {"input_type", input_type},
         {"embedding_types", {"ubinary"}}
     };
@@ -60,7 +60,7 @@ int main() {
     pqxx::nontransaction tx{conn};
     tx.exec("CREATE EXTENSION IF NOT EXISTS vector");
     tx.exec("DROP TABLE IF EXISTS documents");
-    tx.exec("CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding bit(1536))");
+    tx.exec("CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding bit(2048))");
 
     std::vector<std::string> input{
         "The dog is barking", "The cat is purring", "The bear is growling"
